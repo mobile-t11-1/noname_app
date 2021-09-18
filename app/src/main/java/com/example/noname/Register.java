@@ -85,11 +85,18 @@ public class Register extends AppCompatActivity {
             return;
         }
 
+        if(password.length() < 7){
+            editTextPassword.setError("Password should be longer than 6 chars");
+            editTextPassword.requestFocus();
+            return;
+        }
+        
         if(passwordRepeat.isEmpty()){
             editTextRepeatedPassword.setError("Comfirm your password!");
             editTextRepeatedPassword.requestFocus();
             return;
         }
+
 
         if(!passwordRepeat.equals(password)){
             editTextRepeatedPassword.setError("Password failed to match!");
