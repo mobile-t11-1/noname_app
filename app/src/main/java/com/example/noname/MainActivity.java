@@ -21,8 +21,10 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView bottomNavigationView = findViewById(R.id.nav_bar);
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
 
-    }
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, new ProfileFrag()).commit();
 
+    }
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -31,14 +33,14 @@ public class MainActivity extends AppCompatActivity {
                     Fragment selectedFragment = null;
 
                     switch (item.getItemId()){
+                        case R.id.profileFrag:
+                            selectedFragment = new ProfileFrag();
+                            break;
                         case R.id.shopLstFrag:
                             selectedFragment = new ShopLstFrag();
                             break;
                         case R.id.mapFrag:
                             selectedFragment = new MapFrag();
-                            break;
-                        case R.id.profileFrag:
-                            selectedFragment = new ProfileFrag();
                             break;
 
                     }
