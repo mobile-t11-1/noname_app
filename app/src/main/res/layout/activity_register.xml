@@ -5,24 +5,47 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#03A9F4"
-    tools:context=".ProfileFrag">
+    tools:context=".Register">
 
-    <!-- TODO: Update blank fragment layout -->
+    <ImageButton
+        android:id="@+id/goback_btn"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:background="@drawable/goback_btn_style"
+        android:src="@drawable/ic_go_back" />
 
     <ImageView
-        android:id="@+id/logoImg"
+        android:id="@+id/logoImg_reg"
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="80dp"
         android:src="@drawable/logo" />
 
+
     <EditText
-        android:id="@+id/textEmailAddress"
+        android:id="@+id/username_reg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/logoImg"
+        android:layout_below="@+id/logoImg_reg"
+        android:layout_centerHorizontal="true"
+        android:layout_marginHorizontal="60dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/text_input_style"
+        android:ems="10"
+        android:hint="Username"
+        android:inputType="textPersonName"
+        android:padding="10dp"
+        android:textSize="18sp" />
+
+    <EditText
+        android:id="@+id/textEmailAddress_reg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/username_reg"
         android:layout_centerHorizontal="true"
         android:layout_marginHorizontal="60dp"
         android:layout_marginTop="40dp"
@@ -34,10 +57,10 @@
         android:textSize="18sp" />
 
     <EditText
-        android:id="@+id/textPassword"
+        android:id="@+id/textPassword_reg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textEmailAddress"
+        android:layout_below="@+id/textEmailAddress_reg"
         android:layout_centerHorizontal="true"
         android:layout_marginHorizontal="60dp"
         android:layout_marginTop="40dp"
@@ -48,50 +71,42 @@
         android:padding="10dp"
         android:textSize="18sp" />
 
-    <Button
-        android:id="@+id/login_btn"
-        android:background="@drawable/login_btn_style"
+    <EditText
+        android:id="@+id/textPassword_reg_repeat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textPassword"
+        android:layout_below="@+id/textPassword_reg"
         android:layout_centerHorizontal="true"
         android:layout_marginHorizontal="60dp"
         android:layout_marginTop="40dp"
-        android:text="Login"
+        android:background="@drawable/text_input_style"
+        android:ems="10"
+        android:hint="Repeat Password"
+        android:inputType="textPassword"
+        android:padding="10dp"
         android:textSize="18sp" />
 
-    <TextView
-        android:id="@+id/forget_pw"
-        android:layout_width="wrap_content"
+    <Button
+        android:id="@+id/register_btn"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/login_btn"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="60dp"
-        android:layout_marginTop="20dp"
-        android:text="Forget Password?"
-        android:textSize="12sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/register"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/login_btn"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="60dp"
+        android:layout_below="@+id/textPassword_reg_repeat"
+        android:layout_centerHorizontal="true"
+        android:layout_marginHorizontal="60dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/login_btn_style"
         android:text="Register"
-        android:textSize="12sp"
-        android:textStyle="bold" />
+        android:textSize="18sp" />
 
     <ProgressBar
-        android:id="@+id/login_progressBar"
+        android:id="@+id/register_progressBar"
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/register"
+        android:layout_below="@+id/register_btn"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="30dp"
         android:visibility="gone"/>
+
 
 </RelativeLayout>
