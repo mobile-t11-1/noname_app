@@ -1,7 +1,10 @@
 package com.example.noname;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -11,8 +14,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 
 /**
@@ -30,6 +40,14 @@ public class ProfileFrag extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private FirebaseAuth mAuth;
+    private FirebaseUser user;
+    private DatabaseReference reference;
+
+
+    private String userID;
+    private Button logoutBtn;
 
 
     public ProfileFrag() {
@@ -69,5 +87,50 @@ public class ProfileFrag extends Fragment {
 
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_profile, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        mAuth = FirebaseAuth.getInstance();
+
+        logoutBtn = (Button) getView().findViewById(R.id.logout_button);
+        logoutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mAuth.signOut();
+                startActivity(new Intent(getActivity(), Login.class));
+            }
+        });
+
+        // TODO: Change to Firestore
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        reference = FirebaseDatabase.getInstance().getReference("Users");
+        userID = user.getUid();
+
+        final TextView usernameTextView = (TextView) getView().findViewById(R.id.usernameText);
+
+        // get current user's reference
+        reference.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User userProfile = snapshot.getValue(User.class);
+
+                // check if this user exists
+                if(userProfile != null){
+                    String username = userProfile.username;
+                    String email = userProfile.email;
+
+                    usernameTextView.setText(username);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getActivity(), "Something Wrong!", Toast.LENGTH_LONG).show();
+            }
+        });
+
     }
 }
