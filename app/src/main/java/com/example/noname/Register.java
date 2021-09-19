@@ -182,7 +182,9 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
 
 
 
-                        }else {
+                        }
+
+                        else {
                             Toast.makeText(Register.this, "Failed to register!2", Toast.LENGTH_LONG).show();
                             progressBar.setVisibility(View.GONE);
                         }
