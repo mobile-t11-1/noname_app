@@ -14,10 +14,16 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Register extends AppCompatActivity implements View.OnClickListener{
 
@@ -27,6 +33,8 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
     private Button registerBtn;
     private ImageButton gobackBtn;
     private ProgressBar progressBar;
+
+    private FirebaseFirestore mydb = FirebaseFirestore.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,29 +130,58 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
                         if(task.isSuccessful()){
-                            User user = new User(username, email);
+//                            User user = new User(username, email);
+//
+//                            // pass this user instance to firebase
+//                            // 1. Get a unique UID for this user
+//                            // 2. Check if the data has been successfully passed into database
+//                            FirebaseDatabase.getInstance().getReference("Users")
+//                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+//                                    .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                @Override
+//                                public void onComplete(@NonNull Task<Void> task) {
+//                                    // if the data is in database
+//                                    if(task.isSuccessful()){
+//                                        Toast.makeText(Register.this, "User has been registered successfully!", Toast.LENGTH_LONG).show();
+//                                        progressBar.setVisibility(View.GONE);
+//
+//                                        startActivity(new Intent(Register.this, Login.class));
+//                                    }else{
+//                                        Toast.makeText(Register.this, "Failed to register!1", Toast.LENGTH_LONG).show();
+//                                        progressBar.setVisibility(View.GONE);
+//                                    }
+//
+//                                }
+//                            });
 
-                            // pass this user instance to firebase
-                            // 1. Get a unique UID for this user
-                            // 2. Check if the data has been successfully passed into database
-                            FirebaseDatabase.getInstance().getReference("Users")
-                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                    .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    // if the data is in database
-                                    if(task.isSuccessful()){
-                                        Toast.makeText(Register.this, "User has been registered successfully!", Toast.LENGTH_LONG).show();
-                                        progressBar.setVisibility(View.GONE);
+                            Map<String, Object> newUser = new HashMap<>();
+                            newUser.put("User Name", username);
+                            newUser.put("Email", email);
+                            newUser.put("User ID", FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-                                        startActivity(new Intent(Register.this, Login.class));
-                                    }else{
-                                        Toast.makeText(Register.this, "Failed to register!1", Toast.LENGTH_LONG).show();
-                                        progressBar.setVisibility(View.GONE);
-                                    }
+                            // add the user into Cloud Firestore
+                            mydb.collection("user").document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                    .set(newUser)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void unused) {
+                                            Toast.makeText(Register.this, "User has been registered successfully!", Toast.LENGTH_LONG).show();
+                                            progressBar.setVisibility(View.GONE);
 
-                                }
-                            });
+                                            // once registered, jump to Login page
+                                            startActivity(new Intent(Register.this, Login.class));
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Toast.makeText(Register.this, "Failed to register!1", Toast.LENGTH_LONG).show();
+                                            progressBar.setVisibility(View.GONE);
+                                        }
+                                    });
+
+
+
+
                         }else {
                             Toast.makeText(Register.this, "Failed to register!2", Toast.LENGTH_LONG).show();
                             progressBar.setVisibility(View.GONE);
