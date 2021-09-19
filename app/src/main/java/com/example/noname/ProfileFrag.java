@@ -153,7 +153,7 @@ public class ProfileFrag extends Fragment {
                         }
 
                         else{
-                            //
+                            Toast.makeText(getActivity(), "Something Wrong!", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
