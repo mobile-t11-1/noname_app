@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, new LoginFrag()).commit();
+                .replace(R.id.fragment_container, new ProfileFrag()).commit();
 
     }
 
@@ -32,8 +32,8 @@ public class MainActivity extends AppCompatActivity {
                     Fragment selectedFragment = null;
 
                     switch (item.getItemId()){
-                        case R.id.loginFrag:
-                            selectedFragment = new LoginFrag();
+                        case R.id.ProfileFrag:
+                            selectedFragment = new ProfileFrag();
                             break;
                         case R.id.shopLstFrag:
                             selectedFragment = new ShopLstFrag();

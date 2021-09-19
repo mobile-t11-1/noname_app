@@ -19,7 +19,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class Register extends AppCompatActivity {
+public class Register extends AppCompatActivity implements View.OnClickListener{
 
     private FirebaseAuth mAuth;
 
@@ -44,21 +44,23 @@ public class Register extends AppCompatActivity {
         progressBar = (ProgressBar) findViewById(R.id.register_progressBar);
 
         registerBtn = (Button) findViewById(R.id.register_btn);
-        registerBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                registerUser();
-            }
-        });
+        registerBtn.setOnClickListener(this);
 
         gobackBtn = (ImageButton) findViewById(R.id.goback_btn);
-        gobackBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
-            }
-        });
+        gobackBtn.setOnClickListener(this);
 
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.register_btn:
+                registerUser();
+                break;
+            case R.id.goback_btn:
+                startActivity(new Intent(Register.this, Login.class));
+                break;
+        }
     }
 
     private void registerUser() {
@@ -135,7 +137,7 @@ public class Register extends AppCompatActivity {
                                         Toast.makeText(Register.this, "User has been registered successfully!", Toast.LENGTH_LONG).show();
                                         progressBar.setVisibility(View.GONE);
 
-                                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                        startActivity(new Intent(Register.this, Login.class));
                                     }else{
                                         Toast.makeText(Register.this, "Failed to register!1", Toast.LENGTH_LONG).show();
                                         progressBar.setVisibility(View.GONE);
