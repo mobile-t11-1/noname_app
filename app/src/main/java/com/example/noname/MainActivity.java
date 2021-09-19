@@ -3,7 +3,6 @@ package com.example.noname;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
 
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -22,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, new ProfileFrag()).commit();
+                .replace(R.id.fragment_container, new LoginFrag()).commit();
 
     }
 
@@ -33,8 +32,8 @@ public class MainActivity extends AppCompatActivity {
                     Fragment selectedFragment = null;
 
                     switch (item.getItemId()){
-                        case R.id.profileFrag:
-                            selectedFragment = new ProfileFrag();
+                        case R.id.loginFrag:
+                            selectedFragment = new LoginFrag();
                             break;
                         case R.id.shopLstFrag:
                             selectedFragment = new ShopLstFrag();

@@ -23,7 +23,7 @@ public class Register extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
 
-    private EditText editTextUsername, editTextemail, editTextPassword, editTextRepeatedPassword;
+    private EditText editTextUsername, editTextEmail, editTextPassword, editTextRepeatedPassword;
     private Button registerBtn;
     private ImageButton gobackBtn;
     private ProgressBar progressBar;
@@ -37,7 +37,7 @@ public class Register extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         editTextUsername = (EditText) findViewById(R.id.username_reg);
-        editTextemail = (EditText) findViewById(R.id.textEmailAddress_reg);
+        editTextEmail = (EditText) findViewById(R.id.textEmailAddress_reg);
         editTextPassword = (EditText) findViewById(R.id.textPassword_reg);
         editTextRepeatedPassword = (EditText) findViewById(R.id.textPassword_reg_repeat);
 
@@ -63,7 +63,7 @@ public class Register extends AppCompatActivity {
 
     private void registerUser() {
         String username = editTextUsername.getText().toString().trim();
-        String email = editTextemail.getText().toString().trim();
+        String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
         String passwordRepeat = editTextRepeatedPassword.getText().toString().trim();
 
@@ -74,8 +74,8 @@ public class Register extends AppCompatActivity {
         }
 
         if(email.isEmpty()){
-            editTextemail.setError("Email is required!");
-            editTextemail.requestFocus();
+            editTextEmail.setError("Email is required!");
+            editTextEmail.requestFocus();
             return;
         }
 
@@ -90,7 +90,7 @@ public class Register extends AppCompatActivity {
             editTextPassword.requestFocus();
             return;
         }
-        
+
         if(passwordRepeat.isEmpty()){
             editTextRepeatedPassword.setError("Comfirm your password!");
             editTextRepeatedPassword.requestFocus();
@@ -106,8 +106,8 @@ public class Register extends AppCompatActivity {
 
         // check email format
         if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
-            editTextemail.setError("Please provide valid email!");
-            editTextemail.requestFocus();
+            editTextEmail.setError("Please provide valid email!");
+            editTextEmail.requestFocus();
             return;
         }
         // set progress bar visible
@@ -134,6 +134,8 @@ public class Register extends AppCompatActivity {
                                     if(task.isSuccessful()){
                                         Toast.makeText(Register.this, "User has been registered successfully!", Toast.LENGTH_LONG).show();
                                         progressBar.setVisibility(View.GONE);
+
+                                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
                                     }else{
                                         Toast.makeText(Register.this, "Failed to register!1", Toast.LENGTH_LONG).show();
                                         progressBar.setVisibility(View.GONE);

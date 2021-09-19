@@ -12,7 +12,7 @@
         android:icon="@drawable/ic_map"/>
 
     <item
-        android:id="@+id/profileFrag"
+        android:id="@+id/loginFrag"
         android:title="Profile"
         android:icon="@drawable/ic_profile"/>
 </menu>
