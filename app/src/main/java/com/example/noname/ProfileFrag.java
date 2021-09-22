@@ -47,8 +47,6 @@ public class ProfileFrag extends Fragment {
 
     private FirebaseAuth mAuth;
     private FirebaseUser user;
-    private DatabaseReference reference;
-
 
     private String userID;
     private Button logoutBtn;
@@ -112,10 +110,8 @@ public class ProfileFrag extends Fragment {
 
         // TODO: Change to Firestore
         user = FirebaseAuth.getInstance().getCurrentUser();
-        reference = FirebaseDatabase.getInstance().getReference("Users");
         userID = user.getUid();
-
-
+        
 
         final TextView usernameTextView = (TextView) getView().findViewById(R.id.usernameText);
 
