@@ -32,8 +32,8 @@ public class MainActivity extends AppCompatActivity {
                     Fragment selectedFragment = null;
 
                     switch (item.getItemId()){
-                        case R.id.ProfileFrag:
-                            selectedFragment = new ProfileFrag();
+                        case R.id.ProfileFrag:                            selectedFragment = new ProfileFrag();
+
                             break;
                         case R.id.shopLstFrag:
                             selectedFragment = new ShopLstFrag();
