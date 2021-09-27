@@ -54,7 +54,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginHorizontal="60dp"
         android:layout_marginTop="40dp"
-        android:background="@drawable/login_btn_style"
+        android:background="@drawable/normal_btn_style"
         android:text="Login"
         android:textSize="18sp" />
 

@@ -1,18 +1,26 @@
 package com.example.noname;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -24,6 +32,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.single.PermissionListener;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -41,9 +55,8 @@ public class MapFrag extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    SupportMapFragment supportMapFragment;
-    FusedLocationProviderClient client;
-
+    private Button testBtn;
+    private final float DEFAULT_ZOOM = 18;
 
     public MapFrag() {
         // Required empty public constructor
@@ -80,82 +93,122 @@ public class MapFrag extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        // Inflate the layout for this fragment
+//        View view = inflater.inflate(R.layout.fragment_map, container, false);
+//        SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager()
+//                .findFragmentById(R.id.google_map);
+//        // Async map
+//        supportMapFragment.getMapAsync(new OnMapReadyCallback() {
+//            @Override
+//            public void onMapReady(@NonNull GoogleMap googleMap) {
+//                // When map is loaded
+//                googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+//                    @Override
+//                    public void onMapClick(@NonNull LatLng latLng) {
+//                        // When click on map
+//                        // Initialize marker option
+//                        MarkerOptions markerOptions = new MarkerOptions();
+//
+//                        markerOptions.position(latLng);
+//
+//                        markerOptions.title(latLng.latitude + ":" + latLng.longitude);
+//                        //remove all marker
+//                        googleMap.clear();
+//                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM));
+//                        // add marker on map
+//                        googleMap.addMarker(markerOptions);
+//                    }
+//                });
+//            }
+//        });
+//        return view;
         return inflater.inflate(R.layout.fragment_map, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        supportMapFragment = (SupportMapFragment) getFragmentManager()
-                .findFragmentById(R.id.google_map);
-
-        // Initialize fused location
-        client = LocationServices.getFusedLocationProviderClient(getActivity());
-
-        // check permission
-        if (ActivityCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-            // When permission grated
-            // Call method
-            getCurrentLocation();
-        }else{
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION},44);
-        }
-    }
-
-    private void getCurrentLocation() {
-        // Initialize task location
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Task<Location> task = client.getLastLocation();
-            task.addOnSuccessListener(new OnSuccessListener<Location>() {
-                @Override
-                public void onSuccess(Location location) {
-                    // When success
-                    if(location != null){
-                        // Sync map
-                        supportMapFragment.getMapAsync(new OnMapReadyCallback() {
-                            @Override
-                            public void onMapReady(@NonNull GoogleMap googleMap) {
-                                // Initialize lat lng
-                                com.google.android.gms.maps.model.LatLng latLng = new LatLng(location.getLatitude(),
-                                        location.getLongitude());
-                                // Create marker options
-                                MarkerOptions options = new MarkerOptions().position(latLng)
-                                        .title("I am there");
-
-                                //Zoom map
-                                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
-                                // Add marker on map
-                                googleMap.addMarker(options);
-
-                            }
-                        });
-                    }
-                }
-            });
-        }else {
-            return;
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 44){
-            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                // When permission granted
-                // get current location again
-                getCurrentLocation();
+        testBtn = (Button) getView().findViewById(R.id.test_btn);
+        testBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), MapView.class));
             }
-        }
+        });
     }
+
+    //    @Override
+//    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+//        super.onViewCreated(view, savedInstanceState);
+//        testBtn = (Button) getView().findViewById(R.id.test_btn);
+//        testBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                getChildFragmentManager().beginTransaction()
+//                        .replace(R.id.fragment_container, new MapView() ).commit();
+//            }
+//        });
+
+//        // check permission
+//        if (ContextCompat.checkSelfPermission(getContext(),
+//                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+//            // When permission grated
+//            getFragmentManager().beginTransaction()
+//                    .replace(R.id.fragment_container, new MapView() ).commit();
+//            return;
+//        }else{
+//
+//            // here to request the missing permissions, and then overriding
+//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+//            //                                          int[] grantResults)
+//            // to handle the case where the user grants the permission. See the documentation
+//            // for ActivityCompat#requestPermissions for more details.
+//
+//            //ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.
+//            // ACCESS_FINE_LOCATION},66);
+//
+//            testBtn.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    getChildFragmentManager().beginTransaction()
+//                            .replace(R.id.fragment_container, new MapView() ).commit();
+////                    Dexter.withActivity(getActivity())
+////                            .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+////                            .withListener(new PermissionListener() {
+////                                @Override
+////                                public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
+////                                    getFragmentManager().beginTransaction()
+////                                            .replace(R.id.fragment_container, new MapView() ).commit();
+////                                }
+////
+////                                @Override
+////                                public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
+////                                    if (permissionDeniedResponse.isPermanentlyDenied()){
+////                                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+////                                        builder.setTitle("Permission Denied")
+////                                                .setMessage("Permission to access device location is permanently denied.")
+////                                                .setNegativeButton("Cancel", null)
+////                                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+////                                                    @Override
+////                                                    public void onClick(DialogInterface dialogInterface, int i) {
+////                                                        Intent intent = new Intent();
+////                                                        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+////                                                        intent.setData(Uri.fromParts("package", getActivity().getPackageName(),null));
+////                                                    }
+////                                                })
+////                                                .show();
+////                                    }else {
+////                                        Toast.makeText(getActivity(), "Permission Denied", Toast.LENGTH_LONG).show();
+////                                    }
+////                                }
+////
+////                                @Override
+////                                public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
+////                                    permissionToken.continuePermissionRequest();
+////                                }
+////                            }).check();
+//                }
+//            });
+
+
 }
