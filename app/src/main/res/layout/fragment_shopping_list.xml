@@ -6,11 +6,31 @@
     android:layout_height="match_parent"
     tools:context=".ShopLstFrag">
 
+    <TextView
+        android:id="@+id/head"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#FCEDEA"
+        android:gravity="center"
+        android:text="List"
+        android:textSize="20dp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="56dp"
+        android:src="@drawable/ic_list_head"
+        android:gravity="center"
+        android:layout_marginRight="16dp"
+        android:layout_alignParentRight="true"
+        />
 
     <ListView
-        android:id="@+id/listview"
+        android:id="@+id/list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_below="@+id/head" />
+    
 
 
 
