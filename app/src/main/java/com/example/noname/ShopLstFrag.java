@@ -1,5 +1,6 @@
 package com.example.noname;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -8,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.AbsoluteSizeSpan;
+import android.text.style.RelativeSizeSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +22,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -44,8 +48,8 @@ public class ShopLstFrag extends Fragment {
 
     private View view;
     private ListView list;
-    private ImageView checkbox, atTop;
-    private TextView listTitle, dueDate;
+    private ImageView addItem;
+    private String userID;
 
     public ShopLstFrag() {
         // Required empty public constructor
@@ -66,6 +70,17 @@ public class ShopLstFrag extends Fragment {
     }
 
     @Override
+    public void  onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        ImageView addButton = getActivity().findViewById(R.id.addItem);
+        addButton.setOnClickListener(v -> {
+//            getSupportFragmentManager().beginTransaction()
+//                    .replace(R.id.fragment_container, new ProfileFrag()).commit();
+        });
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
@@ -75,44 +90,47 @@ public class ShopLstFrag extends Fragment {
                              Bundle savedInstanceState) {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
+        userID = mAuth.getCurrentUser().getUid();
 
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_shopping_list, container, false);
         list = view.findViewById(R.id.list);
+        list.setEnabled(false);
+
+
+        addItem = view.findViewById(R.id.addItem);
 
 
         db.collection("list")
+                .whereEqualTo("userID", userID)
+                .orderBy("dueDate")
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        List<Map<String,Object>> allitems = new ArrayList<>();
+                        List<Map<String,Object>> favoriteItems = new ArrayList<>();
+                        List<Map<String,Object>> normalItems = new ArrayList<>();
 
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Map<String,Object> map = new HashMap<>();
                             Map<String, Object> data = document.getData();
-                            DateFormat sdf = new SimpleDateFormat("MM dd, yyyy");
+                            SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy");
 
-                            if((boolean) data.get("top")) {
+                            map.put("title", data.get("title").toString());
+                            map.put("due", sdf.format(((Timestamp) data.get("dueDate")).toDate()));
+
+                            if((boolean) data.get("favorite")) {
                                 map.put("favorite", R.drawable.ic_list_heart_full);
+                                favoriteItems.add(map);
                             } else {
                                 map.put("favorite", R.drawable.ic_list_heart_empty);
+                                normalItems.add(map);
                             }
-
-                            String title = data.get("title").toString();
-                            String dueDate = data.get("dueDate").toString();
-                            SpannableString formatString = new SpannableString(title + "\n"
-                                    + dueDate);
-                            formatString.setSpan(new AbsoluteSizeSpan(20),
-                                    0, title.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                            formatString.setSpan(new AbsoluteSizeSpan(15),
-                                    title.length()+1, title.length()+dueDate.length()+1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-                            map.put("title", formatString);
-                            allitems.add(map);
                         }
-                        SimpleAdapter items = new SimpleAdapter(getActivity().getApplicationContext(), allitems, R.layout.fragment_shopping_list_item,
-                                new String[]{"favorite", "title"},
-                                new int[]{R.id.favorite, R.id.listTitle});
+
+                        favoriteItems.addAll(normalItems);
+                        SimpleAdapter items = new SimpleAdapter(getActivity().getApplicationContext(), favoriteItems, R.layout.fragment_shopping_list_item,
+                                new String[]{"favorite", "title", "due"},
+                                new int[]{R.id.favorite, R.id.title, R.id.due});
                         list.setAdapter(items);
                     } else {
 

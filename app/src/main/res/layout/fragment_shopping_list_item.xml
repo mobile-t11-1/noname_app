@@ -14,14 +14,30 @@
             android:layout_marginLeft="16dp"
             android:src="@drawable/ic_list_heart_empty" />
 
-        <TextView
-            android:id="@+id/listTitle"
-            android:layout_width="172dp"
-            android:layout_height="35dp"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="16dp"
+        <LinearLayout
+            android:layout_width="200dp"
+            android:layout_height="70dp"
+            android:orientation="vertical"
             android:layout_toRightOf="@id/favorite"
-            android:text="Shopping List x\nMonth Day, Year" />
+            android:layout_marginLeft="16dp"
+            android:gravity="center">
+
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="200dp"
+                    android:layout_height="25dp"
+                    android:text="Shopping List"
+                    android:textSize="18dp"
+                    android:textStyle="bold"/>
+                <TextView
+                    android:id="@+id/due"
+                    android:layout_width="200dp"
+                    android:layout_height="20dp"
+                    android:text="Month Day, Year"
+                    android:textSize="13dp"/>
+
+
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/enter"
