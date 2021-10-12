@@ -4,26 +4,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FEF9F7 "
+    android:background="@color/primary_2"
     tools:context=".Login">
 
-    <ImageView
-        android:id="@+id/logoImg"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:layout_alignParentTop="true"
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
-        android:src="@drawable/logo" />
+        android:text="Efficiency+"
+        android:layout_marginTop="120dp"
+        android:textSize="60dp"
+        android:textStyle="bold"/>
+
+
 
     <EditText
         android:id="@+id/textEmailAddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/logoImg"
+        android:layout_below="@+id/title"
         android:layout_centerHorizontal="true"
         android:layout_marginHorizontal="60dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="60dp"
         android:background="@drawable/text_input_style"
         android:ems="10"
         android:hint="Email Address"
@@ -54,9 +57,9 @@
         android:layout_centerHorizontal="true"
         android:layout_marginHorizontal="60dp"
         android:layout_marginTop="40dp"
-        android:background="@drawable/normal_btn_style"
         android:text="Login"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:background="@drawable/login_btn_style"/>
 
     <TextView
         android:id="@+id/forget_pw"
@@ -91,6 +94,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="60dp"
         android:visibility="gone" />
+
 
 
 </RelativeLayout>

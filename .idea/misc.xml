@@ -3,6 +3,19 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/87220/AndroidStudioProjects/noname_app/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.22083333333333333" />
+        <entry key="..\:/Users/87220/AndroidStudioProjects/noname_app/app/src/main/res/drawable/ic_launcher_background.xml" value="0.22083333333333333" />
+        <entry key="..\:/Users/87220/AndroidStudioProjects/noname_app/app/src/main/res/drawable/ic_list.xml" value="0.22083333333333333" />
+        <entry key="..\:/Users/87220/AndroidStudioProjects/noname_app/app/src/main/res/drawable/ic_locate.xml" value="0.22083333333333333" />
+        <entry key="..\:/Users/87220/AndroidStudioProjects/noname_app/app/src/main/res/drawable/ic_map.xml" value="0.22083333333333333" />
+        <entry key="..\:/Users/87220/AndroidStudioProjects/noname_app/app/src/main/res/drawable/ic_profile.xml" value="0.22083333333333333" />
+        <entry key="..\:/Users/87220/AndroidStudioProjects/noname_app/app/src/main/res/drawable/login_btn_style.xml" value="0.22083333333333333" />
+        <entry key="..\:/Users/87220/AndroidStudioProjects/noname_app/app/src/main/res/drawable/normal_btn_style.xml" value="0.22083333333333333" />
+        <entry key="..\:/Users/87220/AndroidStudioProjects/noname_app/app/src/main/res/layout/activity_login.xml" value="0.2046875" />
+        <entry key="..\:/Users/87220/AndroidStudioProjects/noname_app/app/src/main/res/layout/activity_main.xml" value="0.2046875" />
+        <entry key="..\:/Users/87220/AndroidStudioProjects/noname_app/app/src/main/res/layout/activity_map_view.xml" value="0.2046875" />
+        <entry key="..\:/Users/87220/AndroidStudioProjects/noname_app/app/src/main/res/layout/activity_map_view_test.xml" value="0.2046875" />
+        <entry key="..\:/Users/87220/AndroidStudioProjects/noname_app/app/src/main/res/menu/bottom_menu.xml" value="0.2046875" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.22327898550724637" />
         <entry key="app/src/main/res/layout/fragment_map.xml" value="0.22327898550724637" />
         <entry key="app/src/main/res/layout/fragment_shopping_list.xml" value="0.22327898550724637" />
