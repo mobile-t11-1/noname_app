@@ -47,13 +47,8 @@
       android:layout_alignParentRight="true"
       android:layout_alignParentBottom="true"
       android:layout_marginRight="10dp"
-<<<<<<< HEAD
-      android:layout_marginBottom="90dp"
-      android:clickable="true"
-      app:fabCustomSize="25dp" />
-=======
       app:fabCustomSize="25dp"
       android:clickable="true" />
->>>>>>> 1c5da757d0e007a8f09a1a3d87703f49b5c549b8
+
 
   </RelativeLayout>

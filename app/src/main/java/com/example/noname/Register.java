@@ -54,8 +54,8 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
         registerBtn = (Button) findViewById(R.id.register_btn);
         registerBtn.setOnClickListener(this);
 
-        gobackBtn = (ImageButton) findViewById(R.id.goback_btn);
-        gobackBtn.setOnClickListener(this);
+//        gobackBtn = (ImageButton) findViewById(R.id.goback_btn);
+//        gobackBtn.setOnClickListener(this);
 
     }
 
@@ -65,9 +65,9 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
             case R.id.register_btn:
                 registerUser();
                 break;
-            case R.id.goback_btn:
-                startActivity(new Intent(Register.this, Login.class));
-                break;
+//            case R.id.goback_btn:
+//                startActivity(new Intent(Register.this, Login.class));
+//                break;
         }
     }
 
