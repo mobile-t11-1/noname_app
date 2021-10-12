@@ -1,6 +1,10 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
+<<<<<<< HEAD
     <style name="Theme.Noname" parent="Theme.AppCompat.DayNight.NoActionBar">
+=======
+        <style name="Theme.Noname" parent="Theme.AppCompat.DayNight.NoActionBar">
+>>>>>>> 1c5da757d0e007a8f09a1a3d87703f49b5c549b8
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/primary_6</item>
         <item name="colorPrimaryVariant">@color/primary_3</item>
