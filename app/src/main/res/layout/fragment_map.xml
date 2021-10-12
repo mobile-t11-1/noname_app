@@ -21,19 +21,20 @@
         android:layout_centerHorizontal="true"
         android:layout_marginHorizontal="60dp"
         android:background="@drawable/normal_btn_style"
-        android:text="Find Nearby Shops"
+        android:text="Find Nearby Library"
         android:textSize="16sp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/locate_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="90dp"
+        android:layout_alignParentBottom="true"
         android:layout_marginRight="10dp"
-        app:fabSize="mini"
+        android:layout_marginBottom="90dp"
         android:clickable="true"
-        android:src="@drawable/ic_locate" />
+        android:src="@drawable/ic_locate"
+        app:backgroundTint="#FCEDEA"
+        app:fabSize="mini" />
 
 </RelativeLayout>
