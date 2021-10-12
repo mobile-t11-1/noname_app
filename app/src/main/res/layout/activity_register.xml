@@ -96,7 +96,8 @@
         android:layout_marginTop="40dp"
         android:background="@drawable/normal_btn_style"
         android:text="Register"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        app:backgroundTint="#F3D8D8" />
 
     <ProgressBar
         android:id="@+id/register_progressBar"

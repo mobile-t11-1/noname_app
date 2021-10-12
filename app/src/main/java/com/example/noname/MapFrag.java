@@ -2,14 +2,17 @@ package com.example.noname;
 
 import android.annotation.SuppressLint;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.renderscript.ScriptGroup;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -31,17 +34,33 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
+
 
 public class MapFrag extends Fragment{
 
     private GoogleMap mMap;
     FloatingActionButton locatedFAB;
+    Button findBtn;
     //private FusedLocationProviderClient mLocationClient;
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private final float DEFAULT_ZOOM = 15;
     //SupportMapFragment supportMapFragment;
     private Location mLastKnownLocation;
     private LocationCallback locationCallback;
+    String placeName = "library";
+    Integer radius = 5000;
+
 
     @SuppressLint("MissingPermission")
     @Override
@@ -105,6 +124,27 @@ public class MapFrag extends Fragment{
                 getDeviceLocation();
             }
         });
+
+        findBtn = (Button) view.findViewById(R.id.map_search_btn);
+        findBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Init url
+                String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json" +
+                        "?location=" + mLastKnownLocation.getLatitude() + "," + mLastKnownLocation.getLongitude() +
+                        "&radius=" + radius + // nearby radius
+                        "&type=" + placeName +
+                        "&sensor=true" + //Sensor
+                        "&key=" + getResources().getString(R.string.google_map_key);
+                // Execute Place task
+                System.out.println(url);
+                new PlaceTask().execute(url);
+            }
+        });
+
+
+
+
         return view;
     }
 
@@ -143,5 +183,98 @@ public class MapFrag extends Fragment{
                         }
                     }
                 });
+    }
+
+    private class PlaceTask extends AsyncTask<String,Integer,String> {
+        @Override
+        protected String doInBackground(String... strings) {
+            String data = null;
+            // Init data
+            try {
+                data = downloadUrl(strings[0]);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return data;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            //Execute parser task
+            new ParserTask().execute(s);
+        }
+    }
+
+    private String downloadUrl(String string) throws IOException {
+        //Initialize url
+        URL url = new URL(string);
+        //Init connection
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        //Connect connection
+        connection.connect();
+        //Initialize input stream
+        InputStream stream = connection.getInputStream();
+        // Initialize buffer reader
+        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+        //Initialze string builder
+        StringBuilder builder = new StringBuilder();
+        //Initialize string variable
+        String line = "";
+
+        while ((line = reader.readLine()) != null){
+            // Append line
+            builder.append(line);
+        }
+        //Get appended data
+        String data = builder.toString();
+        //close
+        reader.close();
+
+        return data;
+    }
+
+    private class ParserTask extends AsyncTask<String,Integer, List<HashMap<String, String>>>{
+        @Override
+        protected List<HashMap<String, String>> doInBackground(String... strings) {
+            // Create json parser class
+            JsonParser jsonParser = new JsonParser();
+            //Initialize hash map list
+            List<HashMap<String,String>> mapList = null;
+            //Initialize json object
+            try {
+                JSONObject object = new JSONObject(strings[0]);
+                //Parse json object
+                mapList = jsonParser.parseResult(object);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            // Return map list
+            return mapList;
+        }
+
+        @Override
+        protected void onPostExecute(List<HashMap<String, String>> hashMaps) {
+            //Clear map
+            mMap.clear();
+
+            for(int i=0; i<5; i++){
+                //Initialize hash map
+                HashMap<String,String> hashMapList = hashMaps.get(i);
+                //Get latitude
+                double lat = Double.parseDouble(hashMapList.get("lat"));
+                //Get longitude
+                double lng = Double.parseDouble(hashMapList.get("lng"));
+                //Get name
+                String name = hashMapList.get("name");
+                // Concat lat and lng
+                LatLng latLng = new LatLng(lat, lng);
+                //Init marker options
+                MarkerOptions options = new MarkerOptions();
+                //Set position
+                options.position(latLng);
+                options.title(name);
+                mMap.addMarker(options);
+            }
+        }
     }
 }
