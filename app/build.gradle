@@ -62,5 +62,5 @@ dependencies {
     implementation 'com.github.mancj:MaterialSearchBar:0.8.5'
     implementation 'com.github.mancj:MaterialSearchBar:Tag'
 
-
+    implementation "androidx.cardview:cardview:1.0.0"
 }

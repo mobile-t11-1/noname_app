@@ -5,13 +5,16 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.fragment.app.Fragment;
 
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,7 +52,10 @@ public class ProfileFrag extends Fragment {
     private FirebaseUser user;
 
     private String userID;
-    private Button logoutBtn;
+    private LinearLayout logoutlayout;
+    private LinearLayout settinglayout;
+    private LinearLayout editlayout;
+
 
     private FirebaseFirestore mydb = FirebaseFirestore.getInstance();
 
@@ -99,8 +105,8 @@ public class ProfileFrag extends Fragment {
 
         mAuth = FirebaseAuth.getInstance();
 
-        logoutBtn = (Button) getView().findViewById(R.id.logout_button);
-        logoutBtn.setOnClickListener(new View.OnClickListener() {
+        logoutlayout = getView().findViewById(R.id.logout_layout);
+        logoutlayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mAuth.signOut();
@@ -108,12 +114,33 @@ public class ProfileFrag extends Fragment {
             }
         });
 
-        // TODO: Change to Firestore
+
+
+        settinglayout = getView().findViewById(R.id.setting_layout);
+        settinglayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // TODO: Direct to the setting page
+            }
+        });
+
+
+        editlayout = getView().findViewById(R.id.edit_layout);
+        editlayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // TODO: Direct to the editting page
+            }
+        });
+
+
+
         user = FirebaseAuth.getInstance().getCurrentUser();
         userID = user.getUid();
         
 
-        final TextView usernameTextView = (TextView) getView().findViewById(R.id.usernameText);
+        final TextView usernameTextView = (TextView) getView().findViewById(R.id.username_title);
+        final TextView useremailTextview = (TextView) getView().findViewById(R.id.usernameText);
 
         // get current user's reference
 //        reference.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -145,7 +172,9 @@ public class ProfileFrag extends Fragment {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful() && !task.getResult().isEmpty()){
                             String username = task.getResult().getDocuments().get(0).get("User Name").toString();
+                            String email = task.getResult().getDocuments().get(0).get("Email").toString();
                             usernameTextView.setText(username);
+                            useremailTextview.setText(email);
                         }
 
                         else{
