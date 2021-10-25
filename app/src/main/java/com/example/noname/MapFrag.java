@@ -8,7 +8,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import android.renderscript.ScriptGroup;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,14 +50,15 @@ public class MapFrag extends Fragment{
 
     private GoogleMap mMap;
     FloatingActionButton locatedFAB;
-    Button findBtn;
+    Button libFindBtn;
+    Button cafeFindBtn;
+    Button parkFindBtn;
     //private FusedLocationProviderClient mLocationClient;
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private final float DEFAULT_ZOOM = 15;
     //SupportMapFragment supportMapFragment;
     private Location mLastKnownLocation;
     private LocationCallback locationCallback;
-    String placeName = "library";
     Integer radius = 5000;
 
 
@@ -125,28 +125,47 @@ public class MapFrag extends Fragment{
             }
         });
 
-        findBtn = (Button) view.findViewById(R.id.map_search_btn);
-        findBtn.setOnClickListener(new View.OnClickListener() {
+        libFindBtn = (Button) view.findViewById(R.id.lib_search_btn);
+        libFindBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Init url
-                String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json" +
-                        "?location=" + mLastKnownLocation.getLatitude() + "," + mLastKnownLocation.getLongitude() +
-                        "&radius=" + radius + // nearby radius
-                        "&type=" + placeName +
-                        "&sensor=true" + //Sensor
-                        "&key=" + getResources().getString(R.string.google_map_key);
-                // Execute Place task
-                System.out.println(url);
-                new PlaceTask().execute(url);
+                findPlace("library");
             }
         });
 
+        cafeFindBtn = (Button) view.findViewById(R.id.cafe_search_btn);
+        cafeFindBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                findPlace("cafe");
+            }
+        });
 
-
+        parkFindBtn = (Button) view.findViewById(R.id.park_search_btn);
+        parkFindBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                findPlace("park");
+            }
+        });
 
         return view;
     }
+
+    private void findPlace(String placeName){
+        // Init url
+        String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json" +
+                "?location=" + mLastKnownLocation.getLatitude() + "," + mLastKnownLocation.getLongitude() +
+                "&radius=" + radius + // nearby radius
+                "&type=" + placeName +
+                "&sensor=true" + //Sensor
+                "&key=" + getResources().getString(R.string.google_map_key);
+        // Execute Place task
+        System.out.println(url);
+        new PlaceTask().execute(url);
+    }
+
+
 
     @SuppressLint("MissingPermission")
     private void getDeviceLocation() {
