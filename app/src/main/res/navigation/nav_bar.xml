@@ -20,4 +20,14 @@
         android:name="com.example.noname.ProfileFrag"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/pomoFrag"
+        android:name="com.example.noname.PomoFrag"
+        android:label="fragment_pomo"
+        tools:layout="@layout/fragment_pomo" />
+    <fragment
+        android:id="@+id/leaderBFrag"
+        android:name="com.example.noname.LeaderBFrag"
+        android:label="fragment_leader_b"
+        tools:layout="@layout/fragment_leader_b" />
 </navigation>

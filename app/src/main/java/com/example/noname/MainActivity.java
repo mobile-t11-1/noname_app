@@ -41,6 +41,12 @@ public class MainActivity extends AppCompatActivity {
                         case R.id.mapInfoFrag:
                             selectedFragment = new MapInfoFr();
                             break;
+                        case R.id.pomoFrag:
+                            selectedFragment = new PomoFrag();
+                            break;
+                        case R.id.leaderBFrag:
+                            selectedFragment = new LeaderBFrag();
+                            break;
 
                     }
 

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/primary_2"
+    tools:context=".Welcome">
+
+    <TextView
+        android:id="@+id/wel_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:textColor="@color/black"
+        android:text="Welcome\nto\nEfficiency+"
+        android:lineSpacingExtra="10dp"
+        android:paddingLeft="10dp"
+        android:inputType="textMultiLine"
+        android:layout_marginTop="30dp"
+        android:textSize="72dp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/wel_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/wel_title"
+        android:layout_gravity="center"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="20dp"
+        android:inputType="textMultiLine"
+        android:lineSpacingExtra="10dp"
+        android:paddingLeft="10dp"
+        android:text="A place for you to\nplan your to-do lists,\ndiscover places for studying,\nstay productive,\nand more!"
+        android:textSize="24dp" />
+
+    <Button
+        android:id="@+id/welcome_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/wel_text"
+        android:layout_centerHorizontal="true"
+        android:layout_marginHorizontal="60dp"
+        android:layout_marginTop="80dp"
+        android:background="@drawable/login_btn_style"
+        android:text="Continue"
+        android:textSize="18sp" />
+
+
+</RelativeLayout>
