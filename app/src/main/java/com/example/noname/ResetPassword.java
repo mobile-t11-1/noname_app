@@ -24,7 +24,6 @@ public class ResetPassword extends AppCompatActivity implements View.OnClickList
 
     private TextView editTextEmail;
     private Button resetPasswordBtn;
-    private ImageButton gobackBtn;
     private ProgressBar progressBar;
 
     @Override
@@ -38,9 +37,6 @@ public class ResetPassword extends AppCompatActivity implements View.OnClickList
 
         progressBar = (ProgressBar) findViewById(R.id.reset_password_progressBar);
 
-        gobackBtn = (ImageButton) findViewById(R.id.goback_btn_reset);
-        gobackBtn.setOnClickListener(this);
-
         resetPasswordBtn = (Button) findViewById(R.id.reset_password_btn);
         resetPasswordBtn.setOnClickListener(this);
 
@@ -48,13 +44,8 @@ public class ResetPassword extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.reset_password_btn:
-                resetPassword();
-                break;
-            case R.id.goback_btn_reset:
-                startActivity(new Intent(ResetPassword.this, Login.class));
-                break;
+        if (view.getId() == R.id.reset_password_btn) {
+            resetPassword();
         }
     }
 
