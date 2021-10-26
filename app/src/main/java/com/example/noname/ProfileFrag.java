@@ -1,6 +1,7 @@
 package com.example.noname;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,12 +15,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -30,6 +33,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
+
+import io.grpc.Context;
 
 
 /**
@@ -48,16 +56,18 @@ public class ProfileFrag extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private FirebaseAuth mAuth;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseUser user;
 
     private String userID;
     private LinearLayout logoutlayout;
     private LinearLayout settinglayout;
     private LinearLayout editlayout;
+    private ImageView profile_avatar;
 
 
     private FirebaseFirestore mydb = FirebaseFirestore.getInstance();
+    private StorageReference storage = FirebaseStorage.getInstance().getReference();
 
 
     public ProfileFrag() {
@@ -96,14 +106,24 @@ public class ProfileFrag extends Fragment {
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false);
+        View view = inflater.inflate(R.layout.fragment_profile, container, false);
+
+        profile_avatar = view.findViewById(R.id.profile_avatar);
+        StorageReference profileavatar = storage.child("users/" + mAuth.getCurrentUser().getUid() + "/avatar.jpg");
+        profileavatar.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Picasso.get().load(uri).into(profile_avatar);
+            }
+        });
+
+        return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mAuth = FirebaseAuth.getInstance();
 
         logoutlayout = getView().findViewById(R.id.logout_layout);
         logoutlayout.setOnClickListener(new View.OnClickListener() {
@@ -130,6 +150,7 @@ public class ProfileFrag extends Fragment {
             @Override
             public void onClick(View view) {
                 // TODO: Direct to the editting page
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new EditFrag()).commit();
             }
         });
 

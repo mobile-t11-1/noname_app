@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".EditFrag">
+
+    <LinearLayout
+        android:id="@+id/edit_avatar_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="30dp"
+        android:paddingHorizontal="60dp"
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            app:cardCornerRadius="200dp"
+            app:cardBackgroundColor="@color/quantum_grey">
+            <ImageView
+                android:id="@+id/edit_avatar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/defaultavater"/>
+        </androidx.cardview.widget.CardView>
+
+        <Button
+            android:id="@+id/edit_avatar_btn"
+            android:layout_width="50dp"
+            android:layout_height="30dp"
+            android:text="Edit"
+            android:background="@drawable/login_btn_style"
+            android:layout_gravity="center"
+            android:layout_marginTop="-40dp"
+            android:textAllCaps="false"/>
+    </LinearLayout>
+
+
+    <EditText
+        android:id="@+id/edit_username"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:layout_below="@id/edit_avatar_layout"
+        android:background="@drawable/edit_profile_input"
+        android:hint="Username"
+        android:inputType="text"
+        android:padding="10dp"
+        android:textSize="18sp" />
+
+    <EditText
+        android:id="@+id/edit_oldpassword"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:layout_below="@id/edit_username"
+        android:background="@drawable/edit_profile_input"
+        android:hint="Old Password"
+        android:inputType="textPassword"
+        android:padding="10dp"
+        android:textSize="18sp" />
+
+    <EditText
+        android:id="@+id/edit_newpassword"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:layout_below="@id/edit_oldpassword"
+        android:background="@drawable/edit_profile_input"
+        android:hint="New Password"
+        android:inputType="textPassword"
+        android:padding="10dp"
+        android:textSize="18sp" />
+
+    <EditText
+        android:id="@+id/edit_confirmpassword"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:layout_below="@id/edit_newpassword"
+        android:background="@drawable/edit_profile_input"
+        android:hint="Confirm the Password"
+        android:inputType="textPassword"
+        android:padding="10dp"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/edit_submit_btn"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edit_confirmpassword"
+        android:background="@drawable/login_btn_style"
+        android:text="Submit Changes"
+        android:textSize="18dp"
+        android:paddingHorizontal="20dp"
+        android:textAllCaps="false"
+        android:layout_marginTop="30dp"
+        android:layout_centerHorizontal="true"/>
+
+    <Button
+        android:id="@+id/edit_cancel_btn"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edit_submit_btn"
+        android:background="@drawable/login_btn_style"
+        android:text="Cancel"
+        android:textSize="18dp"
+        android:paddingHorizontal="20dp"
+        android:textAllCaps="false"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"/>
+
+</RelativeLayout>
