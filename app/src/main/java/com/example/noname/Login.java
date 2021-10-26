@@ -64,6 +64,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
             case R.id.forget_pw:
                 startActivity(new Intent(Login.this, ResetPassword.class));
                 break;
+
         }
     }
 

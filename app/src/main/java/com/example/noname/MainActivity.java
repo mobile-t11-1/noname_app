@@ -19,6 +19,8 @@ public class MainActivity extends AppCompatActivity {
         // navigation bar
         BottomNavigationView bottomNavigationView = findViewById(R.id.nav_bar);
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
+        bottomNavigationView.getMenu().findItem(R.id.profileFrag).setChecked(true);
+
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, new ProfileFrag()).commit();
