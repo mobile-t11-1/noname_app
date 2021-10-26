@@ -33,7 +33,7 @@
         android:layout_marginHorizontal="60dp"
         android:layout_marginTop="40dp"
         android:background="@drawable/normal_btn_style"
-        android:text="Cafe"
+        android:text="Café"
         android:textSize="12dp" />
 
     <Button

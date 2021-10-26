@@ -127,8 +127,12 @@ public class MapFrag extends Fragment{
 
         libFindBtn = (Button) view.findViewById(R.id.lib_search_btn);
         libFindBtn.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("UseCompatLoadingForDrawables")
             @Override
             public void onClick(View view) {
+                libFindBtn.setBackground(getResources().getDrawable(R.drawable.pressed_btn_style));
+                cafeFindBtn.setBackground(getResources().getDrawable(R.drawable.normal_btn_style));
+                parkFindBtn.setBackground(getResources().getDrawable(R.drawable.normal_btn_style));
                 findPlace("library");
             }
         });
@@ -137,6 +141,9 @@ public class MapFrag extends Fragment{
         cafeFindBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                cafeFindBtn.setBackground(getResources().getDrawable(R.drawable.pressed_btn_style));
+                libFindBtn.setBackground(getResources().getDrawable(R.drawable.normal_btn_style));
+                parkFindBtn.setBackground(getResources().getDrawable(R.drawable.normal_btn_style));
                 findPlace("cafe");
             }
         });
@@ -145,6 +152,9 @@ public class MapFrag extends Fragment{
         parkFindBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                parkFindBtn.setBackground(getResources().getDrawable(R.drawable.pressed_btn_style));
+                libFindBtn.setBackground(getResources().getDrawable(R.drawable.normal_btn_style));
+                cafeFindBtn.setBackground(getResources().getDrawable(R.drawable.normal_btn_style));
                 findPlace("park");
             }
         });
