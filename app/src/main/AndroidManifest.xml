@@ -20,9 +20,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Noname" >
-        <activity
-            android:name=".EditProfile"
-            android:exported="true" />
+
         <activity
             android:name=".Login"
             android:exported="true" />
