@@ -1,5 +1,6 @@
 package com.example.noname;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -57,6 +58,9 @@ public class ShopLstFrag extends Fragment {
     private ListView list;
     private ImageView addItem;
     private String userID;
+
+    // A list of items to display
+    private List<Map<String,Object>> listItems;
 
     // Heart
     private SimpleAdapter items;
@@ -138,6 +142,7 @@ public class ShopLstFrag extends Fragment {
                     if (task.isSuccessful()) {
                         List<Map<String,Object>> favoriteItems = new ArrayList<>();
                         List<Map<String,Object>> normalItems = new ArrayList<>();
+                        listItems =  new ArrayList<>();
 
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Map<String,Object> map = new HashMap<>();
@@ -156,19 +161,12 @@ public class ShopLstFrag extends Fragment {
                             }
                         }
 
-                        favoriteItems.addAll(normalItems);
-                        items = new SimpleAdapter(getActivity().getApplicationContext(), favoriteItems, R.layout.fragment_shopping_list_item,
+                        listItems.addAll(favoriteItems);
+                        listItems.addAll(normalItems);
+                        //favoriteItems.addAll(normalItems);
+                        items = new ListAdapter(getActivity().getApplicationContext(), listItems, R.layout.fragment_shopping_list_item,
                                 new String[]{"favorite", "title", "due"},
-                                new int[]{R.id.favorite, R.id.title, R.id.due}){
-                            @Override
-                            public View getView(int position, View convertView, ViewGroup parent) {
-                                View view = super.getView(position, convertView, parent);
-                                view.findViewById(R.id.favorite).setTag(position);
-                                view.findViewById(R.id.title).setTag(position);
-                                view.findViewById(R.id.due).setTag(position);
-                                return view;
-                            }
-                        };
+                                new int[]{R.id.favorite, R.id.title, R.id.due});
                         firestoreCallback.onCallback(items);
                     } else {
 
@@ -180,5 +178,39 @@ public class ShopLstFrag extends Fragment {
         void onCallback(SimpleAdapter items);
     }
 
+    public class ListAdapter extends SimpleAdapter {
+        public ListAdapter(Context context, List<? extends Map<String, ?>> data, int resource, String[] from, int[] to) {
+            super(context, data, resource, from, to);
+
+        }
+
+        //This function is automatically called when the list item view is ready to be display or about to be display.
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View view = super.getView(position, convertView, parent);
+            ImageView imageView=(ImageView) view.findViewById(R.id.favorite);
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(getActivity().getApplicationContext(), listItems.get(position).get("favorite").toString(), Toast.LENGTH_SHORT).show();
+                    if((int) listItems.get(position).get("favorite") == R.drawable.ic_list_heart_full){
+                        listItems.get(position).put("favorite", R.drawable.ic_list_heart_empty);
+                        notifyDataSetChanged();
+                    }else{
+                        listItems.get(position).put("favorite", R.drawable.ic_list_heart_full);
+                        notifyDataSetChanged();
+                    }
+
+                }
+            });
+            return view;
+
+        }
+
+        @Override
+        public int getCount() {
+            return super.getCount();
+        }
+    }
 
 }
