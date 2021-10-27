@@ -16,7 +16,9 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
 import android.os.Environment;
+import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,8 +27,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.canhub.cropper.CropImage;
-import com.canhub.cropper.CropImageView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -40,6 +40,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Cache;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
@@ -73,6 +74,7 @@ public class EditFrag extends Fragment {
     private EditText username, oldpassword, newpassword, confirmpassword;
     private Button avatar_btn, submit_btn, back_btn, camera_btn;
     private ImageView avatar;
+    private String currentPhotoPath;
 
 
     public EditFrag() {
@@ -104,6 +106,8 @@ public class EditFrag extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
     }
 
     @Override
@@ -364,6 +368,8 @@ public class EditFrag extends Fragment {
 //        }
 //    }
 
+
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -397,7 +403,6 @@ public class EditFrag extends Fragment {
          }
 
          if(requestCode==1001) {
-
              if (resultCode == Activity.RESULT_OK) {
                  Bitmap ava_bit = (Bitmap) data.getExtras().get("data");
                  ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -423,4 +428,5 @@ public class EditFrag extends Fragment {
          }
 
     }
+
 }
