@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ListAddFrag">
+
+
+    <RelativeLayout
+        android:id="@+id/list_add_head_layout"
+        android:layout_width="match_parent"
+        android:layout_height="56dp">
+
+        <TextView
+            android:id="@+id/list_add_head"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="#FCEDEA"
+            android:gravity="center"
+            android:text="New List"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/list_add_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:src="@drawable/ic_list_add_back" />
+
+        <ImageView
+            android:id="@+id/list_add_options"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:gravity="center"
+            android:src="@drawable/ic_list_add_options" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/list_add_head_layout"
+        android:layout_centerHorizontal="true">
+
+        <EditText
+            android:id="@+id/list_add_notes"
+            android:layout_width="350dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="30dp"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/ic_list_add_note"
+            android:ems="10"
+            android:hint="Please Enter your notes"
+            android:padding="10dp"
+            android:gravity="start"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/list_add_due"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/list_add_notes"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/ic_list_add_due"
+            android:padding="10dp"
+            android:text="Due: DD/MM/YYYY"
+            android:textSize="12sp"
+            android:textStyle="bold"/>
+
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/list_add_addItem"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_list_add_button"
+        android:gravity="center"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        />
+
+
+
+
+</RelativeLayout>

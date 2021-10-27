@@ -7,7 +7,7 @@
     tools:context=".ShopLstFrag">
 
     <TextView
-        android:id="@+id/head"
+        android:id="@+id/list_head"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="#FCEDEA"
@@ -16,25 +16,16 @@
         android:textSize="20dp"
         android:textStyle="bold" />
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="56dp"
-        android:src="@drawable/ic_list_head"
-        android:gravity="center"
-        android:layout_marginRight="16dp"
-        android:layout_alignParentRight="true"
-        />
-
     <ListView
-        android:id="@+id/list"
+        android:id="@+id/list_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/head"
+        android:layout_below="@+id/list_head"
         tools:listitem="@layout/fragment_shopping_list_item"
         />
 
     <ImageView
-        android:id="@+id/addItem"
+        android:id="@+id/list_main_addItem"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:src="@drawable/ic_list_add_button"

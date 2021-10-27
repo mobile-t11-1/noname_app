@@ -85,16 +85,6 @@ public class ShopLstFrag extends Fragment {
     }
 
     @Override
-    public void  onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        ImageView addButton = getActivity().findViewById(R.id.addItem);
-        addButton.setOnClickListener(v -> {
-//            getSupportFragmentManager().beginTransaction()
-//                    .replace(R.id.fragment_container, new ProfileFrag()).commit();
-        });
-    }
-
-    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
@@ -108,10 +98,16 @@ public class ShopLstFrag extends Fragment {
 
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_shopping_list, container, false);
-        list = view.findViewById(R.id.list);
+        list = view.findViewById(R.id.list_main);
 
+        // set add item page jump
+        ImageView addButton = view.findViewById(R.id.list_main_addItem);
+        addButton.setOnClickListener(v -> {
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, new ListAddFrag()).commit();
+        });
 
-        addItem = view.findViewById(R.id.addItem);
+        addItem = addButton;
 
         // get documents from fire store
         itemsRef = db.collection("list");
@@ -166,7 +162,7 @@ public class ShopLstFrag extends Fragment {
                         //favoriteItems.addAll(normalItems);
                         items = new ListAdapter(getActivity().getApplicationContext(), listItems, R.layout.fragment_shopping_list_item,
                                 new String[]{"favorite", "title", "due"},
-                                new int[]{R.id.favorite, R.id.title, R.id.due});
+                                new int[]{R.id.list_item_favorite, R.id.list_item_title, R.id.list_item_due});
                         firestoreCallback.onCallback(items);
                     } else {
 
@@ -188,7 +184,7 @@ public class ShopLstFrag extends Fragment {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             View view = super.getView(position, convertView, parent);
-            ImageView imageView=(ImageView) view.findViewById(R.id.favorite);
+            ImageView imageView=(ImageView) view.findViewById(R.id.list_item_favorite);
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

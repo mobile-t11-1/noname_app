@@ -9,7 +9,7 @@
     >
 
         <ImageView
-            android:id="@+id/favorite"
+            android:id="@+id/list_item_favorite"
             android:layout_width="18dp"
             android:layout_height="17dp"
             android:layout_centerVertical="true"
@@ -22,19 +22,19 @@
             android:layout_width="200dp"
             android:layout_height="70dp"
             android:orientation="vertical"
-            android:layout_toRightOf="@id/favorite"
+            android:layout_toRightOf="@id/list_item_favorite"
             android:layout_marginLeft="16dp"
             android:gravity="center">
 
                 <TextView
-                    android:id="@+id/title"
+                    android:id="@+id/list_item_title"
                     android:layout_width="200dp"
                     android:layout_height="25dp"
                     android:text="Shopping List"
                     android:textSize="18dp"
                     android:textStyle="bold"/>
                 <TextView
-                    android:id="@+id/due"
+                    android:id="@+id/list_item_due"
                     android:layout_width="200dp"
                     android:layout_height="20dp"
                     android:text="Month Day, Year"
@@ -44,7 +44,7 @@
         </LinearLayout>
 
         <ImageView
-            android:id="@+id/enter"
+            android:id="@+id/list_item_enter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
