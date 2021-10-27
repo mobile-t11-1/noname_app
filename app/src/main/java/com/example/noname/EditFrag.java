@@ -25,6 +25,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.canhub.cropper.CropImage;
+import com.canhub.cropper.CropImageView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -137,10 +139,12 @@ public class EditFrag extends Fragment {
                 // evoke the gallery
                 Intent evokeGalleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(evokeGalleryIntent, 1000);
+
+
             }
         });
 
-        // camera upload
+        // edit avatar using camera upload
         camera_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -417,5 +421,6 @@ public class EditFrag extends Fragment {
              }
 
          }
+
     }
 }
