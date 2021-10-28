@@ -143,8 +143,6 @@ public class EditFrag extends Fragment {
                 // evoke the gallery
                 Intent evokeGalleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(evokeGalleryIntent, 1000);
-
-
             }
         });
 
@@ -340,36 +338,6 @@ public class EditFrag extends Fragment {
     }
 
 
-    // --------added methods-----------
-
-    // this is to check if the camera permission is granted and do further operation
-//    private void checkCamPermission() {
-//        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
-//            ActivityCompat.requestPermissions(getActivity(), new String[] {Manifest.permission.CAMERA}, 101);
-//        }
-//        else {
-//            openCamera();
-//        }
-//    }
-
-
-    // --------added methods-----------
-
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        if(requestCode == 101){
-//            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-//                startActivityForResult(new Intent(MediaStore.ACTION_IMAGE_CAPTURE), 1001);
-//            }
-//            else{
-//                Toast.makeText(getContext(), "Camera permission needed to proceed", Toast.LENGTH_LONG).show();
-//            }
-//        }
-//    }
-
-
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -378,6 +346,7 @@ public class EditFrag extends Fragment {
              if (resultCode == Activity.RESULT_OK) {
 
                  Uri avatarUri = data.getData();
+
 
                  // upload to firebase
                  StorageReference avatarfile = storage.child("users/" + fAuth.getCurrentUser().getUid() + "/avatar.jpg");

@@ -21,6 +21,7 @@
         app:cardBackgroundColor="@color/quantum_grey">
         <ImageView
             android:id="@+id/profile_avatar"
+            android:scaleType="fitXY"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:src="@drawable/defaultavater"/>
