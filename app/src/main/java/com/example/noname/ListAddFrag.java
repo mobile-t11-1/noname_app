@@ -8,13 +8,12 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.DatePicker;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -61,6 +60,7 @@ public class ListAddFrag extends Fragment {
                     .replace(R.id.fragment_container,new ShopLstFrag()).commit();
         });
 
+
         TextView dueButton = view.findViewById(R.id.list_add_due);
         dueButton.setText("Due: " + myCalendar.get(Calendar.DAY_OF_MONTH) + "/" + (myCalendar.get(Calendar.MONTH)+1) + "/" + myCalendar.get(Calendar.YEAR));
 
@@ -77,6 +77,28 @@ public class ListAddFrag extends Fragment {
             new DatePickerDialog(getActivity(), date, myCalendar
                     .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                     myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+        });
+
+
+        ImageView optionButton = view.findViewById(R.id.list_add_options);
+        optionButton.setOnClickListener(v -> {
+            //Creating the instance of PopupMenu
+            PopupMenu popup = new PopupMenu(getActivity(), optionButton);
+            //Inflating the Popup using xml file
+            popup.getMenuInflater()
+                    .inflate(R.menu.list_add_option_menu, popup.getMenu());
+
+            //registering popup with OnMenuItemClickListener
+            popup.setOnMenuItemClickListener(item -> {
+                Toast.makeText(
+                        getActivity(),
+                        "You Clicked : " + item.getTitle(),
+                        Toast.LENGTH_SHORT
+                ).show();
+                return true;
+            });
+
+            popup.show(); //showing popup menu
         });
 
         // Inflate the layout for this fragment
