@@ -1,11 +1,15 @@
 package com.example.noname;
 
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import android.os.CountDownTimer;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,12 +23,14 @@ import java.util.Locale;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 import static android.content.Context.MODE_PRIVATE;
+import static android.content.Context.VIBRATOR_SERVICE;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link PomoFrag#newInstance} factory method to
  * create an instance of this fragment.
  */
+// TODO: 1.面朝下开始计时 朝上暂停计时 1.5. 做session中间的间隔 2.加时钟动画 3.页面文字
 public class PomoFrag extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
@@ -46,10 +52,12 @@ public class PomoFrag extends Fragment {
 
     private boolean mTimerRunning; //record the status of the timer
 
+    //private variables
     private int sessionID = 1; //record the current session: odd is work, even is rest
     private static final long mStartTimeInMillis = 10000; //25*60*1000 25min //set timer
     private long mTimeLeftInMillis; //remaining time
     private long mEndTime;
+    private Vibrator vibrator; // vibrate
 
     public PomoFrag() {
         // Required empty public constructor
@@ -93,6 +101,10 @@ public class PomoFrag extends Fragment {
         mButtonStartPause = view.findViewById(R.id.button_start_pause);
         mButtonReset = view.findViewById(R.id.button_reset);
 
+        //define vibrator
+        vibrator = (Vibrator) getActivity().getSystemService(VIBRATOR_SERVICE);
+
+
         //pause and resume timer
         mButtonStartPause.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,6 +143,14 @@ public class PomoFrag extends Fragment {
             public void onFinish() {
                 mTimerRunning = false;
                 sessionID += 1;
+                //let the phone vibrates
+                if(Build.VERSION.SDK_INT >= 26) {
+                    vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE));
+                    //createWaveform(long[] timings, int[] amplitudes, int repeat) to create a waveform vibrations
+                }else{
+                    vibrator.vibrate(200);
+                }
+
                 if(sessionID % 2 == 0){
                     mTimeLeftInMillis = 5000; //5 min rest 5*60*1000
                     if(sessionID == 8){
@@ -147,6 +167,7 @@ public class PomoFrag extends Fragment {
                     mButtonReset.setVisibility(View.VISIBLE);
                     return;
                 }
+                //auto start the next session
                 startTimer();
 
             }
@@ -169,6 +190,8 @@ public class PomoFrag extends Fragment {
         mTimeLeftInMillis = mStartTimeInMillis;
         updateCountDownText();
         updateWatchInterface();
+        //reset sessionID
+        sessionID = 1;
     }
 
     private void updateCountDownText() {
