@@ -12,14 +12,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
-        android:textColor="@color/black"
-        android:text="Welcome\nto\nEfficiency+"
+        android:layout_marginTop="30dp"
+        android:inputType="textMultiLine"
         android:lineSpacingExtra="10dp"
         android:paddingLeft="10dp"
-        android:inputType="textMultiLine"
-        android:layout_marginTop="30dp"
-        android:textSize="68dp"
-        android:textStyle="bold"/>
+        android:text="Welcome\nto\nEfficiency+"
+        android:textColor="@color/black"
+        android:textSize="60sp"
+        android:textStyle="bold" />
 <!--        android:textSize="72dp"-->
 
     <TextView
