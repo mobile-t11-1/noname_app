@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import android.os.CountDownTimer;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ import java.util.Locale;
 
 import static android.content.Context.MODE_PRIVATE;
 import static android.content.Context.VIBRATOR_SERVICE;
+import static androidx.constraintlayout.motion.utils.Oscillator.TAG;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -178,7 +180,8 @@ public class PomoFrag extends Fragment implements ClockDialog.DialogListener{
 
     private void openSettingDialog() {
         ClockDialog clockDialog = new ClockDialog();
-        clockDialog.show(getChildFragmentManager(),"Setting");
+        clockDialog.setTargetFragment(PomoFrag.this,1);
+        clockDialog.show(getFragmentManager(),"SettingDialog");
 
     }
 
@@ -368,7 +371,7 @@ public class PomoFrag extends Fragment implements ClockDialog.DialogListener{
 
     @Override
     public void getTimeData(String focusTime, String shortBreak, String longBreak) {
-        System.out.println("here");
+        Log.d(TAG, "getTimeData: " + focusTime + shortBreak + longBreak);
     }
 
 
