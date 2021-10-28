@@ -36,7 +36,7 @@ import static android.content.Context.VIBRATOR_SERVICE;
  * Use the {@link PomoFrag#newInstance} factory method to
  * create an instance of this fragment.
  */
-// TODO: 1.面朝下开始计时 朝上暂停计时 1.5. 做session中间的间隔 2.加时钟动画 3.页面文字
+// TODO: 1.5 做传感器关闭屏幕 1. 做session中间的间隔，震动提醒
 public class PomoFrag extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
@@ -62,7 +62,7 @@ public class PomoFrag extends Fragment {
     private boolean mFaceUp; //record the status of the screen
     //private variables
     private int sessionID = 1; //record the current session: odd is work, even is rest
-    private static final long mStartTimeInMillis = 100000; //25*60*1000 25min //set timer
+    private static final long mStartTimeInMillis = 10000; //25*60*1000 25min //set timer
     private long mTimeLeftInMillis; //remaining time
     private long mEndTime;
     private Vibrator vibrator; // vibrate
@@ -221,6 +221,14 @@ public class PomoFrag extends Fragment {
 
             }
         }.start();
+
+        //vibrate when click start
+        if(Build.VERSION.SDK_INT >= 26) {
+            vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE));
+            //createWaveform(long[] timings, int[] amplitudes, int repeat) to create a waveform vibrations
+        }else{
+            vibrator.vibrate(200);
+        }
 
         mTimerRunning = true;
         updateWatchInterface();
