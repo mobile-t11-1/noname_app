@@ -1,12 +1,24 @@
 package com.example.noname;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.Locale;
+
+import static android.content.Context.INPUT_METHOD_SERVICE;
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,6 +35,21 @@ public class PomoFrag extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    //components from xml
+    private TextView mTextViewCountDown;
+    private TextView mTextViewRest;
+    private Button mButtonStartPause;
+    private Button mButtonReset;
+
+    private CountDownTimer mCountDownTimer;
+
+    private boolean mTimerRunning; //record the status of the timer
+
+    private int sessionID = 1; //record the current session: odd is work, even is rest
+    private static final long mStartTimeInMillis = 10000; //25*60*1000 25min //set timer
+    private long mTimeLeftInMillis; //remaining time
+    private long mEndTime;
 
     public PomoFrag() {
         // Required empty public constructor
@@ -59,6 +86,178 @@ public class PomoFrag extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_pomo, container, false);
+        View view = inflater.inflate(R.layout.fragment_pomo, container, false);
+        //assignment
+        mTextViewCountDown = view.findViewById(R.id.text_view_countdown);
+        mTextViewRest = view.findViewById(R.id.text_view_rest);
+        mButtonStartPause = view.findViewById(R.id.button_start_pause);
+        mButtonReset = view.findViewById(R.id.button_reset);
+
+        //pause and resume timer
+        mButtonStartPause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mTimerRunning) {
+                    pauseTimer();
+                } else {
+                    startTimer();
+                }
+            }
+        });
+
+        //reset timer
+        mButtonReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetTimer();
+            }
+        });
+
+        return view;
     }
+
+
+    private void startTimer() {
+        mEndTime = System.currentTimeMillis() + mTimeLeftInMillis;
+
+        mCountDownTimer = new CountDownTimer(mTimeLeftInMillis, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                mTimeLeftInMillis = millisUntilFinished;
+                updateCountDownText();
+            }
+
+            @Override
+            public void onFinish() {
+                mTimerRunning = false;
+                sessionID += 1;
+                if(sessionID % 2 == 0){
+                    mTimeLeftInMillis = 5000; //5 min rest 5*60*1000
+                    if(sessionID == 8){
+                        mTimeLeftInMillis = 20*60*1000; // 20 min last rest
+                    }
+                    mTextViewRest.setVisibility(View.VISIBLE);
+                }else{
+                    mTimeLeftInMillis = mStartTimeInMillis;
+                    mTextViewRest.setVisibility(View.INVISIBLE);
+                }
+                if(sessionID == 9){ //four work sessions then quit
+                    mButtonStartPause.setText("Start");
+                    mButtonStartPause.setVisibility(View.INVISIBLE);
+                    mButtonReset.setVisibility(View.VISIBLE);
+                    return;
+                }
+                startTimer();
+
+            }
+        }.start();
+
+        mTimerRunning = true;
+        updateWatchInterface();
+    }
+
+    private void pauseTimer() {
+        mCountDownTimer.cancel();
+        mTimerRunning = false;
+        updateWatchInterface();
+        //resume button
+        mButtonStartPause.setText("Resume");
+
+    }
+
+    private void resetTimer() {
+        mTimeLeftInMillis = mStartTimeInMillis;
+        updateCountDownText();
+        updateWatchInterface();
+    }
+
+    private void updateCountDownText() {
+        int hours = (int) (mTimeLeftInMillis / 1000) / 3600;
+        int minutes = (int) ((mTimeLeftInMillis / 1000) % 3600) / 60;
+        int seconds = (int) (mTimeLeftInMillis / 1000) % 60;
+
+        String timeLeftFormatted;
+        if (hours > 0) {
+            timeLeftFormatted = String.format(Locale.getDefault(),
+                    "%d:%02d:%02d", hours, minutes, seconds);
+        } else {
+            timeLeftFormatted = String.format(Locale.getDefault(),
+                    "%02d:%02d", minutes, seconds);
+        }
+
+        mTextViewCountDown.setText(timeLeftFormatted);
+    }
+
+    private void updateWatchInterface() {
+        if (mTimerRunning) {
+            mButtonReset.setVisibility(View.INVISIBLE);
+            mButtonStartPause.setText("Pause");
+        } else {
+            //mButtonStartPause.setText("Start");
+
+            if (mTimeLeftInMillis < 1000) {
+                mButtonStartPause.setVisibility(View.INVISIBLE);
+            } else {
+                mButtonStartPause.setVisibility(View.VISIBLE);
+            }
+
+            if (mTimeLeftInMillis < mStartTimeInMillis) {
+                mButtonReset.setVisibility(View.VISIBLE);
+                mButtonStartPause.setText("Resume");
+            } else {
+                mButtonReset.setVisibility(View.INVISIBLE);
+                mButtonStartPause.setText("Start");
+            }
+        }
+    }
+
+    //To save the timer if the app closes
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        SharedPreferences prefs = getActivity().getSharedPreferences("prefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        
+        editor.putLong("millisLeft", mTimeLeftInMillis);
+        editor.putBoolean("timerRunning", mTimerRunning);
+        editor.putLong("endTime", mEndTime);
+
+        editor.apply();
+
+        if (mCountDownTimer != null) {
+            mCountDownTimer.cancel();
+        }
+    }
+
+    //To resume the timer when the app opens back up
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        SharedPreferences prefs = getActivity().getSharedPreferences("prefs", MODE_PRIVATE);
+        //possible bug
+        //mStartTimeInMillis = prefs.getLong("startTimeInMillis", 900000);
+        mTimeLeftInMillis = prefs.getLong("millisLeft", mStartTimeInMillis);
+        mTimerRunning = prefs.getBoolean("timerRunning", false);
+
+        updateCountDownText();
+        updateWatchInterface();
+
+        if (mTimerRunning) {
+            mEndTime = prefs.getLong("endTime", 0);
+            mTimeLeftInMillis = mEndTime - System.currentTimeMillis();
+
+            if (mTimeLeftInMillis < 0) {
+                mTimeLeftInMillis = 0;
+                mTimerRunning = false;
+                updateCountDownText();
+                updateWatchInterface();
+            } else {
+                startTimer();
+            }
+        }
+    }
+
+
 }
