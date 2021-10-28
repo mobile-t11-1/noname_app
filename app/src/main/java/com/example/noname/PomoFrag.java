@@ -354,7 +354,7 @@ public class PomoFrag extends Fragment {
                 (RelativeLayout.LayoutParams) mButtonStartPause.getLayoutParams();
 
         layoutParams1.addRule(RelativeLayout.BELOW, clockProgress.getId());
-        layoutParams1.setMargins(300,0,0,0);
+        layoutParams1.setMargins(310,0,0,0);
 
         mButtonStartPause.setLayoutParams(layoutParams1);
 
@@ -362,11 +362,13 @@ public class PomoFrag extends Fragment {
                 (RelativeLayout.LayoutParams) mButtonReset.getLayoutParams();
 
         layoutParams2.addRule(RelativeLayout.BELOW, clockProgress.getId());
+        layoutParams2.addRule(RelativeLayout.RIGHT_OF, mButtonStartPause.getId());
         layoutParams2.setMargins(200,0,0,0);
 
-        mButtonStartPause.setLayoutParams(layoutParams1);
+        mButtonReset.setLayoutParams(layoutParams2);
 
     }
+
 
 
 }
