@@ -40,22 +40,34 @@
         tools:visibility="visible" />
 
 
+
+
     <ImageButton
         android:id="@+id/button_start_pause"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:layout_marginLeft="184dp"
+        android:layout_centerHorizontal="true"
         android:layout_below="@+id/clock_progress"
-        android:background="@drawable/goback_btn_style"
+        android:background="@drawable/small_btn_style"
         android:src="@drawable/ic_play_fill" />
 
     <ImageButton
         android:id="@+id/button_reset"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:background="@drawable/goback_btn_style"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/small_btn_style"
         android:layout_below="@+id/clock_progress"
-        android:layout_toRightOf="@+id/button_start_pause"
         android:src="@drawable/ic_trash_fill" />
+
+    <ImageButton
+        android:id="@+id/btn_settings"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/clock_progress"
+        android:background="@drawable/small_btn_style"
+        android:src="@drawable/ic_settings" />
+
 
 </RelativeLayout>

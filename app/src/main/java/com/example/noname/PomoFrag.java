@@ -33,7 +33,7 @@ import static android.content.Context.VIBRATOR_SERVICE;
  * create an instance of this fragment.
  */
 // TODO: 1.5 做传感器关闭屏幕 1. 做session中间的间隔，震动提醒
-public class PomoFrag extends Fragment {
+public class PomoFrag extends Fragment implements ClockDialog.DialogListener{
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -44,11 +44,14 @@ public class PomoFrag extends Fragment {
     private String mParam1;
     private String mParam2;
 
+
+
     //components from xml
     private TextView mTextViewCountDown;
     private TextView mTextViewRest;
     private ImageButton mButtonStartPause;
     private ImageButton mButtonReset;
+    private ImageButton settingBtn;
     private ProgressBar clockProgress;
 
     private CountDownTimer mCountDownTimer;
@@ -109,6 +112,7 @@ public class PomoFrag extends Fragment {
         mButtonStartPause = view.findViewById(R.id.button_start_pause);
         mButtonReset = view.findViewById(R.id.button_reset);
         clockProgress = view.findViewById(R.id.clock_progress);
+        settingBtn = view.findViewById(R.id.btn_settings);
 
         //define vibrator
         vibrator = (Vibrator) getActivity().getSystemService(VIBRATOR_SERVICE);
@@ -142,6 +146,12 @@ public class PomoFrag extends Fragment {
 
         sensorManager.registerListener(proximityListener, proximitySensor, SensorManager.SENSOR_DELAY_NORMAL);
 
+        settingBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openSettingDialog();
+            }
+        });
 
         //pause and resume timer
         mButtonStartPause.setOnClickListener(new View.OnClickListener() {
@@ -164,6 +174,12 @@ public class PomoFrag extends Fragment {
         });
 
         return view;
+    }
+
+    private void openSettingDialog() {
+        ClockDialog clockDialog = new ClockDialog();
+        clockDialog.show(getChildFragmentManager(),"Setting");
+
     }
 
     @Override
@@ -207,9 +223,9 @@ public class PomoFrag extends Fragment {
                     mTextViewRest.setVisibility(View.INVISIBLE);
                 }
                 if(sessionID == 9){ //four work sessions then quit
-                    mButtonStartPause.setImageResource(R.drawable.ic_play_fill);
-                    mButtonStartPause.setVisibility(View.INVISIBLE);
-                    mButtonReset.setVisibility(View.VISIBLE);
+                    mButtonStartPause.setImageResource(R.drawable.ic_replay);
+                    mButtonStartPause.setVisibility(View.VISIBLE);
+                    //mButtonReset.setVisibility(View.VISIBLE);
                     return;
                 }
                 //auto start the next session
@@ -267,24 +283,25 @@ public class PomoFrag extends Fragment {
 
     private void updateWatchInterface() {
         if (mTimerRunning) {
-            mButtonReset.setVisibility(View.INVISIBLE);
-            mButtonStartPause.setImageResource(R.drawable.ic_pause);
+            mButtonReset.setVisibility(View.VISIBLE);
+            //mButtonStartPause.setImageResource(R.drawable.ic_pause);
         } else {
             //mButtonStartPause.setText("Start");
 
             if (mTimeLeftInMillis < 1000) {
-                mButtonStartPause.setVisibility(View.INVISIBLE);
+                //mButtonStartPause.setVisibility(View.INVISIBLE);
+                mButtonReset.setVisibility(View.VISIBLE);
             } else {
-                mButtonStartPause.setVisibility(View.VISIBLE);
+                mButtonReset.setVisibility(View.VISIBLE);
+                //mButtonStartPause.setVisibility(View.VISIBLE);
             }
 
             if (mTimeLeftInMillis < mStartTimeInMillis) {
                 mButtonReset.setVisibility(View.VISIBLE);
-                updatePauseBtnLoc();
-                mButtonStartPause.setImageResource(R.drawable.ic_play_fill);
+                //mButtonStartPause.setImageResource(R.drawable.ic_play_fill);
             } else {
-                mButtonReset.setVisibility(View.INVISIBLE);
-                mButtonStartPause.setImageResource(R.drawable.ic_play_fill);
+                mButtonReset.setVisibility(View.VISIBLE);
+                //mButtonStartPause.setImageResource(R.drawable.ic_play_fill);
             }
         }
     }
@@ -349,26 +366,10 @@ public class PomoFrag extends Fragment {
         }
     }
 
-    private void updatePauseBtnLoc(){
-        RelativeLayout.LayoutParams layoutParams1 =
-                (RelativeLayout.LayoutParams) mButtonStartPause.getLayoutParams();
-
-        layoutParams1.addRule(RelativeLayout.BELOW, clockProgress.getId());
-        layoutParams1.setMargins(310,0,0,0);
-
-        mButtonStartPause.setLayoutParams(layoutParams1);
-
-        RelativeLayout.LayoutParams layoutParams2 =
-                (RelativeLayout.LayoutParams) mButtonReset.getLayoutParams();
-
-        layoutParams2.addRule(RelativeLayout.BELOW, clockProgress.getId());
-        layoutParams2.addRule(RelativeLayout.RIGHT_OF, mButtonStartPause.getId());
-        layoutParams2.setMargins(200,0,0,0);
-
-        mButtonReset.setLayoutParams(layoutParams2);
-
+    @Override
+    public void getTimeData(String focusTime, String shortBreak, String longBreak) {
+        System.out.println("here");
     }
-
 
 
 }

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/focus_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Focus Duration"
+        android:layout_marginLeft="65dp"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/black"/>
+
+    <EditText
+        android:id="@+id/focus_input"
+        android:layout_below="@+id/focus_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginHorizontal="60dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/popup_text_input"
+        android:ems="10"
+        android:hint="In Minutes"
+        android:inputType="textEmailAddress"
+        android:padding="10dp"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/short_title"
+        android:layout_below="@+id/focus_input"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Short Break Duration"
+        android:layout_marginLeft="65dp"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/black"/>
+
+    <EditText
+        android:id="@+id/short_input"
+        android:layout_below="@+id/short_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginHorizontal="60dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/popup_text_input"
+        android:ems="10"
+        android:hint="In Minutes"
+        android:inputType="textEmailAddress"
+        android:padding="10dp"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/long_title"
+        android:layout_below="@+id/short_input"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Long Break Duration"
+        android:layout_marginLeft="65dp"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/black"/>
+
+    <EditText
+        android:id="@+id/long_input"
+        android:layout_below="@+id/long_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginHorizontal="60dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/popup_text_input"
+        android:ems="10"
+        android:hint="In Minutes"
+        android:inputType="textEmailAddress"
+        android:padding="10dp"
+        android:textSize="16sp" />
+
+</RelativeLayout>
