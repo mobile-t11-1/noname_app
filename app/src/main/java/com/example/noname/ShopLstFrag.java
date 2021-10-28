@@ -198,12 +198,10 @@ public class ShopLstFrag extends Fragment {
                                 normalItems.add(map);
                             }
 
-                            //listItems.add(map);
+                            listItems.add(map);
                             itemToDoc.put(map, docID);
                         }
 
-                        listItems.addAll(favoriteItems);
-                        listItems.addAll(normalItems);
 
                         items = new ListAdapter(getActivity().getApplicationContext(), listItems, R.layout.fragment_shopping_list_item,
                                 new String[]{"favorite", "title", "due"},
@@ -283,6 +281,27 @@ public class ShopLstFrag extends Fragment {
                             return -Integer.compare((Integer) o1.get("favorite"),(Integer)o2.get("favorite"));
                         }
                     });
+                    // update the position field of corresponding document
+                    for(int pos=0; pos < listItems.size(); pos++){
+                        // get the corresponding document of this item
+                        Map<String, Object> item = listItems.get(pos);
+                        String docID = itemToDoc.get(item);
+                        DocumentReference docRef = itemsRef.document(docID);
+                        // update the new position of each item
+                        docRef.update("position", pos)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        Log.d(TAG, "item position successfully updated!");
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.w(TAG, "Error updating item position", e);
+                                    }
+                                });
+                    }
 
                     notifyDataSetChanged();
                 }
