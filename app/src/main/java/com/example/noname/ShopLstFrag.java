@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -117,6 +118,30 @@ public class ShopLstFrag extends Fragment {
         });
 
         addItem = addButton;
+
+
+        // set sort button
+        ImageView sortButton = view.findViewById(R.id.list_sort);
+        sortButton.setOnClickListener(v -> {
+            //Creating the instance of PopupMenu
+            PopupMenu popup = new PopupMenu(getActivity(), sortButton);
+            //Inflating the Popup using xml file
+            popup.getMenuInflater()
+                    .inflate(R.menu.list_sort_menu, popup.getMenu());
+
+            //registering popup with OnMenuItemClickListener
+            popup.setOnMenuItemClickListener(item -> {
+                // item logic
+                Toast.makeText(
+                        getActivity(),
+                        "You Clicked : " + item.getTitle(),
+                        Toast.LENGTH_SHORT
+                ).show();
+                return true;
+            });
+
+            popup.show(); //showing popup menu
+        });
 
         // get documents from fire store
         itemsRef = db.collection("list");

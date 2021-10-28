@@ -6,21 +6,37 @@
     android:layout_height="match_parent"
     tools:context=".ShopLstFrag">
 
-    <TextView
-        android:id="@+id/list_head"
+
+    <RelativeLayout
+        android:id="@+id/list_layout"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:background="#FCEDEA"
-        android:gravity="center"
-        android:text="List"
-        android:textSize="20dp"
-        android:textStyle="bold" />
+        android:layout_height="56dp">
+
+        <TextView
+            android:id="@+id/list_head"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#FCEDEA"
+            android:gravity="center"
+            android:text="List"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/list_sort"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:src="@drawable/ic_list_sort_button" />
+    </RelativeLayout>
 
     <ListView
         android:id="@+id/list_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/list_head"
+        android:layout_below="@+id/list_layout"
         tools:listitem="@layout/fragment_shopping_list_item"
         />
 
