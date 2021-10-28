@@ -25,11 +25,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -50,6 +53,9 @@ import java.util.Objects;
  */
 public class ShopLstFrag extends Fragment {
 
+    // TAG for locate log.d
+    private static final String TAG = "List";
+
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private CollectionReference itemsRef;
@@ -61,6 +67,9 @@ public class ShopLstFrag extends Fragment {
 
     // A list of items to display
     private List<Map<String,Object>> listItems;
+
+    // Map listItem to documentID
+    private Map<Map<String,Object>, String> itemToDoc;
 
     // Heart
     private SimpleAdapter items;
@@ -139,8 +148,10 @@ public class ShopLstFrag extends Fragment {
                         List<Map<String,Object>> favoriteItems = new ArrayList<>();
                         List<Map<String,Object>> normalItems = new ArrayList<>();
                         listItems =  new ArrayList<>();
+                        itemToDoc = new HashMap<>();
 
                         for (QueryDocumentSnapshot document : task.getResult()) {
+                            String docID = document.getId();
                             Map<String,Object> map = new HashMap<>();
                             Map<String, Object> data = document.getData();
                             SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy");
@@ -155,6 +166,7 @@ public class ShopLstFrag extends Fragment {
                                 map.put("favorite", R.drawable.ic_list_heart_empty);
                                 normalItems.add(map);
                             }
+                            itemToDoc.put(map, docID);
                         }
 
                         listItems.addAll(favoriteItems);
@@ -189,14 +201,49 @@ public class ShopLstFrag extends Fragment {
                 @Override
                 public void onClick(View view) {
                     Toast.makeText(getActivity().getApplicationContext(), listItems.get(position).get("favorite").toString(), Toast.LENGTH_SHORT).show();
-                    if((int) listItems.get(position).get("favorite") == R.drawable.ic_list_heart_full){
-                        listItems.get(position).put("favorite", R.drawable.ic_list_heart_empty);
-                        notifyDataSetChanged();
-                    }else{
-                        listItems.get(position).put("favorite", R.drawable.ic_list_heart_full);
-                        notifyDataSetChanged();
-                    }
+                    // locate the current listView item
+                    Map<String, Object> curItem = listItems.get(position);
+                    // locate the corresponding document id of this current item
+                    String curDocID = itemToDoc.get(curItem);
+                    // get the document reference
+                    DocumentReference curDoc = itemsRef.document(curDocID);
 
+                    // click heart logic
+                    if((int) curItem.get("favorite") == R.drawable.ic_list_heart_full){
+                        curItem.put("favorite", R.drawable.ic_list_heart_empty);
+                        // The hashcode of curItem may change, so re-put it
+                        itemToDoc.put(curItem, curDocID);
+                        curDoc.update("favorite", false)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        Log.d(TAG, "DocumentSnapshot successfully updated!");
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.w(TAG, "Error updating document", e);
+                                    }
+                                });
+                    }else{
+                        curItem.put("favorite", R.drawable.ic_list_heart_full);
+                        itemToDoc.put(curItem, curDocID);
+                        curDoc.update("favorite", true)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        Log.d(TAG, "DocumentSnapshot successfully updated!");
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.w(TAG, "Error updating document", e);
+                                    }
+                                });
+                    }
+                    notifyDataSetChanged();
                 }
             });
             return view;
@@ -205,7 +252,7 @@ public class ShopLstFrag extends Fragment {
 
         @Override
         public int getCount() {
-            return super.getCount();
+            return listItems.size();
         }
     }
 
