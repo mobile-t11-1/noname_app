@@ -1,6 +1,11 @@
 package com.example.noname;
 
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -50,14 +55,19 @@ public class PomoFrag extends Fragment {
 
     private CountDownTimer mCountDownTimer;
 
-    private boolean mTimerRunning; //record the status of the timer
 
+    private boolean mTimerRunning; //record the status of the timer
+    private boolean mFaceUp; //record the status of the screen
     //private variables
     private int sessionID = 1; //record the current session: odd is work, even is rest
-    private static final long mStartTimeInMillis = 10000; //25*60*1000 25min //set timer
+    private static final long mStartTimeInMillis = 100000; //25*60*1000 25min //set timer
     private long mTimeLeftInMillis; //remaining time
     private long mEndTime;
     private Vibrator vibrator; // vibrate
+    // proximity sensor
+    private SensorManager sensorManager;
+    private Sensor proximitySensor;
+    private SensorEventListener proximityListener;
 
     public PomoFrag() {
         // Required empty public constructor
@@ -104,6 +114,35 @@ public class PomoFrag extends Fragment {
         //define vibrator
         vibrator = (Vibrator) getActivity().getSystemService(VIBRATOR_SERVICE);
 
+        //declare proximity sensor variable
+        sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
+        if(sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY) != null){
+            proximitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+        }
+        //flip screen actions
+        proximityListener = new SensorEventListener() {
+            @Override
+            public void onSensorChanged(SensorEvent sensorEvent) {
+                // screen face down
+                if(sensorEvent.values[0] < proximitySensor.getMaximumRange()){
+                    if(!mTimerRunning){
+                        startTimer();
+                    }
+                }else{ // screen face up
+                    if(mTimerRunning){
+                        pauseTimer();
+                    }
+                }
+            }
+
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int i) {
+
+            }
+        };
+
+        sensorManager.registerListener(proximityListener, proximitySensor, SensorManager.SENSOR_DELAY_NORMAL);
+
 
         //pause and resume timer
         mButtonStartPause.setOnClickListener(new View.OnClickListener() {
@@ -126,6 +165,12 @@ public class PomoFrag extends Fragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+        sensorManager.unregisterListener(proximityListener);
     }
 
 
