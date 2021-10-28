@@ -40,10 +40,12 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -139,6 +141,14 @@ public class ShopLstFrag extends Fragment {
                         "You Clicked : " + item.getTitle(),
                         Toast.LENGTH_SHORT
                 ).show();
+
+                // sorting by due date
+                if(item.getItemId() == R.id.list_sort_byDue){
+                    dueSort();
+                    items.notifyDataSetChanged();
+                    posUpdate();
+                }
+
                 return true;
             });
 
@@ -274,35 +284,11 @@ public class ShopLstFrag extends Fragment {
                                     }
                                 });
                     }
-                    // sort the listItems by favorite
-                    Collections.sort(listItems,new Comparator<Map<String, Object>>() {
-                        @Override
-                        public int compare(Map<String, Object> o1, Map<String, Object> o2) {
-                            return -Integer.compare((Integer) o1.get("favorite"),(Integer)o2.get("favorite"));
-                        }
-                    });
-                    // update the position field of corresponding document
-                    for(int pos=0; pos < listItems.size(); pos++){
-                        // get the corresponding document of this item
-                        Map<String, Object> item = listItems.get(pos);
-                        String docID = itemToDoc.get(item);
-                        DocumentReference docRef = itemsRef.document(docID);
-                        // update the new position of each item
-                        docRef.update("position", pos)
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void unused) {
-                                        Log.d(TAG, "item position successfully updated!");
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Log.w(TAG, "Error updating item position", e);
-                                    }
-                                });
-                    }
 
+                    // sorting by favorite
+                    heartSort();
+                    // call posUpdate function to update the position of each item
+                    posUpdate();
                     notifyDataSetChanged();
                 }
             });
@@ -315,5 +301,77 @@ public class ShopLstFrag extends Fragment {
             return listItems.size();
         }
     }
+    // abstract the logic of sorting by favorite
+    private void heartSort(){
+        // sort the listItems by favorite
+        Collections.sort(listItems,new Comparator<Map<String, Object>>() {
+            @Override
+            public int compare(Map<String, Object> o1, Map<String, Object> o2) {
+                return -Integer.compare((Integer) o1.get("favorite"),(Integer)o2.get("favorite"));
+            }
+        });
+    }
 
+    // abstract the logic of sorting by due date
+    private void dueSort(){
+        // use to check how many favorite item on the top
+        int p = 0;
+        for (Map<String, Object> listItem : listItems) {
+            if((Integer) listItem.get("favorite") == R.drawable.ic_list_heart_full){
+                p++;
+            }
+        }
+
+
+        // sort the favorite items by due date
+        Collections.sort(listItems.subList(0,p),new Comparator<Map<String, Object>>() {
+            DateFormat f = new SimpleDateFormat("MMM dd, yyyy");
+            @Override
+            public int compare(Map<String, Object> o1, Map<String, Object> o2) {
+                try {
+                    return f.parse((String) o1.get("due")).compareTo(f.parse((String) o2.get("due")));
+                } catch (ParseException e) {
+                    throw new IllegalArgumentException(e);
+                }
+            }
+        });
+
+        // sort the unfavorite items by due date
+        Collections.sort(listItems.subList(p,listItems.size()),new Comparator<Map<String, Object>>() {
+            DateFormat f = new SimpleDateFormat("MMM dd, yyyy");
+            @Override
+            public int compare(Map<String, Object> o1, Map<String, Object> o2) {
+                try {
+                    return f.parse((String) o1.get("due")).compareTo(f.parse((String) o2.get("due")));
+                } catch (ParseException e) {
+                    throw new IllegalArgumentException(e);
+                }
+            }
+        });
+    }
+
+    // abstract the position update logic
+    private void posUpdate(){
+        // update the position field of corresponding document
+        for(int pos=0; pos < listItems.size(); pos++){
+            // get the corresponding document of this item
+            Map<String, Object> item = listItems.get(pos);
+            String docID = itemToDoc.get(item);
+            DocumentReference docRef = itemsRef.document(docID);
+            // update the new position of each item
+            docRef.update("position", pos)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            Log.d(TAG, "item position successfully updated!");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w(TAG, "Error updating item position", e);
+                        }
+                    });
+        }
+    }
 }
