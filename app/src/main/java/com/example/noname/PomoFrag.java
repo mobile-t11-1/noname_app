@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,6 +53,7 @@ public class PomoFrag extends Fragment {
     private TextView mTextViewRest;
     private Button mButtonStartPause;
     private Button mButtonReset;
+    private ProgressBar clockProgress;
 
     private CountDownTimer mCountDownTimer;
 
@@ -110,6 +112,7 @@ public class PomoFrag extends Fragment {
         mTextViewRest = view.findViewById(R.id.text_view_rest);
         mButtonStartPause = view.findViewById(R.id.button_start_pause);
         mButtonReset = view.findViewById(R.id.button_reset);
+        clockProgress = view.findViewById(R.id.clock_progress);
 
         //define vibrator
         vibrator = (Vibrator) getActivity().getSystemService(VIBRATOR_SERVICE);
@@ -182,6 +185,7 @@ public class PomoFrag extends Fragment {
             public void onTick(long millisUntilFinished) {
                 mTimeLeftInMillis = millisUntilFinished;
                 updateCountDownText();
+                updateClockProgress();
             }
 
             @Override
@@ -228,12 +232,12 @@ public class PomoFrag extends Fragment {
         updateWatchInterface();
         //resume button
         mButtonStartPause.setText("Resume");
-
     }
 
     private void resetTimer() {
         mTimeLeftInMillis = mStartTimeInMillis;
         updateCountDownText();
+        updateClockProgress();
         updateWatchInterface();
         //reset sessionID
         sessionID = 1;
@@ -255,6 +259,7 @@ public class PomoFrag extends Fragment {
 
         mTextViewCountDown.setText(timeLeftFormatted);
     }
+
 
     private void updateWatchInterface() {
         if (mTimerRunning) {
@@ -278,6 +283,16 @@ public class PomoFrag extends Fragment {
             }
         }
     }
+
+    private void updateClockProgress(){
+        float f = (mTimeLeftInMillis * 1.0f) / mStartTimeInMillis;
+        int percentage = 100 - ((int) (f *100) - 9);
+        System.out.println(percentage);
+
+        clockProgress.setProgress(percentage);
+    }
+
+
 
     //To save the timer if the app closes
     @Override
@@ -310,6 +325,7 @@ public class PomoFrag extends Fragment {
         mTimerRunning = prefs.getBoolean("timerRunning", false);
 
         updateCountDownText();
+        updateClockProgress();
         updateWatchInterface();
 
         if (mTimerRunning) {
@@ -320,6 +336,7 @@ public class PomoFrag extends Fragment {
                 mTimeLeftInMillis = 0;
                 mTimerRunning = false;
                 updateCountDownText();
+                updateClockProgress();
                 updateWatchInterface();
             } else {
                 startTimer();
