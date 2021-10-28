@@ -42,6 +42,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -155,7 +157,7 @@ public class ShopLstFrag extends Fragment {
                 list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
                     public void onItemClick(AdapterView adapterView, View view, int position, long id) {
-                        Toast.makeText(getActivity().getApplicationContext(), view.toString(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity().getApplicationContext(), ""+position, Toast.LENGTH_SHORT).show();
 
                     }
                 });
@@ -166,7 +168,7 @@ public class ShopLstFrag extends Fragment {
 
     private void readData(FirestoreCallback firestoreCallback) {
         itemsRef.whereEqualTo("userID", userID)
-                .orderBy("dueDate")
+                .orderBy("position")  // sort by item position
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -181,8 +183,12 @@ public class ShopLstFrag extends Fragment {
                             Map<String, Object> data = document.getData();
                             SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy");
 
+
                             map.put("title", data.get("title").toString());
                             map.put("due", sdf.format(((Timestamp) data.get("dueDate")).toDate()));
+
+                            // record the item position
+                            map.put("position", data.get("position"));
 
                             if((boolean) data.get("favorite")) {
                                 map.put("favorite", R.drawable.ic_list_heart_full);
@@ -191,12 +197,14 @@ public class ShopLstFrag extends Fragment {
                                 map.put("favorite", R.drawable.ic_list_heart_empty);
                                 normalItems.add(map);
                             }
+
+                            //listItems.add(map);
                             itemToDoc.put(map, docID);
                         }
 
                         listItems.addAll(favoriteItems);
                         listItems.addAll(normalItems);
-                        //favoriteItems.addAll(normalItems);
+
                         items = new ListAdapter(getActivity().getApplicationContext(), listItems, R.layout.fragment_shopping_list_item,
                                 new String[]{"favorite", "title", "due"},
                                 new int[]{R.id.list_item_favorite, R.id.list_item_title, R.id.list_item_due});
@@ -268,6 +276,14 @@ public class ShopLstFrag extends Fragment {
                                     }
                                 });
                     }
+                    // sort the listItems by favorite
+                    Collections.sort(listItems,new Comparator<Map<String, Object>>() {
+                        @Override
+                        public int compare(Map<String, Object> o1, Map<String, Object> o2) {
+                            return -Integer.compare((Integer) o1.get("favorite"),(Integer)o2.get("favorite"));
+                        }
+                    });
+
                     notifyDataSetChanged();
                 }
             });
