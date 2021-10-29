@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -56,6 +57,11 @@ public class ListAddFrag extends Fragment {
 
         ImageView backButton = view.findViewById(R.id.list_add_back);
         backButton.setOnClickListener(v -> {
+            EditText notes = view.findViewById(R.id.list_add_notes);
+
+            String note = notes.getText().toString().trim();
+
+
             getActivity().getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container,new ShopLstFrag()).commit();
         });

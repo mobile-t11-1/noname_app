@@ -44,6 +44,7 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/list_add_note_layout"
         android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/list_add_head_layout"
@@ -89,6 +90,17 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/list_add_note_layout"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="12dp">
+
+
+
+    </RelativeLayout>
 
 
 
