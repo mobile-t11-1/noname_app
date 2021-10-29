@@ -73,8 +73,6 @@ public class ShopLstFrag extends Fragment {
     // A list of items to display
     private List<Map<String,Object>> listItems;
 
-    // Map listItem to documentID
-    private Map<Map<String,Object>, String> itemToDoc;
 
     // Heart
     private SimpleAdapter items;
@@ -185,7 +183,6 @@ public class ShopLstFrag extends Fragment {
                         List<Map<String,Object>> favoriteItems = new ArrayList<>();
                         List<Map<String,Object>> normalItems = new ArrayList<>();
                         listItems =  new ArrayList<>();
-                        itemToDoc = new HashMap<>();
 
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             String docID = document.getId();
@@ -199,6 +196,8 @@ public class ShopLstFrag extends Fragment {
 
                             // record the item position
                             map.put("position", data.get("position"));
+                            // record the docID
+                            map.put("docID", docID);
 
                             if((boolean) data.get("favorite")) {
                                 map.put("favorite", R.drawable.ic_list_heart_full);
@@ -209,7 +208,6 @@ public class ShopLstFrag extends Fragment {
                             }
 
                             listItems.add(map);
-                            itemToDoc.put(map, docID);
                         }
 
 
@@ -245,7 +243,8 @@ public class ShopLstFrag extends Fragment {
                     // locate the current listView item
                     Map<String, Object> curItem = listItems.get(position);
                     // locate the corresponding document id of this current item
-                    String curDocID = itemToDoc.get(curItem);
+                    //String curDocID = itemToDoc.get(curItem);
+                    String curDocID = (String) curItem.get("docID");
                     // get the document reference
                     DocumentReference curDoc = itemsRef.document(curDocID);
 
@@ -253,7 +252,6 @@ public class ShopLstFrag extends Fragment {
                     if((int) curItem.get("favorite") == R.drawable.ic_list_heart_full){
                         curItem.put("favorite", R.drawable.ic_list_heart_empty);
                         // The hashcode of curItem may change, so re-put it
-                        itemToDoc.put(curItem, curDocID);
                         curDoc.update("favorite", false)
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
@@ -269,7 +267,6 @@ public class ShopLstFrag extends Fragment {
                                 });
                     }else{
                         curItem.put("favorite", R.drawable.ic_list_heart_full);
-                        itemToDoc.put(curItem, curDocID);
                         curDoc.update("favorite", true)
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
@@ -356,7 +353,7 @@ public class ShopLstFrag extends Fragment {
         for(int pos=0; pos < listItems.size(); pos++){
             // get the corresponding document of this item
             Map<String, Object> item = listItems.get(pos);
-            String docID = itemToDoc.get(item);
+            String docID = (String) item.get("docID");
             DocumentReference docRef = itemsRef.document(docID);
             // update the new position of each item
             docRef.update("position", pos)
