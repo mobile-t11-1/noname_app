@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_bar"
-    app:startDestination="@id/ProfileFrag">
+    app:startDestination="@id/profileFrag">
 
     <fragment
         android:id="@+id/shopLstFrag"
@@ -11,13 +11,23 @@
         android:label="fragment_shopping_list"
         tools:layout="@layout/fragment_shopping_list" />
     <fragment
-        android:id="@+id/mapFrag"
-        android:name="com.example.noname.MapFrag"
-        android:label="fragment_map"
-        tools:layout="@layout/fragment_map" />
+        android:id="@+id/mapInfoFrag"
+        android:name="com.example.noname.MapInfoFr"
+        android:label="fragment_map_info"
+        tools:layout="@layout/fragment_map_info" />
     <fragment
-        android:id="@+id/ProfileFrag"
+        android:id="@+id/profileFrag"
         android:name="com.example.noname.ProfileFrag"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/pomoFrag"
+        android:name="com.example.noname.PomoFrag"
+        android:label="fragment_pomo"
+        tools:layout="@layout/fragment_pomo" />
+    <fragment
+        android:id="@+id/leaderBFrag"
+        android:name="com.example.noname.LeaderBFrag"
+        android:label="fragment_leader_b"
+        tools:layout="@layout/fragment_leader_b" />
 </navigation>

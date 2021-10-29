@@ -4,33 +4,34 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#03A9F4"
+    android:background="@color/primary_2"
     tools:context=".Register">
 
-    <ImageButton
-        android:id="@+id/goback_btn"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:background="@drawable/goback_btn_style"
-        android:src="@drawable/ic_go_back" />
+<!--    <ImageButton-->
+<!--        android:id="@+id/goback_btn"-->
+<!--        android:layout_width="60dp"-->
+<!--        android:layout_height="60dp"-->
+<!--        android:layout_marginLeft="10dp"-->
+<!--        android:layout_marginTop="10dp"-->
+<!--        android:background="@drawable/goback_btn_style"-->
+<!--        android:src="@drawable/ic_go_back" />-->
 
-    <ImageView
-        android:id="@+id/logoImg_reg"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:layout_alignParentTop="true"
+    <TextView
+        android:id="@+id/title_reg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="80dp"
-        android:src="@drawable/logo" />
+        android:text="Efficiency+"
+        android:layout_marginTop="120dp"
+        android:textSize="60dp"
+        android:textStyle="bold"/>
 
 
     <EditText
         android:id="@+id/username_reg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/logoImg_reg"
+        android:layout_below="@+id/title_reg"
         android:layout_centerHorizontal="true"
         android:layout_marginHorizontal="60dp"
         android:layout_marginTop="40dp"

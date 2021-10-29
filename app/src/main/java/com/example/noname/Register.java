@@ -54,8 +54,8 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
         registerBtn = (Button) findViewById(R.id.register_btn);
         registerBtn.setOnClickListener(this);
 
-        gobackBtn = (ImageButton) findViewById(R.id.goback_btn);
-        gobackBtn.setOnClickListener(this);
+//        gobackBtn = (ImageButton) findViewById(R.id.goback_btn);
+//        gobackBtn.setOnClickListener(this);
 
     }
 
@@ -65,9 +65,9 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
             case R.id.register_btn:
                 registerUser();
                 break;
-            case R.id.goback_btn:
-                startActivity(new Intent(Register.this, Login.class));
-                break;
+//            case R.id.goback_btn:
+//                startActivity(new Intent(Register.this, Login.class));
+//                break;
         }
     }
 
@@ -130,29 +130,6 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
                         if(task.isSuccessful()){
-//                            User user = new User(username, email);
-//
-//                            // pass this user instance to firebase
-//                            // 1. Get a unique UID for this user
-//                            // 2. Check if the data has been successfully passed into database
-//                            FirebaseDatabase.getInstance().getReference("Users")
-//                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-//                                    .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-//                                @Override
-//                                public void onComplete(@NonNull Task<Void> task) {
-//                                    // if the data is in database
-//                                    if(task.isSuccessful()){
-//                                        Toast.makeText(Register.this, "User has been registered successfully!", Toast.LENGTH_LONG).show();
-//                                        progressBar.setVisibility(View.GONE);
-//
-//                                        startActivity(new Intent(Register.this, Login.class));
-//                                    }else{
-//                                        Toast.makeText(Register.this, "Failed to register!1", Toast.LENGTH_LONG).show();
-//                                        progressBar.setVisibility(View.GONE);
-//                                    }
-//
-//                                }
-//                            });
 
                             Map<String, Object> newUser = new HashMap<>();
                             newUser.put("User Name", username);

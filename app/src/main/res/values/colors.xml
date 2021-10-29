@@ -7,4 +7,24 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+<!--    color scheme-->
+    <color name="primary_1">#FFFFFF</color>
+    <color name="primary_2">#FCEDEA</color>
+    <color name="primary_3">#F5DFD9</color>
+    <color name="primary_4">#F4B6B0</color>
+    <color name="primary_5">#E79A90</color>
+    <color name="primary_6">#DA7E70</color>
+
+
+    <color name="sec_1">#7E8398</color>
+    <color name="sec_2">#5B4D5A</color>
+
+    <color name="neu_1">#DEDEDE</color>
+    <color name="neu_2">#323232</color>
+
+    <color name="acc_1">#FBDEAC</color>
+    <color name="acc_2">#C1D4B6</color>
+
+
 </resources>
