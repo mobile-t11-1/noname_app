@@ -137,6 +137,67 @@ public class ShopLstFrag extends Fragment {
         addList = view.findViewById(R.id.list_add_text);
         addListCommit = view.findViewById(R.id.list_add_commit);
 
+        addListCommit.setOnClickListener( v -> {
+            // randomly generate document ID for this new ListItem
+            DocumentReference newListItem = itemsRef.document();
+            String newDocID = newListItem.getId();
+
+            // create data
+            String titleValue = addList.getText().toString().trim(); // user input
+            String notesValue = ""; //default notes
+            Timestamp dueValue = new Timestamp(new Date()); // default dueDate
+            Timestamp createTimeValue = new Timestamp(new Date());
+            int posValue = listItems.size();  // new item will be the last one in the listView
+            boolean favoriteValue = false; // default favorite -> false
+            String userIDValue = userID;
+
+            // create dataMap for server
+            Map<String, Object> dataMap = new HashMap<>();
+            dataMap.put("createTime", createTimeValue);
+            dataMap.put("dueDate", dueValue);
+            dataMap.put("favorite", favoriteValue);
+            dataMap.put("notes", notesValue);
+            dataMap.put("position", posValue);
+            dataMap.put("title", titleValue);
+            dataMap.put("userID", userIDValue);
+            dataMap.put("docID", newDocID);
+
+            // update to the server
+            newListItem.set(dataMap)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.d(TAG, "New Document is successfully added!");
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w(TAG, "Error adding new document", e);
+                            }
+                        });
+
+            // create dataMap for adapter
+            Map<String, Object> adapterItem = new HashMap<>();
+            SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy");
+            adapterItem.put("createTime", sdf.format(createTimeValue.toDate()));
+            adapterItem.put("due", sdf.format(dueValue.toDate()));
+            adapterItem.put("favorite", R.drawable.ic_list_heart_empty);
+            adapterItem.put("notes", notesValue);
+            adapterItem.put("position", posValue);
+            adapterItem.put("title", titleValue);
+            adapterItem.put("userID", userIDValue);
+            adapterItem.put("docID", newDocID);
+
+            // update to the listItems for adapter
+            listItems.add(adapterItem);
+            items.notifyDataSetChanged();
+
+            // hidden the EditText
+            addList.setVisibility(View.GONE);
+            addListCommit.setVisibility(View.GONE);
+        });
+
         // make them gone until user click add button
         addList.setVisibility(View.GONE);
         addListCommit.setVisibility(View.GONE);
@@ -191,7 +252,7 @@ public class ShopLstFrag extends Fragment {
                         docID = "0Tk3w2rIvq1UtnNUGSdo";
 
                         getActivity().getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_container, new ListDetailFrag(false, docID)).commit();
+                                .replace(R.id.fragment_container, new ListDetailFrag(false, docID, ShopLstFrag.this)).commit();
                     }
                 });
             }
@@ -205,6 +266,7 @@ public class ShopLstFrag extends Fragment {
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+                        Log.d(TAG, "Load database successfully");
                         List<Map<String,Object>> favoriteItems = new ArrayList<>();
                         List<Map<String,Object>> normalItems = new ArrayList<>();
                         listItems =  new ArrayList<>();

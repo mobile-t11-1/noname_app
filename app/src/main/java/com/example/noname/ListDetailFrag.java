@@ -46,6 +46,7 @@ import org.json.JSONObject;
 public class ListDetailFrag extends Fragment {
 
     private static final String TAG = "ListDetailFrag";
+    private ShopLstFrag parent; // hold parent reference after constructing this object
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
@@ -59,9 +60,10 @@ public class ListDetailFrag extends Fragment {
     Map<String, Object> details;
 
 
-    public ListDetailFrag(Boolean isAdd, String docID) {
+    public ListDetailFrag(Boolean isAdd, String docID, ShopLstFrag parent) {
         this.isAdd = isAdd;
         this.docID = docID;
+        this.parent = parent;
 
 
         mAuth = FirebaseAuth.getInstance();
@@ -122,7 +124,7 @@ public class ListDetailFrag extends Fragment {
 
 
             getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new ShopLstFrag()).commit();
+                    .replace(R.id.fragment_container, parent).commit();
         });
 
         // due date picker
