@@ -1,6 +1,5 @@
 package com.example.noname;
 
-import static com.android.volley.VolleyLog.TAG;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
@@ -46,6 +45,8 @@ import org.json.JSONObject;
  */
 public class ListDetailFrag extends Fragment {
 
+    private static final String TAG = "ListDetailFrag";
+
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private CollectionReference itemsRef;
@@ -88,6 +89,8 @@ public class ListDetailFrag extends Fragment {
         EditText notes = view.findViewById(R.id.list_detail_notes);
         RelativeLayout itemLayout = view.findViewById(R.id.list_detail_subitems);
 
+        view.setVisibility(View.GONE);
+
         if (isAdd) {
             title.setText("New List");
             dueButton.setText("Due: " + myCalendar.get(Calendar.DAY_OF_MONTH) + "/" +
@@ -108,6 +111,7 @@ public class ListDetailFrag extends Fragment {
 
 //                    JSONObject json = new JSONObject(map);
 //                    System.out.println(json);
+                    view.setVisibility(View.VISIBLE);
                 }
             });
         }
