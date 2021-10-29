@@ -3,13 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="70dp"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:descendantFocusability="blocksDescendants"
     >
 
     <ImageView
-        android:id="@+id/list_detail_subitem_finish"
+        android:id="@+id/list_detail_subitem_check"
         android:layout_width="18dp"
         android:layout_height="17dp"
         android:layout_centerVertical="true"
@@ -18,21 +17,18 @@
         android:clickable="true"
         />
 
-    <LinearLayout
-        android:layout_width="200dp"
-        android:layout_height="70dp"
-        android:orientation="vertical"
-        android:layout_toRightOf="@id/list_detail_subitem_finish"
+    <EditText
+        android:id="@+id/list_detail_subitem_note"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/list_detail_subitem_check"
+        android:layout_centerVertical="true"
+        android:layout_marginVertical="10dp"
         android:layout_marginLeft="16dp"
-        android:gravity="center">
+        android:background="@color/white"
+        android:ems="10"
+        android:gravity="left"
+        android:text="testitd"
+        android:textSize="18dp" />
 
-        <TextView
-            android:id="@+id/list_detail_subitem_detail"
-            android:layout_width="200dp"
-            android:layout_height="25dp"
-            android:text="Shopping List"
-            android:textSize="18dp"/>
-
-
-    </LinearLayout>
 </RelativeLayout>

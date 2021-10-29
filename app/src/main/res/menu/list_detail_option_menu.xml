@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/list_add_option_newSection"
+    <item android:id="@+id/list_detail_option_newSection"
         android:title="New Section"/>
-    <item android:id="@+id/list_add_option_checkAllItems"
+    <item android:id="@+id/list_detail_option_checkAllItems"
         android:title="Check All Items" />
-    <item android:id="@+id/list_add_option_duplicateList"
+    <item android:id="@+id/list_detail_option_duplicateList"
         android:title="Duplicate List" />
-    <item android:id="@+id/list_add_option_deleteList"
+    <item android:id="@+id/list_detail_option_deleteList"
         android:title="Delete List" />
 </menu>
 
