@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupMenu;
@@ -70,6 +71,10 @@ public class ShopLstFrag extends Fragment {
     private ImageView addItem;
     private String userID;
 
+    // View of adding list
+    private EditText addList;
+    private ImageView addListCommit;
+
     // A list of items to display
     private List<Map<String,Object>> listItems;
 
@@ -115,11 +120,26 @@ public class ShopLstFrag extends Fragment {
         // set add item page jump
         ImageView addButton = view.findViewById(R.id.list_main_addItem);
         addButton.setOnClickListener(v -> {
-            getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new ListDetailFrag(true, "")).commit();
+            if(addList.getVisibility() == View.VISIBLE && addListCommit.getVisibility() == View.VISIBLE){
+                addList.setVisibility(View.GONE);
+                addListCommit.setVisibility(View.GONE);
+            }else{
+                addList.setVisibility(View.VISIBLE);
+                addListCommit.setVisibility(View.VISIBLE);
+            }
+//            getActivity().getSupportFragmentManager().beginTransaction()
+//                    .replace(R.id.fragment_container, new ListDetailFrag(true, "")).commit();
         });
 
         addItem = addButton;
+
+        // set view of adding list
+        addList = view.findViewById(R.id.list_add_text);
+        addListCommit = view.findViewById(R.id.list_add_commit);
+
+        // make them gone until user click add button
+        addList.setVisibility(View.GONE);
+        addListCommit.setVisibility(View.GONE);
 
 
         // set sort button
