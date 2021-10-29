@@ -4,16 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ListAddFrag">
+    tools:context=".ListDetailFrag">
 
 
     <RelativeLayout
-        android:id="@+id/list_add_head_layout"
+        android:id="@+id/list_detail_head_layout"
         android:layout_width="match_parent"
         android:layout_height="56dp">
 
         <TextView
-            android:id="@+id/list_add_head"
+            android:id="@+id/list_detail_title"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:background="#FCEDEA"
@@ -23,40 +23,40 @@
             android:textStyle="bold" />
 
         <ImageView
-            android:id="@+id/list_add_back"
+            android:id="@+id/list_detail_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_centerVertical="true"
             android:gravity="center"
-            android:src="@drawable/ic_list_add_back" />
+            android:src="@drawable/ic_list_detail_back" />
 
         <ImageView
-            android:id="@+id/list_add_options"
+            android:id="@+id/list_detail_options"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="20dp"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             android:gravity="center"
-            android:src="@drawable/ic_list_add_options" />
+            android:src="@drawable/ic_list_detail_options" />
 
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/list_add_note_layout"
+        android:id="@+id/list_detail_note_layout"
         android:layout_width="350dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/list_add_head_layout"
+        android:layout_below="@+id/list_detail_head_layout"
         android:layout_centerHorizontal="true">
 
         <EditText
-            android:id="@+id/list_add_notes"
+            android:id="@+id/list_detail_notes"
             android:layout_width="350dp"
             android:layout_height="150dp"
             android:layout_marginTop="30dp"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/ic_list_add_note"
+            android:background="@drawable/ic_list_detail_note"
             android:ems="10"
             android:hint="Please Enter your notes"
             android:padding="10dp"
@@ -64,13 +64,13 @@
             android:textSize="18sp" />
 
         <TextView
-            android:id="@+id/list_add_due"
+            android:id="@+id/list_detail_due"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/list_add_notes"
+            android:layout_below="@+id/list_detail_notes"
             android:layout_alignParentRight="true"
             android:layout_marginTop="12dp"
-            android:background="@drawable/ic_list_add_due"
+            android:background="@drawable/ic_list_detail_due"
             android:padding="10dp"
             android:text="Due: DD/MM/YYYY"
             android:textSize="12sp"
@@ -80,10 +80,10 @@
     </RelativeLayout>
 
     <ImageView
-        android:id="@+id/list_add_addItem"
+        android:id="@+id/list_detail_addItem"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:src="@drawable/ic_list_add_button"
+        android:src="@drawable/ic_list_detail_button"
         android:gravity="center"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="16dp"
@@ -92,12 +92,21 @@
         />
 
     <RelativeLayout
+        android:id="@+id/list_detail_subitems"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/list_add_note_layout"
+        android:layout_below="@+id/list_detail_note_layout"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="12dp">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="40dp"
+            android:padding="10dp"
+            android:text="Tap the plus button to add a new to-do."
+            android:textSize="18sp" />
 
 
     </RelativeLayout>

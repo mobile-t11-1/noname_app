@@ -116,7 +116,7 @@ public class ShopLstFrag extends Fragment {
         ImageView addButton = view.findViewById(R.id.list_main_addItem);
         addButton.setOnClickListener(v -> {
             getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new ListAddFrag()).commit();
+                    .replace(R.id.fragment_container, new ListDetailFrag(true, "")).commit();
         });
 
         addItem = addButton;
@@ -166,7 +166,12 @@ public class ShopLstFrag extends Fragment {
 
                     public void onItemClick(AdapterView adapterView, View view, int position, long id) {
                         Toast.makeText(getActivity().getApplicationContext(), ""+position, Toast.LENGTH_SHORT).show();
+                        Map<String,Object> detail = listItems.get(position);
+                        String docID = (String) detail.get("docID");
+                        docID = "0Tk3w2rIvq1UtnNUGSdo";
 
+                        getActivity().getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragment_container, new ListDetailFrag(false, docID)).commit();
                     }
                 });
             }
