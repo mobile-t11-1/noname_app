@@ -1,5 +1,6 @@
 package com.example.noname;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.nfc.Tag;
@@ -16,9 +17,11 @@ import android.text.style.AbsoluteSizeSpan;
 import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -239,6 +242,9 @@ public class ShopLstFrag extends Fragment {
 
             popup.show(); //showing popup menu
         });
+
+        // listen for anywhere except editText to hide the add_list_commit
+        listenAnyWhere(view);
 
         // get documents from fire store
         itemsRef = db.collection("list");
@@ -490,5 +496,35 @@ public class ShopLstFrag extends Fragment {
                         }
                     });
         }
+    }
+
+    //
+    public void listenAnyWhere(View view) {
+        //Set up touch listener for non-EditText views to hide keyboard and itself
+        if (!(view instanceof EditText)) {
+            view.setOnTouchListener(new View.OnTouchListener() {
+
+                public boolean onTouch(View v, MotionEvent event) {
+                    hideEditText();
+                    view.findViewById(R.id.list_items_layout).requestFocus();
+                    return false;
+                }
+
+            });
+        }
+    }
+
+    public void hideEditText() {
+        // hide the keyboard
+        InputMethodManager inputMethodManager = (InputMethodManager)  getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+
+        // finish input
+        addList.setImeOptions(EditorInfo.IME_ACTION_DONE);  // hide the keyboard
+        addList.getText().clear();  // clean input
+
+        // hide the EditText
+        addList.setVisibility(View.GONE);
+        addListCommit.setVisibility(View.GONE);
     }
 }
