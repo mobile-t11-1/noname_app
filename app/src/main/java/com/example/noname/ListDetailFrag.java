@@ -56,6 +56,9 @@ public class ListDetailFrag extends Fragment {
     private Map<String, Object> details;
 
 
+    // isAdd: add item or load detail
+    // docID: document ID
+    // title: the new note title
     public ListDetailFrag(Boolean isAdd, String docID) {
         this.isAdd = isAdd;
         this.docID = docID;
@@ -89,9 +92,10 @@ public class ListDetailFrag extends Fragment {
         view.setVisibility(View.GONE);
 
         if (isAdd) {
-            title.setText("New List");
+            // initialize the page for adding new item
+            title.setText("New List"); // should change to new title
             dueButton.setText("Due: " + myCalendar.get(Calendar.DAY_OF_MONTH) + "/" +
-                    (myCalendar.get(Calendar.MONTH) + 1) + "/" + myCalendar.get(Calendar.YEAR));
+                    (myCalendar.get(Calendar.MONTH) + 1) + "/" + myCalendar.get(Calendar.YEAR)); // today
 
             subitemMap = new HashMap<>();
         } else {
@@ -107,14 +111,29 @@ public class ListDetailFrag extends Fragment {
 
                     itemLayout.removeAllViews();
 
+                    // details
+                    // key: subitem
+                    // value: all item detail map
+
+                    // subitemMap
+                    // key: the index of each group
+                    // value: the map of title and all items
                     subitemMap = (Map<String, Object>) details.get("subitem");
-                    boolean first = true;
+                    boolean first = true; // default group
+
+                    // get each subitem group and construct view
                     for (int i = 0; i < subitemMap.size(); i++) {
+                        // sectionDetails
+                        // key1: sectionName
+                        // value1: the section name
+                        // key2: item
+                        // value2: list of item detail map
                         Map<String, Object> sectionDetails = (Map<String, Object>) subitemMap.get(String.valueOf(i));
 
                         if (first) {
-                            first = false;
+                            first = false; // the default group don't have section title
                         } else {
+                            // initialize title of subitem and set option button onclicklistener
                             View view = inflater.inflate(R.layout.fragment_list_detail_subtitle, container, false);
                             EditText note = view.findViewById(R.id.list_detail_subitem_subtitle);
                             note.setText((String) sectionDetails.get("sectionName"));
@@ -139,10 +158,13 @@ public class ListDetailFrag extends Fragment {
 
                                 popup.show(); //showing popup menu
                             });
-                            itemLayout.addView(view);
+                            itemLayout.addView(view); // add to layout
                         }
 
+                        // get list of item detail map
                         List<Map<String, Object>> allItemDetails = (List<Map<String, Object>>) sectionDetails.get("item");
+
+                        // for each item, set there check image and note
                         for (Map<String, Object> item: allItemDetails) {
                             View view = inflater.inflate(R.layout.fragment_list_detail_subitem, container, false);
                             ImageView check = view.findViewById(R.id.list_detail_subitem_check);
@@ -158,12 +180,9 @@ public class ListDetailFrag extends Fragment {
                             String note = (String) item.get("note");
                             itemNotes.setText(note);
 
-                            itemLayout.addView(view);
-
+                            itemLayout.addView(view); // add to layout
                         }
-
                     }
-
                     view.setVisibility(View.VISIBLE);
                 }
             });
@@ -218,6 +237,7 @@ public class ListDetailFrag extends Fragment {
         });
 
 
+        // set displaying input of add item button
         ImageView addButton = view.findViewById(R.id.list_detail_addItem);
         EditText additemText = view.findViewById(R.id.list_detail_additem_text);
         ImageView additemButton = view.findViewById(R.id.list_detail_additem_commit);
@@ -225,7 +245,6 @@ public class ListDetailFrag extends Fragment {
         // make them gone until user click add button
         additemText.setVisibility(View.GONE);
         additemButton.setVisibility(View.GONE);
-
 
         addButton.setOnClickListener(v -> {
             if(additemText.getVisibility() == View.VISIBLE && additemButton.getVisibility() == View.VISIBLE){
@@ -243,7 +262,7 @@ public class ListDetailFrag extends Fragment {
             String note = additemText.getText().toString().trim();
             newItem.put("isCheck", false);
             newItem.put("note", note);
-            int defaultLength = 0;
+            int defaultLength = 0; // to display at the end of default list
 
             if(subitemMap.containsKey("0")) {
                 Map<String, Object> defaultGroup = (Map<String, Object>) subitemMap.get("0");
@@ -266,7 +285,7 @@ public class ListDetailFrag extends Fragment {
             itemNotes.setText(note);
 
             itemLayout.addView(itemView, defaultLength);
-            view.invalidate();
+            view.invalidate(); // refresh
         });
 
         // Inflate the layout for this fragment
