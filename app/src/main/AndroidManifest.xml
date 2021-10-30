@@ -35,7 +35,8 @@
         <activity android:name=".ResetPassword" />
         <activity
             android:name=".MainActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".Register"
             android:exported="true" />
