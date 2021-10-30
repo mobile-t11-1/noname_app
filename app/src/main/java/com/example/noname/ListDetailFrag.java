@@ -2,6 +2,7 @@ package com.example.noname;
 
 
 import android.app.DatePickerDialog;
+import android.media.Image;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -32,6 +33,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -157,6 +159,7 @@ public class ListDetailFrag extends Fragment {
                             itemNotes.setText(note);
 
                             itemLayout.addView(view);
+
                         }
 
                     }
@@ -166,7 +169,7 @@ public class ListDetailFrag extends Fragment {
             });
         }
 
-        // back picker & save
+        // back button & save
         backButton.setOnClickListener(v -> {
             String note = notes.getText().toString().trim();
 
@@ -214,8 +217,61 @@ public class ListDetailFrag extends Fragment {
             popup.show(); //showing popup menu
         });
 
+
+        ImageView addButton = view.findViewById(R.id.list_detail_addItem);
+        EditText additemText = view.findViewById(R.id.list_detail_additem_text);
+        ImageView additemButton = view.findViewById(R.id.list_detail_additem_commit);
+
+        // make them gone until user click add button
+        additemText.setVisibility(View.GONE);
+        additemButton.setVisibility(View.GONE);
+
+
+        addButton.setOnClickListener(v -> {
+            if(additemText.getVisibility() == View.VISIBLE && additemButton.getVisibility() == View.VISIBLE){
+                additemText.setVisibility(View.GONE);
+                additemButton.setVisibility(View.GONE);
+            }else{
+                additemText.setVisibility(View.VISIBLE);
+                additemButton.setVisibility(View.VISIBLE);
+            }
+        });
+
+
+        additemButton.setOnClickListener(v -> {
+            Map<String, Object> newItem = new HashMap<>();
+            String note = additemText.getText().toString().trim();
+            newItem.put("isCheck", false);
+            newItem.put("note", note);
+            int defaultLength = 0;
+
+            if(subitemMap.containsKey("0")) {
+                Map<String, Object> defaultGroup = (Map<String, Object>) subitemMap.get("0");
+                List<Map<String, Object>> items = (List<Map<String, Object>>) defaultGroup.get("item");
+                items.add(newItem);
+                defaultGroup.put("item", items);
+                defaultLength = items.size() - 1;
+            } else {
+                Map<String, Object> defaultGroup = new HashMap<>();
+                List<Map<String, Object>> items = new LinkedList<>();
+                items.add(newItem);
+                defaultGroup.put("item", items);
+                subitemMap.put("0", defaultGroup);
+            }
+
+            View itemView = inflater.inflate(R.layout.fragment_list_detail_subitem, container, false);
+            ImageView check = view.findViewById(R.id.list_detail_subitem_check);
+            EditText itemNotes = view.findViewById(R.id.list_detail_subitem_note);
+            check.setImageResource(R.drawable.ic_list_detail_subitem_empty);
+            itemNotes.setText(note);
+
+            itemLayout.addView(itemView, defaultLength);
+            view.invalidate();
+        });
+
         // Inflate the layout for this fragment
         return view;
+
     }
 
     private void readData(FirestoreCallback firestoreCallback) {
