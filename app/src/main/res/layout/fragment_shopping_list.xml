@@ -50,10 +50,13 @@
             android:background="@drawable/ic_list_detail_note"
             android:ems="10"
             android:gravity="start"
-            android:hint="Please Enter your notes"
+            android:hint="Input Todo-list title (less than 30 chars)"
             android:paddingLeft="20dp"
             android:paddingTop="10dp"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:singleLine="true"
+            android:maxLength="30"
+            />
 
         <ImageView
             android:id="@+id/list_add_commit"

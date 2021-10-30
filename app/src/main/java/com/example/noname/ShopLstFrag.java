@@ -2,6 +2,7 @@ package com.example.noname;
 
 import android.content.Context;
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -17,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -193,7 +195,11 @@ public class ShopLstFrag extends Fragment {
             listItems.add(adapterItem);
             items.notifyDataSetChanged();
 
-            // hidden the EditText
+            // finish input
+            addList.setImeOptions(EditorInfo.IME_ACTION_DONE);  // hide the keyboard
+            addList.getText().clear();  // clean input
+
+            // hide the EditText
             addList.setVisibility(View.GONE);
             addListCommit.setVisibility(View.GONE);
         });
@@ -283,6 +289,8 @@ public class ShopLstFrag extends Fragment {
 
                             // record the item position
                             map.put("position", data.get("position"));
+                            Log.d(TAG, data.get("position").toString());
+                            Log.d(TAG, data.get("position").getClass().toString());
                             // record the docID
                             map.put("docID", docID);
 
@@ -352,8 +360,20 @@ public class ShopLstFrag extends Fragment {
                                         Log.w(TAG, "Error updating document", e);
                                     }
                                 });
+                        // sort by heart
+                        heartSort();
                     }else{
                         curItem.put("favorite", R.drawable.ic_list_heart_full);
+                        // make the latest heart to be the top one (instead of only using heartSort)
+                        for (Map<String, Object> item : listItems) {
+                            if ((Long)item.get("position") < (Long)curItem.get("position")){
+                                item.compute("position", (k,v) -> (Long)v + 1L);
+                            }else {
+                                continue;
+                            }
+                        }
+                        curItem.put("position",(Long) 0L);
+
                         curDoc.update("favorite", true)
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
@@ -367,10 +387,11 @@ public class ShopLstFrag extends Fragment {
                                         Log.w(TAG, "Error updating document", e);
                                     }
                                 });
+
+                        // sort by position
+                        positionSort();
                     }
 
-                    // sorting by favorite
-                    heartSort();
                     // call posUpdate function to update the position of each item
                     posUpdate();
                     notifyDataSetChanged();
@@ -392,6 +413,17 @@ public class ShopLstFrag extends Fragment {
             @Override
             public int compare(Map<String, Object> o1, Map<String, Object> o2) {
                 return -Integer.compare((Integer) o1.get("favorite"),(Integer)o2.get("favorite"));
+            }
+        });
+    }
+
+    // abstract the logic of sorting by position
+    private void positionSort(){
+        // sort the listItems by favorite
+        Collections.sort(listItems,new Comparator<Map<String, Object>>() {
+            @Override
+            public int compare(Map<String, Object> o1, Map<String, Object> o2) {
+                return Long.compare((Long) o1.get("position"),(Long) o2.get("position"));
             }
         });
     }
@@ -443,6 +475,7 @@ public class ShopLstFrag extends Fragment {
             String docID = (String) item.get("docID");
             DocumentReference docRef = itemsRef.document(docID);
             // update the new position of each item
+            item.put("position", (long) pos);  // also update the local one
             docRef.update("position", pos)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
