@@ -79,6 +79,62 @@
 
     </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@+id/list_detail_additem_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/list_detail_note_layout"
+        android:layout_centerHorizontal="true">
+
+        <EditText
+            android:id="@+id/list_detail_additem_text"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="25dp"
+            android:background="@drawable/ic_list_detail_note"
+            android:ems="10"
+            android:gravity="start"
+            android:hint="Add a new item"
+            android:paddingLeft="20dp"
+            android:paddingTop="10dp"
+            android:textSize="18sp" />
+
+        <ImageView
+            android:id="@+id/list_detail_additem_commit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_list_add_commit" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/list_detail_additem_layout"
+        android:layout_centerHorizontal="true"
+        android:overScrollMode="never" >
+        <LinearLayout
+            android:id="@+id/list_detail_subitems"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="40dp"
+                android:padding="10dp"
+                android:text="Tap the plus button to add a new to-do."
+                android:textSize="18sp" />
+        </LinearLayout>
+    </ScrollView>
+
     <ImageView
         android:id="@+id/list_detail_addItem"
         android:layout_width="50dp"
@@ -90,26 +146,6 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         />
-
-    <RelativeLayout
-        android:id="@+id/list_detail_subitems"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/list_detail_note_layout"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="12dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="40dp"
-            android:padding="10dp"
-            android:text="Tap the plus button to add a new to-do."
-            android:textSize="18sp" />
-
-
-    </RelativeLayout>
 
 
 
