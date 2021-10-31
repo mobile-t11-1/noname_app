@@ -51,6 +51,7 @@ import static androidx.constraintlayout.motion.utils.Oscillator.TAG;
  * create an instance of this fragment.
  */
 // TODO: 1.5 做传感器关闭屏幕 1. 做session中间的间隔，震动提醒
+// TODO: Xinhao: UI fixes, section indicator reset
 public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
 
     // TODO: Rename parameter arguments, choose names that match
@@ -82,6 +83,7 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
     private ImageButton mButtonReset;
     private ImageButton settingBtn;
     private ProgressBar clockProgress;
+    private TextView t1,t2,t3,t4;
 
     private CountDownTimer mCountDownTimer;
 
@@ -152,6 +154,11 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
         clockProgress = view.findViewById(R.id.clock_progress);
         settingBtn = view.findViewById(R.id.btn_settings);
 
+        t1 = view.findViewById(R.id.section_1);
+        t2 = view.findViewById(R.id.section_2);
+        t3 = view.findViewById(R.id.section_3);
+        t4 = view.findViewById(R.id.section_4);
+
         //define vibrator
         vibrator = (Vibrator) getActivity().getSystemService(VIBRATOR_SERVICE);
 
@@ -215,6 +222,31 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
         return view;
     }
 
+    private void checkSection(int sessionID){
+        if(sessionID == 1 || sessionID == 2){
+            t1.setBackground(getResources().getDrawable(R.drawable.pomo_indicator_style));
+        }
+        else if(sessionID == 3 || sessionID == 4){
+            t1.setBackground(getResources().getDrawable(R.drawable.pomo_finished_indicator));
+            t2.setBackground(getResources().getDrawable(R.drawable.pomo_indicator_style));
+        }
+        else if(sessionID == 5 || sessionID == 6){
+            t1.setBackground(getResources().getDrawable(R.drawable.pomo_finished_indicator));
+            t2.setBackground(getResources().getDrawable(R.drawable.pomo_finished_indicator));
+            t3.setBackground(getResources().getDrawable(R.drawable.pomo_indicator_style));
+        }
+        else if(sessionID == 7 || sessionID == 8){
+            t1.setBackground(getResources().getDrawable(R.drawable.pomo_finished_indicator));
+            t2.setBackground(getResources().getDrawable(R.drawable.pomo_finished_indicator));
+            t3.setBackground(getResources().getDrawable(R.drawable.pomo_finished_indicator));
+            t4.setBackground(getResources().getDrawable(R.drawable.pomo_indicator_style));
+        }
+        else {
+            t4.setBackground(getResources().getDrawable(R.drawable.pomo_finished_indicator));
+        }
+    }
+
+
     private void openSettingDialog() {
         ClockDialog clockDialog = new ClockDialog();
         clockDialog.setTargetFragment(PomoFrag.this,1);
@@ -232,14 +264,16 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
 
     private void startTimer() {
         mEndTime = System.currentTimeMillis() + mTimeLeftInMillis;
+        checkSection(sessionID);
+
         mCountDownTimer = new CountDownTimer(mTimeLeftInMillis, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 mTimeLeftInMillis = millisUntilFinished;
                 updateCountDownText();
                 updateClockProgress();
-
             }
+
 
             @Override
             public void onFinish() {
@@ -252,6 +286,7 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
                 }else{
                     vibrator.vibrate(200);
                 }
+
 
                 if(sessionID % 2 == 0){ //enters break session
                     addTimeToDatabase(mStartTimeInMillis/60000);
@@ -431,7 +466,6 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
     // assign them to the variables
     @Override
     public void getTimeData(String focusTime, String shortBreak, String longBreak) {
-        Log.d(TAG, "getTimeData: " + focusTime + shortBreak + longBreak);
         //if the user entered any invalid time then do nothing and stick with default time settings
         //convert string to long and assign variables
         try {

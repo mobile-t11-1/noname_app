@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".LeaderBFrag">
-
+    
     <TextView
         android:id="@+id/textView44"
         android:layout_width="wrap_content"
@@ -12,16 +12,5 @@
         android:text="Leaderboard"
         android:textSize="24sp"
         android:layout_centerInParent="true" />
-
-    <Button
-        android:id="@+id/test_b"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginHorizontal="60dp"
-        android:layout_marginTop="40dp"
-        android:background="@drawable/login_btn_style"
-        android:text="Login"
-        android:textSize="18sp" />
 
 </RelativeLayout>
