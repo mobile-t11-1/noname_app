@@ -50,7 +50,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="16dp"
-            android:src="@drawable/ic_list_enter" />
+            android:src="@drawable/ic_list_enter2" />
 
         <View
             android:id="@+id/divider"

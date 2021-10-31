@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
@@ -16,7 +17,11 @@ import android.text.Spanned;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.RelativeSizeSpan;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -112,6 +117,29 @@ public class ShopLstFrag extends Fragment {
     }
 
     @Override
+    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getActivity().getMenuInflater();
+        inflater.inflate(R.menu.list_item_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+
+        AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        Map<String,Object> itemAtPosition1 = (Map<String,Object>) list.getItemAtPosition(acmi.position);
+        Log.v("long clicked",String.valueOf(itemAtPosition1.get("position")));
+
+        if(item.getItemId() == R.id.delete){
+            Toast.makeText(getActivity().getApplicationContext(), "Delete Clicked", Toast.LENGTH_LONG).show();
+        }else{
+            return false;
+        }
+        return true;
+    }
+
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mAuth = FirebaseAuth.getInstance();
@@ -121,6 +149,7 @@ public class ShopLstFrag extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_shopping_list, container, false);
         list = view.findViewById(R.id.list_main);
+        registerForContextMenu(list); // register listView for context menu
 
         // set add item page jump
         ImageView addButton = view.findViewById(R.id.list_main_addItem);
@@ -152,7 +181,7 @@ public class ShopLstFrag extends Fragment {
             String notesValue = ""; //default notes
             Timestamp dueValue = new Timestamp(new Date()); // default dueDate
             Timestamp createTimeValue = new Timestamp(new Date());
-            int posValue = listItems.size();  // new item will be the last one in the listView
+            long posValue = listItems.size();  // new item will be the last one in the listView
             boolean favoriteValue = false; // default favorite -> false
             String userIDValue = userID;
 
@@ -263,8 +292,8 @@ public class ShopLstFrag extends Fragment {
                         String docID = (String) detail.get("docID");
                         docID = "0Tk3w2rIvq1UtnNUGSdo";
 
-                        getActivity().getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_container, new ListDetailFrag(false, docID, ShopLstFrag.this)).commit();
+//                        getActivity().getSupportFragmentManager().beginTransaction()
+//                                .replace(R.id.fragment_container, new ListDetailFrag(false, docID, ShopLstFrag.this)).commit();
                     }
                 });
             }
