@@ -9,6 +9,7 @@ import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.os.CountDownTimer;
@@ -23,7 +24,22 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import static android.content.Context.MODE_PRIVATE;
 import static android.content.Context.VIBRATOR_SERVICE;
@@ -35,7 +51,7 @@ import static androidx.constraintlayout.motion.utils.Oscillator.TAG;
  * create an instance of this fragment.
  */
 // TODO: 1.5 做传感器关闭屏幕 1. 做session中间的间隔，震动提醒
-public class PomoFrag extends Fragment implements ClockDialog.DialogListener{
+public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -46,6 +62,17 @@ public class PomoFrag extends Fragment implements ClockDialog.DialogListener{
     private String mParam1;
     private String mParam2;
 
+
+    //database related variables
+    private FirebaseFirestore db;
+    private FirebaseAuth mAuth;
+    private String userID;
+    private DocumentReference idRef;
+
+    // Date formatter
+    SimpleDateFormat sdf = new SimpleDateFormat("dd/M/yyyy hh:mm:ss");
+    Date startDate; // record start date
+    int totalFocusTime; // record total focus timme
 
 
     //components from xml
@@ -108,6 +135,13 @@ public class PomoFrag extends Fragment implements ClockDialog.DialogListener{
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_pomo, container, false);
+
+        db = FirebaseFirestore.getInstance();
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
+        userID = mAuth.getCurrentUser().getUid();
+        idRef = db.collection("focusTime").document(userID);
+
         //assignment
         mTextViewCountDown = view.findViewById(R.id.text_view_countdown);
         mTextViewRest = view.findViewById(R.id.text_view_rest);
@@ -369,9 +403,109 @@ public class PomoFrag extends Fragment implements ClockDialog.DialogListener{
         }
     }
 
+    // call this function to get focus time, short break time, long break time
+    // assign them to the variables
     @Override
     public void getTimeData(String focusTime, String shortBreak, String longBreak) {
         Log.d(TAG, "getTimeData: " + focusTime + shortBreak + longBreak);
+    }
+
+    // call this method to focus time to database
+    // duration: focus time to be stored
+    private void addTimeToDatabase(int duration){
+        Calendar calendar = Calendar.getInstance();
+        Date currentDate = calendar.getTime();
+        idRef.get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        DocumentSnapshot document = task.getResult();
+                        // if the document exists
+                        if (document.exists()){
+                            String start = document.getString("start date");
+                            try {
+                                startDate = sdf.parse(start);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            totalFocusTime = document.getLong("total minutes").intValue();
+
+                            // if we the current user has records in database
+                            // we update relevant field depending on the timestamps (within a week)
+                            Map<String, Object> update = createUpdateData(startDate, currentDate, totalFocusTime, duration);
+                            // then we update this map into firestore
+                            idRef.update(update)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void unused) {
+                                            Log.d(TAG, "Successfully Updated!");
+                                        }
+                                    });
+
+                        }
+                        // if there is no such document in firestore
+                        else{
+                            // we create a new record
+                            Map<String, Object> record = new HashMap<>();
+                            String date = sdf.format(currentDate);
+                            record.put("start date", date);
+                            record.put("last date", date);
+                            record.put("total minutes", duration);
+
+                            // add the new record into Firestore
+                            db.collection("focusTime").document(userID)
+                                    .set(record)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void unused) {
+                                            Log.d(TAG, "New record stored!");
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.d(TAG, "Failed to store");
+                                }
+                            });
+                        }
+                    }
+                });
+    }
+
+
+    private Map<String, Object> createUpdateData(Date startDate, Date currentDate, int totalTime, int duration){
+        Map<String, Object> update = new HashMap<>();
+        // convert date into string format
+        String date = sdf.format(currentDate);
+
+        // if within a week, we only update focus time and thisDate
+        if(checkDuration(startDate,currentDate)){
+            update.put("last date", date);
+            update.put("total minutes", totalTime + duration);
+        }else {
+            update.put("start date", date);
+            update.put("last date", date);
+            update.put("total minutes", duration);
+        }
+
+        return update;
+
+    }
+
+    private boolean checkDuration(Date startDate, Date currentDate){
+        //milliseconds
+        long different = currentDate.getTime() - startDate.getTime();
+
+        long secondsInMilli = 1000;
+        long minutesInMilli = secondsInMilli * 60;
+        long hoursInMilli = minutesInMilli * 60;
+        long daysInMilli = hoursInMilli * 24;
+        long elapsedDays = different / daysInMilli;
+
+        if (elapsedDays < 7){
+            return true;
+        }
+
+        return false;
     }
 
 
