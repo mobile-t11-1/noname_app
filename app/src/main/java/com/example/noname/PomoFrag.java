@@ -90,7 +90,9 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
     private boolean mFaceUp; //record the status of the screen
     //private variables
     private int sessionID = 1; //record the current session: odd is work, even is rest
-    private static final long mStartTimeInMillis = 10000; //25*60*1000 25min //set timer
+    private int mStartTimeInMillis = 10000; //25*60*1000 25min //set timer
+    private int sBreakTimeInMillis = 5000;
+    private int lBreakTimeInMillis = 5000;
     private long mTimeLeftInMillis; //remaining time
     private long mEndTime;
     private Vibrator vibrator; // vibrate
@@ -145,8 +147,8 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
         //assignment
         mTextViewCountDown = view.findViewById(R.id.text_view_countdown);
         mTextViewRest = view.findViewById(R.id.text_view_rest);
-        mButtonStartPause = view.findViewById(R.id.button_start_pause);
         mButtonReset = view.findViewById(R.id.button_reset);
+        mButtonStartPause = view.findViewById(R.id.button_start_pause);
         clockProgress = view.findViewById(R.id.clock_progress);
         settingBtn = view.findViewById(R.id.btn_settings);
 
@@ -206,6 +208,7 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
             @Override
             public void onClick(View v) {
                 resetTimer();
+                settingBtn.setVisibility(View.VISIBLE);
             }
         });
 
@@ -216,6 +219,7 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
         ClockDialog clockDialog = new ClockDialog();
         clockDialog.setTargetFragment(PomoFrag.this,1);
         clockDialog.show(getFragmentManager(),"SettingDialog");
+
 
     }
 
@@ -228,13 +232,13 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
 
     private void startTimer() {
         mEndTime = System.currentTimeMillis() + mTimeLeftInMillis;
-
         mCountDownTimer = new CountDownTimer(mTimeLeftInMillis, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 mTimeLeftInMillis = millisUntilFinished;
                 updateCountDownText();
                 updateClockProgress();
+
             }
 
             @Override
@@ -249,10 +253,11 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
                     vibrator.vibrate(200);
                 }
 
-                if(sessionID % 2 == 0){
-                    mTimeLeftInMillis = 5000; //5 min rest 5*60*1000
+                if(sessionID % 2 == 0){ //enters break session
+                    addTimeToDatabase(mStartTimeInMillis/60000);
+                    mTimeLeftInMillis = sBreakTimeInMillis; //5 min rest 5*60*1000
                     if(sessionID == 8){
-                        mTimeLeftInMillis = 20*60*1000; // 20 min last rest
+                        mTimeLeftInMillis = lBreakTimeInMillis; // 20 min last rest
                     }
                     mTextViewRest.setVisibility(View.VISIBLE);
                 }else{
@@ -260,9 +265,11 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
                     mTextViewRest.setVisibility(View.INVISIBLE);
                 }
                 if(sessionID == 9){ //four work sessions then quit
+
+                    //congrats message
+                    mButtonReset.setVisibility(View.VISIBLE);
                     mButtonStartPause.setImageResource(R.drawable.ic_replay);
                     mButtonStartPause.setVisibility(View.VISIBLE);
-                    //mButtonReset.setVisibility(View.VISIBLE);
                     return;
                 }
                 //auto start the next session
@@ -289,6 +296,7 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
         updateWatchInterface();
         //resume button
         mButtonStartPause.setImageResource(R.drawable.ic_play_fill);
+
     }
 
     private void resetTimer() {
@@ -296,6 +304,7 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
         updateCountDownText();
         updateClockProgress();
         updateWatchInterface();
+        mTextViewRest.setVisibility(View.INVISIBLE);
         //reset sessionID
         sessionID = 1;
     }
@@ -344,8 +353,23 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
     }
 
     private void updateClockProgress(){
-        float f = (mTimeLeftInMillis * 1.0f) / mStartTimeInMillis;
-        int percentage = 100 - ((int) (f *100) - 9);
+        int percentage = 0;
+        float f = (mTimeLeftInMillis * 1.0f);
+        if(sessionID == 8){
+            f = f / lBreakTimeInMillis;
+        }else if(sessionID % 2 == 0){
+            f = f / sBreakTimeInMillis;
+        }else {
+            f = f / mStartTimeInMillis;
+        }
+        percentage = 100 - ((int) (f * 100) - 9);
+        if(sessionID == 8 && mTimeLeftInMillis == lBreakTimeInMillis){
+            percentage = 0;
+        }else if(sessionID % 2 == 0 && mTimeLeftInMillis == sBreakTimeInMillis){
+            percentage = 0;
+        }else if(mTimeLeftInMillis == mStartTimeInMillis){
+            percentage = 0;
+        }
         System.out.println(percentage);
 
         clockProgress.setProgress(percentage);
@@ -408,6 +432,28 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
     @Override
     public void getTimeData(String focusTime, String shortBreak, String longBreak) {
         Log.d(TAG, "getTimeData: " + focusTime + shortBreak + longBreak);
+        //if the user entered any invalid time then do nothing and stick with default time settings
+        //convert string to long and assign variables
+        try {
+            mStartTimeInMillis = Integer.parseInt(focusTime) *1000;
+        } catch(NumberFormatException nfe) {
+            System.out.println("Could not parse focus time " + nfe);
+        }
+
+        try {
+            sBreakTimeInMillis = Integer.parseInt(shortBreak) *1000;
+        } catch(NumberFormatException nfe) {
+            System.out.println("Could not parse short break " + nfe);
+        }
+
+        try {
+            lBreakTimeInMillis = Integer.parseInt(longBreak) *1000;
+        } catch(NumberFormatException nfe) {
+            System.out.println("Could not parse long break " + nfe);
+        }
+        settingBtn.setVisibility(View.INVISIBLE);
+        //reset timer to make the assignment effective
+        resetTimer();
     }
 
     // call this method to focus time to database
