@@ -1,11 +1,16 @@
 package com.example.noname;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -62,6 +67,7 @@ public class ListDetailFrag extends Fragment {
     private String docID;
     private String userID;
     private Map<String, Object> docDetails;
+    private DocumentReference docRef;
 
     // views of this object
     private TextView title;
@@ -100,6 +106,8 @@ public class ListDetailFrag extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        docRef = itemsRef.document(docID);
+
         // get the detail page
         View view = inflater.inflate(R.layout.fragment_list_detail, container, false);
 
@@ -145,10 +153,6 @@ public class ListDetailFrag extends Fragment {
                 subitem.setAdapter(items);
                 setListViewHeightBasedOnChildren(subitem);
             }
-
-
-
-
 
             /* item list with section
 
@@ -230,8 +234,19 @@ public class ListDetailFrag extends Fragment {
 
         // back button & save
         backButton.setOnClickListener(v -> {
-            String note = notes.getText().toString().trim();
-
+            docRef.update("notes", notes.getText().toString().trim())
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            Log.d(TAG, "DocumentSnapshot successfully updated!");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w(TAG, "Error updating document", e);
+                        }
+                    });
 
             getActivity().getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, parent).commit();
@@ -245,8 +260,6 @@ public class ListDetailFrag extends Fragment {
             dueButton.setText("Due: " + myCalendar.get(Calendar.DAY_OF_MONTH) + "/" +
                     (myCalendar.get(Calendar.MONTH) + 1) + "/" + myCalendar.get(Calendar.YEAR));
 
-
-            DocumentReference docRef = itemsRef.document(docID);
             docRef.update("dueDate", new com.google.firebase.Timestamp(myCalendar.getTime()))
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
@@ -279,18 +292,100 @@ public class ListDetailFrag extends Fragment {
 
             //registering popup with OnMenuItemClickListener
             popup.setOnMenuItemClickListener(item -> {
-                Toast.makeText(
-                        getActivity(),
-                        "You Clicked : " + item.getTitle(),
-                        Toast.LENGTH_SHORT
-                ).show();
+                String title = item.getTitle().toString();
+                List<Map<String, Object>> databaseMap = (List<Map<String, Object>>) docDetails.get("subitems");
+
+                switch(title) {
+                    case "Check All Items":
+                        for (Map<String, Object> eachItem:subItems) {
+                            eachItem.put("isCheck", R.drawable.ic_list_detail_subitem_full);
+                        }
+
+                        for (Map<String, Object> eachItem:databaseMap) {
+                            eachItem.put("isCheck", true);
+                        }
+
+                        docRef.update("subitems", docDetails.get("subitems"))
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        Log.d(TAG, "DocumentSnapshot successfully updated!");
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.w(TAG, "Error updating document", e);
+                                    }
+                                });
+                        break;
+                    case "Uncheck All Items":
+                        for (Map<String, Object> eachItem:subItems) {
+                            eachItem.put("isCheck", R.drawable.ic_list_detail_subitem_empty);
+                        }
+
+                        for (Map<String, Object> eachItem:databaseMap) {
+                            eachItem.put("isCheck", false);
+                        }
+
+                        docRef.update("subitems", docDetails.get("subitems"))
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        Log.d(TAG, "DocumentSnapshot successfully updated!");
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.w(TAG, "Error updating document", e);
+                                    }
+                                });
+                        break;
+                    default:
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setTitle(R.string.app_name);
+                        builder.setMessage("Do you want to delete this list?");
+                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+
+                                // Delete from server
+                                itemsRef.document(docID)
+                                        .delete()
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                getActivity().getSupportFragmentManager().beginTransaction()
+                                                        .replace(R.id.fragment_container, parent).commit();
+                                                Log.d(TAG, "List item successfully deleted!");
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.w(TAG, "Error deleting List item", e);
+                                            }
+                                        });
+
+                            }
+                        });
+                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                            }
+                        });
+                        AlertDialog alert = builder.create();
+                        alert.show();
+                }
+
+                items.notifyDataSetChanged();
+
                 return true;
             });
 
             popup.show(); //showing popup menu
         });
-
-
 
         additemButton.setOnClickListener(v -> {
             if(additemText.getVisibility() == View.VISIBLE && additemCommit.getVisibility() == View.VISIBLE){
@@ -311,7 +406,6 @@ public class ListDetailFrag extends Fragment {
             newItem.put("position", subItems.size());
             subItems.add(newItem);
 
-            DocumentReference docRef = itemsRef.document(docID);
             List<Map<String, Object>> docDetail = (List<Map<String, Object>>) docDetails.get("subitems");
             Map<String, Object> newItemDetail = new HashMap<>();
             newItemDetail.put("isCheck", false);
@@ -380,7 +474,6 @@ public class ListDetailFrag extends Fragment {
     }
 
     private void readData(FirestoreCallback firestoreCallback) {
-        DocumentReference docRef = itemsRef.document(docID);
         docRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 docDetails = task.getResult().getData();
@@ -427,7 +520,6 @@ public class ListDetailFrag extends Fragment {
             check.setOnClickListener(view1 -> {
                 // locate the current listView item
                 Map<String, Object> curItem = subItems.get(position);
-                DocumentReference docRef = itemsRef.document(docID);
 
                 Map<String, Object> curMap = ((List<Map<String, Object>>) docDetails.get("subitems")).get(position);
                 // click check logic

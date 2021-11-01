@@ -136,6 +136,9 @@
                 android:text="Tap the plus button to add a new to-do."
                 android:textSize="18sp" />
 
+<!--            <com.example.noname.DragSortListView-->
+<!--                xmlns:android="http://bauerca.github.com/drag-sort-listview"/>-->
+
             <ListView
                 android:id="@+id/list_detail_subitem"
                 android:layout_below="@+id/list_detail_empty_prompt"
