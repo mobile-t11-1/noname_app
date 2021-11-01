@@ -5,12 +5,35 @@
     android:layout_height="match_parent"
     tools:context=".LeaderBFrag">
 
-    <TextView
-        android:id="@+id/textView44"
-        android:layout_width="wrap_content"
+
+    <RelativeLayout
+        android:id="@+id/leaderB_layout"
+        android:layout_width="match_parent"
+        android:layout_height="56dp">
+
+        <TextView
+            android:id="@+id/leaderB_head"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#FCEDEA"
+            android:gravity="center"
+            android:text="Leaderdoard"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/list_items_layout"
+        android:layout_below="@+id/leaderB_layout"
         android:layout_height="wrap_content"
-        android:text="Leaderboard"
-        android:textSize="24sp"
-        android:layout_centerInParent="true" />
+        android:layout_width="wrap_content">
+
+        <ListView
+            android:id="@+id/leaderB_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:listitem="@layout/fragment_leader_b_item"/>
+
+    </RelativeLayout>
 
 </RelativeLayout>
