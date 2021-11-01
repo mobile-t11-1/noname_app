@@ -124,6 +124,19 @@ public class ShopLstFrag extends Fragment {
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        listenAnyWhere(view);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        // listen for anywhere except editText to hide the add_list_commit
+        //listenAnyWhere(view);
+    }
+
+    @Override
     public boolean onContextItemSelected(MenuItem item) {
 
         AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
@@ -137,6 +150,7 @@ public class ShopLstFrag extends Fragment {
         }
         return true;
     }
+
 
 
     @Override
@@ -272,8 +286,7 @@ public class ShopLstFrag extends Fragment {
             popup.show(); //showing popup menu
         });
 
-        // listen for anywhere except editText to hide the add_list_commit
-        listenAnyWhere(view);
+
 
         // get documents from fire store
         itemsRef = db.collection("list");
@@ -340,11 +353,12 @@ public class ShopLstFrag extends Fragment {
                             listItems.add(map);
                         }
 
-
-                        items = new ListAdapter(getActivity().getApplicationContext(), listItems, R.layout.fragment_shopping_list_item,
-                                new String[]{"favorite", "title", "due"},
-                                new int[]{R.id.list_item_favorite, R.id.list_item_title, R.id.list_item_due});
-                        firestoreCallback.onCallback(items);
+                        if (getActivity() != null && isAdded()) {
+                            items = new ListAdapter(getActivity().getApplicationContext(), listItems, R.layout.fragment_shopping_list_item,
+                                    new String[]{"favorite", "title", "due"},
+                                    new int[]{R.id.list_item_favorite, R.id.list_item_title, R.id.list_item_due});
+                            firestoreCallback.onCallback(items);
+                        }
                     } else {
 
                     }
@@ -546,7 +560,9 @@ public class ShopLstFrag extends Fragment {
     public void hideEditText() {
         // hide the keyboard
         InputMethodManager inputMethodManager = (InputMethodManager)  getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+        if (getActivity().getCurrentFocus() != null){
+            inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+        }
 
         // finish input
         addList.setImeOptions(EditorInfo.IME_ACTION_DONE);  // hide the keyboard
