@@ -30,18 +30,61 @@
         android:progressDrawable="@drawable/circle_clock" />
 
     <TextView
+        android:id="@+id/section_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="24dp"
+        android:layout_marginTop="200dp"
+        android:background="@drawable/pomo_no_section"
+        />
+
+    <TextView
+        android:id="@+id/section_2"
+        android:layout_below="@+id/section_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="24dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/pomo_no_section"
+        />
+
+    <TextView
+        android:id="@+id/section_3"
+        android:layout_below="@+id/section_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="24dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/pomo_no_section"
+        />
+
+    <TextView
+        android:id="@+id/section_4"
+        android:layout_below="@+id/section_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="24dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/pomo_no_section"
+        />
+
+
+    <TextView
         android:id="@+id/text_view_rest"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="74dp"
         android:layout_marginTop="133dp"
-        android:text="Take a break"
         android:textColor="@color/black"
         android:textSize="48sp"
+        android:text="Take a break"
         android:visibility="invisible"
         tools:visibility="visible" />
 
