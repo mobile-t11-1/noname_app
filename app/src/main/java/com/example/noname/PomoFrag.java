@@ -249,6 +249,7 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
         //congrats message
         mButtonReset.setVisibility(View.INVISIBLE);
         mButtonStartPause.setVisibility(View.VISIBLE);
+        mButtonStartPause.setImageResource(R.drawable.ic_replay);
         mTextViewCountDown.setVisibility(View.INVISIBLE);
         m1.setVisibility(View.VISIBLE);
         m2.setVisibility(View.VISIBLE);
