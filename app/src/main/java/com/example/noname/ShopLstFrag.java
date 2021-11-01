@@ -124,19 +124,6 @@ public class ShopLstFrag extends Fragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        listenAnyWhere(view);
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        // listen for anywhere except editText to hide the add_list_commit
-        //listenAnyWhere(view);
-    }
-
-    @Override
     public boolean onContextItemSelected(MenuItem item) {
 
         AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
@@ -150,7 +137,6 @@ public class ShopLstFrag extends Fragment {
         }
         return true;
     }
-
 
 
     @Override
@@ -209,6 +195,7 @@ public class ShopLstFrag extends Fragment {
             dataMap.put("title", titleValue);
             dataMap.put("userID", userIDValue);
             dataMap.put("docID", newDocID);
+            dataMap.put("subitems", new ArrayList<>());
 
             // update to the server
             newListItem.set(dataMap)
@@ -236,6 +223,7 @@ public class ShopLstFrag extends Fragment {
             adapterItem.put("title", titleValue);
             adapterItem.put("userID", userIDValue);
             adapterItem.put("docID", newDocID);
+            adapterItem.put("subitems", new ArrayList<>());
 
             // update to the listItems for adapter
             listItems.add(adapterItem);
@@ -248,6 +236,9 @@ public class ShopLstFrag extends Fragment {
             // hide the EditText
             addList.setVisibility(View.GONE);
             addListCommit.setVisibility(View.GONE);
+
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, new ListDetailFrag(newDocID, ShopLstFrag.this)).commit();
         });
 
         // make them gone until user click add button
@@ -286,8 +277,6 @@ public class ShopLstFrag extends Fragment {
             popup.show(); //showing popup menu
         });
 
-
-
         // get documents from fire store
         itemsRef = db.collection("list");
         // read data into listView
@@ -303,15 +292,22 @@ public class ShopLstFrag extends Fragment {
                         Toast.makeText(getActivity().getApplicationContext(), ""+position, Toast.LENGTH_SHORT).show();
                         Map<String,Object> detail = listItems.get(position);
                         String docID = (String) detail.get("docID");
-                        docID = "0Tk3w2rIvq1UtnNUGSdo";
 
-//                        getActivity().getSupportFragmentManager().beginTransaction()
-//                                .replace(R.id.fragment_container, new ListDetailFrag(false, docID, ShopLstFrag.this)).commit();
+
+                        getActivity().getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragment_container, new ListDetailFrag(docID, ShopLstFrag.this)).commit();
                     }
                 });
             }
         });
         return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        // listen for anywhere except editText to hide the add_list_commit
+        listenAnyWhere(view);
     }
 
     private void readData(FirestoreCallback firestoreCallback) {
@@ -560,7 +556,7 @@ public class ShopLstFrag extends Fragment {
     public void hideEditText() {
         // hide the keyboard
         InputMethodManager inputMethodManager = (InputMethodManager)  getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
-        if (getActivity().getCurrentFocus() != null){
+        if(getActivity().getCurrentFocus() != null) {
             inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
         }
 
