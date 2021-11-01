@@ -51,7 +51,6 @@ import static androidx.constraintlayout.motion.utils.Oscillator.TAG;
  * create an instance of this fragment.
  */
 // TODO: Zichen: double check if pass in empty string, clock progress needs fixing， facedown text fix
-// TODO: Xinhao: UI fixes, section indicator reset
 public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
 
     // TODO: Rename parameter arguments, choose names that match
@@ -305,7 +304,6 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
 
 
     private void startTimer() {
-
         mEndTime = System.currentTimeMillis() + mTimeLeftInMillis;
         checkSection(sessionID);
 
@@ -336,7 +334,7 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
 
 
                 if(sessionID % 2 == 0){ //enters break session
-                    addTimeToDatabase(mStartTimeInMillis/60000);
+                    addTimeToDatabase(mStartTimeInMillis);
                     mTimeLeftInMillis = sBreakTimeInMillis; //5 min rest 5*60*1000
                     if(sessionID == 8){
                         mTimeLeftInMillis = lBreakTimeInMillis; // 20 min last rest
@@ -576,7 +574,7 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
-                            totalFocusTime = document.getLong("total minutes").intValue();
+                            totalFocusTime = document.getLong("total millis").intValue();
 
                             // if we the current user has records in database
                             // we update relevant field depending on the timestamps (within a week)
@@ -598,7 +596,7 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
                             String date = sdf.format(currentDate);
                             record.put("start date", date);
                             record.put("last date", date);
-                            record.put("total minutes", duration);
+                            record.put("total millis", duration);
 
                             // add the new record into Firestore
                             db.collection("focusTime").document(userID)
