@@ -4,21 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
-
-    <FrameLayout
-        android:id="@+id/fragment_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/nav_bar"/>
+    tools:context=".MapInfoFr">
 
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/nav_bar"
+    <Button
+        android:id="@+id/openMap_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/primary_3"
-        app:menu="@menu/bottom_menu" />
+        android:layout_marginBottom="40dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginHorizontal="60dp"
+        android:background="@drawable/login_btn_style"
+        android:text="Open the map!"
+        android:textSize="16sp" />
 
 </RelativeLayout>

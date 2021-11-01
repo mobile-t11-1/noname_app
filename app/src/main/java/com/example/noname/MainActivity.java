@@ -3,7 +3,6 @@ package com.example.noname;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
 
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -20,9 +19,13 @@ public class MainActivity extends AppCompatActivity {
         // navigation bar
         BottomNavigationView bottomNavigationView = findViewById(R.id.nav_bar);
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
+        bottomNavigationView.getMenu().findItem(R.id.profileFrag).setChecked(true);
+
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, new ProfileFrag()).commit();
 
     }
-
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -31,14 +34,20 @@ public class MainActivity extends AppCompatActivity {
                     Fragment selectedFragment = null;
 
                     switch (item.getItemId()){
+                        case R.id.profileFrag:
+                            selectedFragment = new ProfileFrag();
+                            break;
                         case R.id.shopLstFrag:
                             selectedFragment = new ShopLstFrag();
                             break;
-                        case R.id.mapFrag:
-                            selectedFragment = new MapFrag();
+                        case R.id.mapInfoFrag:
+                            selectedFragment = new MapInfoFr();
                             break;
-                        case R.id.profileFrag:
-                            selectedFragment = new ProfileFrag();
+                        case R.id.pomoFrag:
+                            selectedFragment = new PomoFrag();
+                            break;
+                        case R.id.leaderBFrag:
+                            selectedFragment = new LeaderBFrag();
                             break;
 
                     }

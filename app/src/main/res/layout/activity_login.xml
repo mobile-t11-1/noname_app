@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/primary_2"
+    tools:context=".Login">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="Efficiency+"
+        android:layout_marginTop="120dp"
+        android:textSize="60dp"
+        android:textStyle="bold"/>
+
+
+    <EditText
+        android:id="@+id/textEmailAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+        android:layout_centerHorizontal="true"
+        android:layout_marginHorizontal="60dp"
+        android:layout_marginTop="60dp"
+        android:background="@drawable/text_input_style"
+        android:ems="10"
+        android:hint="Email Address"
+        android:inputType="textEmailAddress"
+        android:padding="10dp"
+        android:textSize="18sp" />
+
+    <EditText
+        android:id="@+id/textPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textEmailAddress"
+        android:layout_centerHorizontal="true"
+        android:layout_marginHorizontal="60dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/text_input_style"
+        android:ems="10"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:padding="10dp"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/login_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textPassword"
+        android:layout_centerHorizontal="true"
+        android:layout_marginHorizontal="60dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/login_btn_style"
+        android:text="Login"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/forget_pw"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/login_btn"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="65dp"
+        android:layout_marginTop="30dp"
+        android:text="Forget Password?"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/register"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/login_btn"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="30dp"
+        android:layout_marginRight="65dp"
+        android:text="Register"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <ProgressBar
+        android:id="@+id/login_progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/register"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="60dp"
+        android:visibility="gone" />
+
+
+
+</RelativeLayout>
