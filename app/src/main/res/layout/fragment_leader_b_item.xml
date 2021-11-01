@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="70dp"
+    android:orientation="vertical"
+    >
+
+    <TextView
+        android:id="@+id/leaderB_num"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="16dp"
+        android:textSize="25sp"
+        android:text="1"
+        android:textStyle="bold"
+        />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/leaderB_avatar_card"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="16dp"
+        android:layout_toEndOf="@id/leaderB_num"
+        android:layout_gravity="center"
+        app:cardCornerRadius="60dp"
+        app:cardBackgroundColor="@color/quantum_grey">
+
+        <ImageView
+            android:id="@+id/leaderB_avatar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/defaultavater" />
+    </androidx.cardview.widget.CardView>
+
+    <LinearLayout
+        android:id="@+id/leaderB_horizontal_layout"
+        android:layout_width="250dp"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_toEndOf="@id/leaderB_avatar_card"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/leaderB_userName"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="User Name"
+            android:textSize="15dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/leaderB_focusTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:text="24h 56m"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            android:maxLength="12"/>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="10dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@id/leaderB_horizontal_layout"
+        android:gravity="center"
+        android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/leaderB_favorite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/ic_list_heart_empty" />
+            <TextView
+                android:id="@+id/leaderB_favorite_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1"
+                android:textSize="15dp"
+                android:maxLength="5"/>
+    </LinearLayout>
+
+
+    <View
+        android:id="@+id/leaderB_divider"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:background="?android:attr/listDivider" />
+</RelativeLayout>
