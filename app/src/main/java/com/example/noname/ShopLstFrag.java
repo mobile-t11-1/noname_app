@@ -1,7 +1,9 @@
 package com.example.noname;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.nfc.Tag;
 import android.os.Build;
@@ -132,40 +134,58 @@ public class ShopLstFrag extends Fragment {
 
         if(item.getItemId() == R.id.delete){
             Toast.makeText(getActivity().getApplicationContext(), "Delete Clicked", Toast.LENGTH_LONG).show();
-            // Delete from listView
-            // First we update other item's position value, all items at the back of the target position are pushed forward by 1
-            for (Map<String, Object> listItem : listItems) {
-                if ((Long)listItem.get("position") > (Long)itemAtPosition.get("position")){
-                    listItem.compute("position", (k,v) -> (Long)v - 1L);
-                }else {
-                    continue;
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Confirmation");
+            builder.setMessage("Do you want to delete this list?");
+            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+
+                    // Delete from listView
+                    // First we update other item's position value, all items at the back of the target position are pushed forward by 1
+                    for (Map<String, Object> listItem : listItems) {
+                        if ((Long)listItem.get("position") > (Long)itemAtPosition.get("position")){
+                            listItem.compute("position", (k,v) -> (Long)v - 1L);
+                        }else {
+                            continue;
+                        }
+                    }
+                    // Then do delete, and notify the adapter
+                    long l = (Long) itemAtPosition.get("position");
+                    int pos = (int) l ;
+                    listItems.remove(pos);
+                    items.notifyDataSetChanged();
+
+
+                    // Delete from server
+                    itemsRef.document((String) itemAtPosition.get("docID"))
+                            .delete()
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.d(TAG, "List item successfully deleted!");
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w(TAG, "Error deleting List item", e);
+                                }
+                            });
+
+                    // Update the changes of position of remain items
+                    posUpdate();
+
                 }
-            }
-            // Then do delete, and notify the adapter
-            long l = (Long) itemAtPosition.get("position");
-            int pos = (int) l ;
-            listItems.remove(pos);
-            items.notifyDataSetChanged();
-
-
-            // Delete from server
-            itemsRef.document((String) itemAtPosition.get("docID"))
-                    .delete()
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d(TAG, "List item successfully deleted!");
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.w(TAG, "Error deleting List item", e);
-                        }
-                    });
-
-            // Update the changes of position of remain items
-            posUpdate();
+            });
+            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog alert = builder.create();
+            alert.show();
         }else{
             return false;
         }

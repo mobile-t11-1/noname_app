@@ -344,7 +344,7 @@ public class ListDetailFrag extends Fragment {
                         break;
                     default:
                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                        builder.setTitle(R.string.app_name);
+                        builder.setTitle("Confirmation");
                         builder.setMessage("Do you want to delete this list?");
                         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
