@@ -127,11 +127,45 @@ public class ShopLstFrag extends Fragment {
     public boolean onContextItemSelected(MenuItem item) {
 
         AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        Map<String,Object> itemAtPosition1 = (Map<String,Object>) list.getItemAtPosition(acmi.position);
-        Log.v("long clicked",String.valueOf(itemAtPosition1.get("position")));
+        Map<String,Object> itemAtPosition = (Map<String,Object>) list.getItemAtPosition(acmi.position);
+        Log.v("long clicked",String.valueOf(itemAtPosition.get("position")));
 
         if(item.getItemId() == R.id.delete){
             Toast.makeText(getActivity().getApplicationContext(), "Delete Clicked", Toast.LENGTH_LONG).show();
+            // Delete from listView
+            // First we update other item's position value, all items at the back of the target position are pushed forward by 1
+            for (Map<String, Object> listItem : listItems) {
+                if ((Long)listItem.get("position") > (Long)itemAtPosition.get("position")){
+                    listItem.compute("position", (k,v) -> (Long)v - 1L);
+                }else {
+                    continue;
+                }
+            }
+            // Then do delete, and notify the adapter
+            long l = (Long) itemAtPosition.get("position");
+            int pos = (int) l ;
+            listItems.remove(pos);
+
+
+            // Delete from server
+            itemsRef.document((String) itemAtPosition.get("docID"))
+                    .delete()
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d(TAG, "List item successfully deleted!");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w(TAG, "Error deleting List item", e);
+                        }
+                    });
+
+            // Update the changes of position of remain items
+            posUpdate();
+            items.notifyDataSetChanged();
         }else{
             return false;
         }
