@@ -50,7 +50,7 @@ import static androidx.constraintlayout.motion.utils.Oscillator.TAG;
  * Use the {@link PomoFrag#newInstance} factory method to
  * create an instance of this fragment.
  */
-// TODO: 1.5 做传感器关闭屏幕 1. 做session中间的间隔，震动提醒
+// TODO: Zichen: double check if pass in empty string, clock progress needs fixing， facedown text fix
 // TODO: Xinhao: UI fixes, section indicator reset
 public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
 
@@ -179,12 +179,14 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
                 // screen face down
                 if(sensorEvent.values[0] < proximitySensor.getMaximumRange()){
                     if(!mTimerRunning){
+                        m0.setVisibility(View.INVISIBLE);
                         startTimer();
                     }
                     mFaceUp = false;
                 }else{ // screen face up
                     if(mTimerRunning && sessionID %2 != 0){
                         pauseTimer();
+                        m0.setVisibility(View.VISIBLE);
                     }
                     mFaceUp = true;
                 }
@@ -456,6 +458,7 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
         editor.putLong("millisLeft", mTimeLeftInMillis);
         editor.putBoolean("timerRunning", mTimerRunning);
         editor.putLong("endTime", mEndTime);
+        editor.putInt("sessionID", sessionID);
 
         editor.apply();
 
@@ -477,6 +480,7 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
         mStartTimeInMillis = prefs.getInt("focusTime", 10000);
         sBreakTimeInMillis = prefs.getInt("sBreakTime", 5000);
         lBreakTimeInMillis = prefs.getInt("lBreakTime", 5000);
+        sessionID = prefs.getInt("sessionID", 1);
 
         if(sessionID % 2 == 0) {
 
@@ -507,9 +511,16 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
         }
 
         mTimeLeftInMillis = prefs.getInt("focusTime", mStartTimeInMillis);
-
+        checkSection(sessionID);
         clockProgress.setProgress(0);
         updateCountDownText();
+        if(sessionID != 1){
+            settingBtn.setVisibility(View.INVISIBLE);
+        }
+        if(sessionID %2 != 0){
+            m0.setVisibility(View.VISIBLE);
+        }
+
     }
 
     // call this function to get focus time, short break time, long break time
