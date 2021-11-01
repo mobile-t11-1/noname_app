@@ -145,6 +145,7 @@ public class ShopLstFrag extends Fragment {
             long l = (Long) itemAtPosition.get("position");
             int pos = (int) l ;
             listItems.remove(pos);
+            items.notifyDataSetChanged();
 
 
             // Delete from server
@@ -165,7 +166,6 @@ public class ShopLstFrag extends Fragment {
 
             // Update the changes of position of remain items
             posUpdate();
-            items.notifyDataSetChanged();
         }else{
             return false;
         }
