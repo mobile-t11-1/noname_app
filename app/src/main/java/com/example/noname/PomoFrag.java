@@ -50,7 +50,7 @@ import static androidx.constraintlayout.motion.utils.Oscillator.TAG;
  * Use the {@link PomoFrag#newInstance} factory method to
  * create an instance of this fragment.
  */
-// TODO: 1.5 做传感器关闭屏幕 1. 做session中间的间隔，震动提醒
+// TODO: 1.final page 2.facedown 关闭屏幕
 public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
 
     // TODO: Rename parameter arguments, choose names that match
@@ -91,8 +91,8 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
     //private variables
     private int sessionID = 1; //record the current session: odd is work, even is rest
     private int mStartTimeInMillis = 10000; //25*60*1000 25min //set timer
-    private int sBreakTimeInMillis = 5000;
-    private int lBreakTimeInMillis = 5000;
+    private int sBreakTimeInMillis = 5000; //short break time
+    private int lBreakTimeInMillis = 5000; //long break time
     private long mTimeLeftInMillis; //remaining time
     private long mEndTime;
     private Vibrator vibrator; // vibrate
@@ -169,11 +169,14 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
                     if(!mTimerRunning){
                         startTimer();
                     }
+                    mFaceUp = false;
                 }else{ // screen face up
-                    if(mTimerRunning){
+                    if(mTimerRunning && sessionID %2 != 0){
                         pauseTimer();
                     }
+                    mFaceUp = true;
                 }
+                //System.out.println("faceup: " + mFaceUp);
             }
 
             @Override
@@ -213,6 +216,7 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
         });
 
         return view;
+
     }
 
     private void openSettingDialog() {
@@ -231,10 +235,14 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
 
 
     private void startTimer() {
+
         mEndTime = System.currentTimeMillis() + mTimeLeftInMillis;
         mCountDownTimer = new CountDownTimer(mTimeLeftInMillis, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
+                if(mFaceUp && sessionID % 2 != 0){
+                    pauseTimer();
+                }
                 mTimeLeftInMillis = millisUntilFinished;
                 updateCountDownText();
                 updateClockProgress();
@@ -245,6 +253,7 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
             public void onFinish() {
                 mTimerRunning = false;
                 sessionID += 1;
+                System.out.println(sessionID);
                 //let the phone vibrates
                 if(Build.VERSION.SDK_INT >= 26) {
                     vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE));
@@ -291,7 +300,7 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
     }
 
     private void pauseTimer() {
-        mCountDownTimer.cancel();
+        mCountDownTimer.cancel(); //nullpointerexception
         mTimerRunning = false;
         updateWatchInterface();
         //resume button
@@ -300,13 +309,17 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
     }
 
     private void resetTimer() {
+        if(mTimerRunning){
+            pauseTimer();
+        }
+        //reset sessionID
+        sessionID = 1;
         mTimeLeftInMillis = mStartTimeInMillis;
         updateCountDownText();
         updateClockProgress();
         updateWatchInterface();
         mTextViewRest.setVisibility(View.INVISIBLE);
-        //reset sessionID
-        sessionID = 1;
+
     }
 
     private void updateCountDownText() {
@@ -330,29 +343,11 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
     private void updateWatchInterface() {
         if (mTimerRunning) {
             mButtonReset.setVisibility(View.VISIBLE);
-            //mButtonStartPause.setImageResource(R.drawable.ic_pause);
-        } else {
-            //mButtonStartPause.setText("Start");
-
-            if (mTimeLeftInMillis < 1000) {
-                //mButtonStartPause.setVisibility(View.INVISIBLE);
-                mButtonReset.setVisibility(View.VISIBLE);
-            } else {
-                mButtonReset.setVisibility(View.VISIBLE);
-                //mButtonStartPause.setVisibility(View.VISIBLE);
-            }
-
-            if (mTimeLeftInMillis < mStartTimeInMillis) {
-                mButtonReset.setVisibility(View.VISIBLE);
-                //mButtonStartPause.setImageResource(R.drawable.ic_play_fill);
-            } else {
-                mButtonReset.setVisibility(View.VISIBLE);
-                //mButtonStartPause.setImageResource(R.drawable.ic_play_fill);
-            }
+            settingBtn.setVisibility(View.INVISIBLE);
         }
     }
 
-    private void updateClockProgress(){
+    private void updateClockProgress() {
         int percentage = 0;
         float f = (mTimeLeftInMillis * 1.0f);
         if(sessionID == 8){
@@ -370,7 +365,7 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
         }else if(mTimeLeftInMillis == mStartTimeInMillis){
             percentage = 0;
         }
-        System.out.println(percentage);
+        //System.out.println(percentage);
 
         clockProgress.setProgress(percentage);
     }
@@ -381,50 +376,69 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
     @Override
     public void onStop() {
         super.onStop();
-
         SharedPreferences prefs = getActivity().getSharedPreferences("prefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
-        
+
+        editor.putInt("focusTime", mStartTimeInMillis);
+        editor.putInt("sBreakTime", sBreakTimeInMillis);
+        editor.putInt("lBreakTime", lBreakTimeInMillis);
         editor.putLong("millisLeft", mTimeLeftInMillis);
         editor.putBoolean("timerRunning", mTimerRunning);
         editor.putLong("endTime", mEndTime);
 
         editor.apply();
 
+        if(sessionID % 2 != 0 && mTimerRunning){
+            pauseTimer();
+        }
+
         if (mCountDownTimer != null) {
             mCountDownTimer.cancel();
         }
+
     }
 
     //To resume the timer when the app opens back up
     @Override
     public void onStart() {
         super.onStart();
-
         SharedPreferences prefs = getActivity().getSharedPreferences("prefs", MODE_PRIVATE);
-        //possible bug
-        //mStartTimeInMillis = prefs.getLong("startTimeInMillis", 900000);
-        mTimeLeftInMillis = prefs.getLong("millisLeft", mStartTimeInMillis);
-        mTimerRunning = prefs.getBoolean("timerRunning", false);
+        mStartTimeInMillis = prefs.getInt("focusTime", 10000);
+        sBreakTimeInMillis = prefs.getInt("sBreakTime", 5000);
+        lBreakTimeInMillis = prefs.getInt("lBreakTime", 5000);
 
-        updateCountDownText();
-        updateClockProgress();
-        updateWatchInterface();
+        if(sessionID % 2 == 0) {
 
-        if (mTimerRunning) {
-            mEndTime = prefs.getLong("endTime", 0);
-            mTimeLeftInMillis = mEndTime - System.currentTimeMillis();
+            //possible bug
+            //mStartTimeInMillis = prefs.getLong("startTimeInMillis", 900000);
+            mTimeLeftInMillis = prefs.getLong("millisLeft", mStartTimeInMillis);
+            mTimerRunning = prefs.getBoolean("timerRunning", false);
 
-            if (mTimeLeftInMillis < 0) {
-                mTimeLeftInMillis = 0;
-                mTimerRunning = false;
-                updateCountDownText();
-                updateClockProgress();
-                updateWatchInterface();
-            } else {
-                startTimer();
+            updateCountDownText();
+            updateClockProgress();
+            updateWatchInterface();
+
+            if (mTimerRunning) {
+                mEndTime = prefs.getLong("endTime", 0);
+                mTimeLeftInMillis = mEndTime - System.currentTimeMillis();
+
+                if (mTimeLeftInMillis < 0) {
+                    mTimeLeftInMillis = 0;
+                    mTimerRunning = false;
+                    updateCountDownText();
+                    updateClockProgress();
+                    updateWatchInterface();
+                } else {
+                    startTimer();
+                }
             }
+            return;
         }
+
+        mTimeLeftInMillis = prefs.getInt("focusTime", mStartTimeInMillis);
+
+        clockProgress.setProgress(1);
+        updateCountDownText();
     }
 
     // call this function to get focus time, short break time, long break time
@@ -434,23 +448,30 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
         Log.d(TAG, "getTimeData: " + focusTime + shortBreak + longBreak);
         //if the user entered any invalid time then do nothing and stick with default time settings
         //convert string to long and assign variables
-        try {
-            mStartTimeInMillis = Integer.parseInt(focusTime) *1000;
-        } catch(NumberFormatException nfe) {
-            System.out.println("Could not parse focus time " + nfe);
+
+        if(focusTime != "0") {
+            try {
+                mStartTimeInMillis = Integer.parseInt(focusTime) * 1000;
+            } catch (NumberFormatException nfe) {
+                System.out.println("Could not parse focus time " + nfe);
+            }
+        }
+        if(shortBreak != "0") {
+            try {
+                sBreakTimeInMillis = Integer.parseInt(shortBreak) * 1000;
+            } catch (NumberFormatException nfe) {
+                System.out.println("Could not parse short break " + nfe);
+            }
         }
 
-        try {
-            sBreakTimeInMillis = Integer.parseInt(shortBreak) *1000;
-        } catch(NumberFormatException nfe) {
-            System.out.println("Could not parse short break " + nfe);
+        if(longBreak != "0"){
+            try {
+                lBreakTimeInMillis = Integer.parseInt(longBreak) *1000;
+            } catch(NumberFormatException nfe) {
+                System.out.println("Could not parse long break " + nfe);
+            }
         }
 
-        try {
-            lBreakTimeInMillis = Integer.parseInt(longBreak) *1000;
-        } catch(NumberFormatException nfe) {
-            System.out.println("Could not parse long break " + nfe);
-        }
         settingBtn.setVisibility(View.INVISIBLE);
         //reset timer to make the assignment effective
         resetTimer();

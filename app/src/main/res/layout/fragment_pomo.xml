@@ -49,10 +49,16 @@
         android:id="@+id/button_start_pause"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:layout_centerHorizontal="true"
         android:layout_below="@+id/clock_progress"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="17dp"
+        android:layout_marginTop="-1dp"
+        android:layout_marginEnd="110dp"
+        android:layout_toEndOf="@+id/button_reset"
         android:background="@drawable/small_btn_style"
-        android:src="@drawable/ic_play_fill" />
+        android:src="@drawable/ic_play_fill"
+        android:visibility="invisible"
+        tools:visibility="visible" />/>
 
     <ImageButton
         android:id="@+id/button_reset"
@@ -72,7 +78,7 @@
         android:background="@drawable/small_btn_style"
         android:src="@drawable/ic_settings"
         android:visibility="visible"
-        tools:visibility="visible" />/>
+        tools:visibility="visible" />
 
 
 </RelativeLayout>
