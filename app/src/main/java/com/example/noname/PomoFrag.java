@@ -94,7 +94,7 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
     private int sessionID = 1; //record the current session: odd is work, even is rest
     private int mStartTimeInMillis = 10000; //25*60*1000 25min //set timer
     private int sBreakTimeInMillis = 5000; //short break time
-    private int lBreakTimeInMillis = 5000; //long break time
+    private int lBreakTimeInMillis = 5000; //long break time 
     private long mTimeLeftInMillis; //remaining time
     private long mEndTime;
     private Vibrator vibrator; // vibrate
