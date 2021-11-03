@@ -17,7 +17,7 @@
         android:layout_marginLeft="30dp"
         android:layout_marginTop="40dp"
         android:layout_gravity="center"
-        app:cardCornerRadius="60dp"
+        app:cardCornerRadius="40dp"
         app:cardBackgroundColor="@color/quantum_grey">
         <ImageView
             android:id="@+id/profile_avatar"

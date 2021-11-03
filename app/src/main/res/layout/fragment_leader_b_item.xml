@@ -15,6 +15,9 @@
         android:layout_marginStart="16dp"
         android:textSize="25sp"
         android:text="1"
+        android:textAlignment="center"
+        android:maxLength="2"
+        android:minEms="1"
         android:textStyle="bold"
         />
 
@@ -24,10 +27,10 @@
         android:layout_height="60dp"
         android:layout_alignParentTop="true"
         android:layout_marginTop="5dp"
-        android:layout_marginLeft="16dp"
+        android:layout_marginStart="10dp"
         android:layout_toEndOf="@id/leaderB_num"
         android:layout_gravity="center"
-        app:cardCornerRadius="60dp"
+        app:cardCornerRadius="30dp"
         app:cardBackgroundColor="@color/quantum_grey">
 
         <ImageView
@@ -43,21 +46,27 @@
         android:layout_height="match_parent"
         android:orientation="horizontal"
         android:layout_toEndOf="@id/leaderB_avatar_card"
-        android:gravity="center">
+        >
 
         <TextView
             android:id="@+id/leaderB_userName"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="User Name"
+            android:layout_marginLeft="10dp"
             android:textSize="15dp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:maxLength="13"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/leaderB_focusTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_marginLeft="50dp"
             android:text="24h 56m"
             android:textSize="18dp"
             android:textStyle="bold"
@@ -85,9 +94,11 @@
                 android:id="@+id/leaderB_favorite_num"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1"
+                android:text="0"
                 android:textSize="15dp"
-                android:maxLength="5"/>
+                android:textAlignment="center"
+                android:maxLength="5"
+                android:minEms="5"/>
     </LinearLayout>
 
 
