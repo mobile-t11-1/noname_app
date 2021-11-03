@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.os.CountDownTimer;
+import android.os.PowerManager;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
@@ -83,13 +84,14 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
     private ImageButton settingBtn;
     private ProgressBar clockProgress;
     private TextView t1,t2,t3,t4;
-    private TextView m0, m1, m2;
+    private TextView mTextViewInstruction, mTextViewEnd, mTextViewEnd2;
 
     private CountDownTimer mCountDownTimer;
 
 
     private boolean mTimerRunning; //record the status of the timer
     private boolean mFaceUp; //record the status of the screen
+    private boolean screenOn; //record if we stop the app by locking the screen
     //private variables
     private int sessionID = 1; //record the current session: odd is work, even is rest
     private int mStartTimeInMillis = 10000; //25*60*1000 25min //set timer
@@ -150,7 +152,7 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
         mTextViewCountDown = view.findViewById(R.id.text_view_countdown);
         mTextViewRest = view.findViewById(R.id.text_view_rest);
         mButtonReset = view.findViewById(R.id.button_reset);
-        mButtonStartPause = view.findViewById(R.id.button_start_pause);
+        mButtonStartPause = view.findViewById(R.id.button_restart);
         clockProgress = view.findViewById(R.id.clock_progress);
         settingBtn = view.findViewById(R.id.btn_settings);
 
@@ -159,9 +161,9 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
         t3 = view.findViewById(R.id.section_3);
         t4 = view.findViewById(R.id.section_4);
 
-        m0 = view.findViewById(R.id.pomo_instruction);
-        m1 = view.findViewById(R.id.text_finished);
-        m2 = view.findViewById(R.id.text_restart);
+        mTextViewInstruction = view.findViewById(R.id.pomo_instruction);
+        mTextViewEnd = view.findViewById(R.id.text_finished);
+        mTextViewEnd2 = view.findViewById(R.id.text_restart);
 
         //define vibrator
         vibrator = (Vibrator) getActivity().getSystemService(VIBRATOR_SERVICE);
@@ -178,14 +180,12 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
                 // screen face down
                 if(sensorEvent.values[0] < proximitySensor.getMaximumRange()){
                     if(!mTimerRunning){
-                        m0.setVisibility(View.INVISIBLE);
                         startTimer();
                     }
                     mFaceUp = false;
                 }else{ // screen face up
                     if(mTimerRunning && sessionID %2 != 0){
                         pauseTimer();
-                        m0.setVisibility(View.VISIBLE);
                     }
                     mFaceUp = true;
                 }
@@ -227,7 +227,6 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
             @Override
             public void onClick(View v) {
                 resetTimer();
-                startView();
             }
         });
 
@@ -241,9 +240,9 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
         mButtonReset.setVisibility(View.INVISIBLE);
         resetIndicators();
         mTextViewCountDown.setVisibility(View.VISIBLE);
-        m0.setVisibility(View.VISIBLE);
-        m1.setVisibility(View.INVISIBLE);
-        m2.setVisibility(View.INVISIBLE);
+        mTextViewInstruction.setVisibility(View.VISIBLE);
+        mTextViewEnd.setVisibility(View.INVISIBLE);
+        mTextViewEnd2.setVisibility(View.INVISIBLE);
     }
 
     private void endView(){
@@ -252,8 +251,8 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
         mButtonStartPause.setVisibility(View.VISIBLE);
         mButtonStartPause.setImageResource(R.drawable.ic_replay);
         mTextViewCountDown.setVisibility(View.INVISIBLE);
-        m1.setVisibility(View.VISIBLE);
-        m2.setVisibility(View.VISIBLE);
+        mTextViewEnd.setVisibility(View.VISIBLE);
+        mTextViewEnd2.setVisibility(View.VISIBLE);
     }
 
 
@@ -334,18 +333,18 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
 
 
                 if(sessionID % 2 == 0){ //enters break session
-                    addTimeToDatabase(mStartTimeInMillis);
+                    //add focus time to db
+                    //addTimeToDatabase(mStartTimeInMillis);
                     mTimeLeftInMillis = sBreakTimeInMillis; //5 min rest 5*60*1000
                     if(sessionID == 8){
                         mTimeLeftInMillis = lBreakTimeInMillis; // 20 min last rest
                     }
-                    mTextViewRest.setVisibility(View.VISIBLE);
                 }else{
                     mTimeLeftInMillis = mStartTimeInMillis;
-                    mTextViewRest.setVisibility(View.INVISIBLE);
                 }
                 if(sessionID == 9){ //four work sessions then quit
                     endView();
+                    onPause();
                     return;
                 }
                 //auto start the next session
@@ -367,12 +366,9 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
     }
 
     private void pauseTimer() {
-        mCountDownTimer.cancel(); //nullpointerexception
+        mCountDownTimer.cancel();
         mTimerRunning = false;
         updateWatchInterface();
-        //resume button
-        mButtonStartPause.setImageResource(R.drawable.ic_play_fill);
-
     }
 
 
@@ -380,6 +376,7 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
         if(mTimerRunning){
             pauseTimer();
         }
+        resetIndicators();
         //reset sessionID
         sessionID = 1;
         mTimeLeftInMillis = mStartTimeInMillis;
@@ -387,7 +384,9 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
         updateClockProgress();
         updateWatchInterface();
         mTextViewRest.setVisibility(View.INVISIBLE);
-
+        mButtonReset.setVisibility(View.INVISIBLE);
+        settingBtn.setVisibility(View.VISIBLE);
+        sensorManager.registerListener(proximityListener, proximitySensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     private void updateCountDownText() {
@@ -410,11 +409,23 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
 
 
     private void updateWatchInterface() {
+
         if (mTimerRunning) {
             mButtonReset.setVisibility(View.VISIBLE);
             settingBtn.setVisibility(View.INVISIBLE);
             mButtonStartPause.setVisibility(View.INVISIBLE);
+            mTextViewInstruction.setVisibility(View.INVISIBLE);
+            if(sessionID % 2 == 0){
+                mTextViewRest.setVisibility(View.VISIBLE);
+            }else{
+                mTextViewRest.setVisibility(View.INVISIBLE);
+            }
             //mButtonStartPause.setImageResource(R.drawable.ic_pause);
+        }else{
+            if(sessionID % 2 != 0){
+                mTextViewInstruction.setVisibility(View.VISIBLE);
+            }
+
         }
     }
 
@@ -467,6 +478,12 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
         if (mCountDownTimer != null) {
             mCountDownTimer.cancel();
         }
+        PowerManager pm = (PowerManager) getActivity().getSystemService(Context.POWER_SERVICE);
+        if (pm.isScreenOn()) {
+            screenOn = true;
+        }else{
+            screenOn = false;
+        }
 
     }
 
@@ -474,18 +491,19 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
     @Override
     public void onStart() {
         super.onStart();
+        sensorManager.registerListener(proximityListener, proximitySensor, SensorManager.SENSOR_DELAY_NORMAL);
         SharedPreferences prefs = getActivity().getSharedPreferences("prefs", MODE_PRIVATE);
         mStartTimeInMillis = prefs.getInt("focusTime", 10000);
         sBreakTimeInMillis = prefs.getInt("sBreakTime", 5000);
         lBreakTimeInMillis = prefs.getInt("lBreakTime", 5000);
         sessionID = prefs.getInt("sessionID", 1);
+        mTimerRunning = prefs.getBoolean("timerRunning", false);
 
         if(sessionID % 2 == 0) {
 
             //possible bug
             //mStartTimeInMillis = prefs.getLong("startTimeInMillis", 900000);
             mTimeLeftInMillis = prefs.getLong("millisLeft", mStartTimeInMillis);
-            mTimerRunning = prefs.getBoolean("timerRunning", false);
 
             updateCountDownText();
             updateClockProgress();
@@ -507,16 +525,28 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
             }
             return;
         }
+        if(!screenOn && mTimerRunning){
+            mEndTime = prefs.getLong("endTime", 0);
+            mTimeLeftInMillis = mEndTime - System.currentTimeMillis();
 
-        mTimeLeftInMillis = prefs.getInt("focusTime", mStartTimeInMillis);
-        checkSection(sessionID);
-        clockProgress.setProgress(0);
-        updateCountDownText();
-        if(sessionID != 1){
-            settingBtn.setVisibility(View.INVISIBLE);
-        }
-        if(sessionID %2 != 0){
-            m0.setVisibility(View.VISIBLE);
+            if (mTimeLeftInMillis < 0) {
+                mTimeLeftInMillis = 0;
+                mTimerRunning = false;
+                updateCountDownText();
+                updateClockProgress();
+                updateWatchInterface();
+            } else {
+                startTimer();
+            }
+        }else {
+            mTimeLeftInMillis = prefs.getInt("focusTime", mStartTimeInMillis);
+            checkSection(sessionID);
+            clockProgress.setProgress(0);
+            updateCountDownText();
+
+            if (sessionID == 1) {
+                resetTimer();
+            }
         }
 
     }
@@ -551,7 +581,6 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
             }
         }
 
-        settingBtn.setVisibility(View.INVISIBLE);
         //reset timer to make the assignment effective
         resetTimer();
     }

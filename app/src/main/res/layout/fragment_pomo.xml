@@ -130,7 +130,7 @@
 
 
     <ImageButton
-        android:id="@+id/button_start_pause"
+        android:id="@+id/button_restart"
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_centerHorizontal="true"
