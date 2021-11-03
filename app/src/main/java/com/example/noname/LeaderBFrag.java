@@ -27,6 +27,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -110,6 +111,7 @@ public class LeaderBFrag extends Fragment {
                                 map.put("rank", ++rank);
                                 map.put("focusTime", ftParse);
                                 map.put("userName", "");
+                                map.put("favorite", R.drawable.ic_list_heart_full);
                                 listItems.add(map);
                             }
                             loadUserInfo(); // load user collection and also the image storage
@@ -126,7 +128,7 @@ public class LeaderBFrag extends Fragment {
         // invoke function for creating list adapter
         createListView();
 
-        // for each user, load the corresponding focusTime document and also the image storage
+        // for each item, load the corresponding user info
         for (Map<String, Object> listItem : listItems) {
             String uid = (String) listItem.get("userID");
             userRef.document(uid)
@@ -137,21 +139,16 @@ public class LeaderBFrag extends Fragment {
                             DocumentSnapshot userDoc = task1.getResult();
                             Map<String, Object> userData = userDoc.getData();
                             String userName = (String) userData.get("User Name");
+                            long heartNum = (long) userData.get("Heart Number");
                             listItem.put("userName", userName);
+                            listItem.put("heartNum", heartNum);
                             Log.d(TAG, "new name: " + (String) listItem.get("userName"));
                         }else {
                             Log.d(TAG, "Error loading user document");
                         }
                         items.notifyDataSetChanged();
             });
-//            // load the avatar from the firebase
-//            StorageReference sr = storage.child("users/" + uid + "/avatar.jpg");
-//            sr.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-//                @Override
-//                public void onSuccess(Uri uri) {
-//                    Picasso.get().load(uri).into(avatar);
-//                }
-//            });
+
         }
     }
 
@@ -160,8 +157,8 @@ public class LeaderBFrag extends Fragment {
     private void createListView(){
         if (getActivity() != null && isAdded()) {
             items = new leaderAdapter(getActivity().getApplicationContext(), listItems, R.layout.fragment_leader_b_item,
-                    new String[]{"rank", "userName", "focusTime"},
-                    new int[]{R.id.leaderB_num, R.id.leaderB_userName, R.id.leaderB_focusTime});
+                    new String[]{"rank", "userName", "focusTime", "favorite", "heartNum"},
+                    new int[]{R.id.leaderB_num, R.id.leaderB_userName, R.id.leaderB_focusTime, R.id.leaderB_favorite, R.id.leaderB_favorite_num});
             list.setAdapter(items);
         }
     }
@@ -198,73 +195,22 @@ public class LeaderBFrag extends Fragment {
             });
 
 
-//            ImageView imageView=(ImageView) view.findViewById(R.id.list_item_favorite);
-//            imageView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    Toast.makeText(getActivity().getApplicationContext(), listItems.get(position).get("favorite").toString(), Toast.LENGTH_SHORT).show();
-//                    // locate the current listView item
-//                    Map<String, Object> curItem = listItems.get(position);
-//                    // locate the corresponding document id of this current item
-//                    //String curDocID = itemToDoc.get(curItem);
-//                    String curDocID = (String) curItem.get("docID");
-//                    // get the document reference
-//                    DocumentReference curDoc = itemsRef.document(curDocID);
-//
-//                    // click heart logic
-//                    if((int) curItem.get("favorite") == R.drawable.ic_list_heart_full){
-//                        curItem.put("favorite", R.drawable.ic_list_heart_empty);
-//                        // The hashcode of curItem may change, so re-put it
-//                        curDoc.update("favorite", false)
-//                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                    @Override
-//                                    public void onSuccess(Void unused) {
-//                                        Log.d(TAG, "DocumentSnapshot successfully updated!");
-//                                    }
-//                                })
-//                                .addOnFailureListener(new OnFailureListener() {
-//                                    @Override
-//                                    public void onFailure(@NonNull Exception e) {
-//                                        Log.w(TAG, "Error updating document", e);
-//                                    }
-//                                });
-//                        // sort by heart
-//                        heartSort();
-//                    }else{
-//                        curItem.put("favorite", R.drawable.ic_list_heart_full);
-//                        // make the latest heart to be the top one (instead of only using heartSort)
-//                        for (Map<String, Object> item : listItems) {
-//                            if ((Long)item.get("position") < (Long)curItem.get("position")){
-//                                item.compute("position", (k,v) -> (Long)v + 1L);
-//                            }else {
-//                                continue;
-//                            }
-//                        }
-//                        curItem.put("position",(Long) 0L);
-//
-//                        curDoc.update("favorite", true)
-//                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                    @Override
-//                                    public void onSuccess(Void unused) {
-//                                        Log.d(TAG, "DocumentSnapshot successfully updated!");
-//                                    }
-//                                })
-//                                .addOnFailureListener(new OnFailureListener() {
-//                                    @Override
-//                                    public void onFailure(@NonNull Exception e) {
-//                                        Log.w(TAG, "Error updating document", e);
-//                                    }
-//                                });
-//
-//                        // sort by position
-//                        positionSort();
-//                    }
-//
-//                    // call posUpdate function to update the position of each item
-//                    posUpdate();
-//                    notifyDataSetChanged();
-//                }
-//            });
+            ImageView imageView=(ImageView) view.findViewById(R.id.leaderB_favorite);
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(getActivity().getApplicationContext(), "Successfully encourage", Toast.LENGTH_SHORT).show();
+                    // locate the current listView item
+                    Map<String, Object> curItem = listItems.get(position);
+                    // locate the corresponding user document
+                    String userID = (String) curItem.get("userID");
+                    // get the document reference
+                    DocumentReference curDoc = userRef.document(userID);
+                    curDoc.update("Heart Number", FieldValue.increment(1));
+                    curItem.compute("heartNum", (k,v) -> (Long)v + 1L);
+                    notifyDataSetChanged();
+                }
+            });
             return view;
 
         }

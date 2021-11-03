@@ -53,9 +53,9 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="User Name"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="15dp"
             android:textSize="15dp"
-            android:gravity="center"
+            android:gravity="left"
             android:layout_gravity="center"
             android:maxLength="13"
             android:textStyle="bold" />
@@ -64,13 +64,12 @@
             android:id="@+id/leaderB_focusTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:gravity="left"
             android:layout_gravity="center"
-            android:layout_marginLeft="25dp"
+            android:layout_marginLeft="30dp"
             android:text="111h 11m"
             android:textSize="18dp"
             android:textStyle="bold"
-            android:textAlignment="center"
             android:minEms="8"
             android:maxLength="8"/>
 

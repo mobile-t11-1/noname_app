@@ -18,7 +18,7 @@
             android:layout_height="match_parent"
             android:background="#FCEDEA"
             android:gravity="center"
-            android:text="List"
+            android:text="To-do List"
             android:textSize="20dp"
             android:textStyle="bold" />
 

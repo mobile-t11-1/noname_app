@@ -30,7 +30,7 @@
                     android:id="@+id/list_item_title"
                     android:layout_width="200dp"
                     android:layout_height="25dp"
-                    android:text="Shopping List"
+                    android:text="To-do list"
                     android:textSize="18dp"
                     android:textStyle="bold"/>
                 <TextView
