@@ -11,6 +11,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
+    private ShopLstFrag listFrag;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +40,10 @@ public class MainActivity extends AppCompatActivity {
                             selectedFragment = new ProfileFrag();
                             break;
                         case R.id.shopLstFrag:
-                            selectedFragment = new ShopLstFrag();
+                            if(listFrag == null){
+                                listFrag = new ShopLstFrag();
+                            }
+                            selectedFragment = listFrag;
                             break;
                         case R.id.mapInfoFrag:
                             selectedFragment = new MapInfoFr();
