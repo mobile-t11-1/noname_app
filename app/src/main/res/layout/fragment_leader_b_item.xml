@@ -66,11 +66,13 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_gravity="center"
-            android:layout_marginLeft="50dp"
-            android:text="24h 56m"
+            android:layout_marginLeft="25dp"
+            android:text="111h 11m"
             android:textSize="18dp"
             android:textStyle="bold"
-            android:maxLength="12"/>
+            android:textAlignment="center"
+            android:minEms="8"
+            android:maxLength="8"/>
 
     </LinearLayout>
 

@@ -34,7 +34,7 @@
             <ListView
                 android:id="@+id/leaderB_list"
                 android:layout_width="match_parent"
-                android:layout_height="1200dp"
+                android:layout_height="800dp"
                 tools:listitem="@layout/fragment_leader_b_item" />
 
         </LinearLayout>

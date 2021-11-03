@@ -1,5 +1,6 @@
 package com.example.noname;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -104,9 +105,10 @@ public class LeaderBFrag extends Fragment {
                                 Map<String,Object> map = new HashMap<>();
                                 String userID = (String) document.getId(); // the documentId is the userId
                                 long focusTime = (long) userData.get("total millis");
+                                String ftParse = parseMillis(focusTime);
                                 map.put("userID", userID);
                                 map.put("rank", ++rank);
-                                map.put("focusTime", focusTime);
+                                map.put("focusTime", ftParse);
                                 map.put("userName", "");
                                 listItems.add(map);
                             }
@@ -164,6 +166,14 @@ public class LeaderBFrag extends Fragment {
         }
     }
 
+    // function to format millis
+    private String parseMillis(long millis){
+        long hour,minute;
+        hour = millis / 3600000L;
+        minute = (millis % 3600000L)/60000L;
+        return String.format("%dh %dm",hour,minute);
+    }
+
     public class leaderAdapter extends SimpleAdapter {
         public leaderAdapter(Context context, List<? extends Map<String, ?>> data, int resource, String[] from, int[] to) {
             super(context, data, resource, from, to);
@@ -174,6 +184,7 @@ public class LeaderBFrag extends Fragment {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             View view = super.getView(position, convertView, parent);
+
             // load user avatar
             HashMap<String, Object> data = (HashMap<String, Object>) getItem(position);
             String uid = (String) data.get("userID");
@@ -185,7 +196,6 @@ public class LeaderBFrag extends Fragment {
                     Picasso.get().load(uri).into(avatar);
                 }
             });
-
 
 
 //            ImageView imageView=(ImageView) view.findViewById(R.id.list_item_favorite);
