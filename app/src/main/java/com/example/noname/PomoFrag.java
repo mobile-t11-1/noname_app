@@ -165,6 +165,9 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
         mTextViewEnd = view.findViewById(R.id.text_finished);
         mTextViewEnd2 = view.findViewById(R.id.text_restart);
 
+        if(sessionID % 2 != 0){
+            clockProgress.setProgress(0);
+        }
         //define vibrator
         vibrator = (Vibrator) getActivity().getSystemService(VIBRATOR_SERVICE);
 
@@ -439,7 +442,7 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
         }else {
             f = f / mStartTimeInMillis;
         }
-        percentage = 100 - ((int) (f * 100) - 9);
+        percentage = 100 - ((int) (f * 100));
         if(sessionID == 8 && mTimeLeftInMillis == lBreakTimeInMillis){
             percentage = 0;
         }else if(sessionID % 2 == 0 && mTimeLeftInMillis == sBreakTimeInMillis){
@@ -458,6 +461,18 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
     @Override
     public void onStop() {
         super.onStop();
+        PowerManager pm = (PowerManager) getActivity().getSystemService(Context.POWER_SERVICE);
+        if (pm.isScreenOn()) {
+            screenOn = true;
+        }else{
+            screenOn = false;
+        }
+
+        if(sessionID % 2 != 0 && screenOn && mTimerRunning){
+            pauseTimer();
+            clockProgress.setProgress(0);
+        }
+
         SharedPreferences prefs = getActivity().getSharedPreferences("prefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
 
@@ -471,19 +486,11 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
 
         editor.apply();
 
-        if(sessionID % 2 != 0 && mTimerRunning){
-            pauseTimer();
-        }
 
         if (mCountDownTimer != null) {
             mCountDownTimer.cancel();
         }
-        PowerManager pm = (PowerManager) getActivity().getSystemService(Context.POWER_SERVICE);
-        if (pm.isScreenOn()) {
-            screenOn = true;
-        }else{
-            screenOn = false;
-        }
+
 
     }
 
@@ -498,7 +505,6 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
         lBreakTimeInMillis = prefs.getInt("lBreakTime", 5000);
         sessionID = prefs.getInt("sessionID", 1);
         mTimerRunning = prefs.getBoolean("timerRunning", false);
-
         if(sessionID % 2 == 0) {
 
             //possible bug
@@ -525,7 +531,7 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
             }
             return;
         }
-        if(!screenOn && mTimerRunning){
+        if((!screenOn)&& mTimerRunning){
             mEndTime = prefs.getLong("endTime", 0);
             mTimeLeftInMillis = mEndTime - System.currentTimeMillis();
 
@@ -541,12 +547,16 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
         }else {
             mTimeLeftInMillis = prefs.getInt("focusTime", mStartTimeInMillis);
             checkSection(sessionID);
-            clockProgress.setProgress(0);
             updateCountDownText();
-
+            updateWatchInterface();
             if (sessionID == 1) {
                 resetTimer();
+                startView();
+            }else{
+                settingBtn.setVisibility(View.INVISIBLE);
+                mButtonReset.setVisibility(View.VISIBLE);
             }
+            updateClockProgress();
         }
 
     }
