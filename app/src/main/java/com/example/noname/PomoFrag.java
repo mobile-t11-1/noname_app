@@ -468,7 +468,7 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
             screenOn = false;
         }
 
-        if(sessionID % 2 != 0 && screenOn && mTimerRunning){
+        if(sessionID % 2 != 0 && screenOn && !mTimerRunning){
             pauseTimer();
             clockProgress.setProgress(0);
         }
