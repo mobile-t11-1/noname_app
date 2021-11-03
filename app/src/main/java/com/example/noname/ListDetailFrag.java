@@ -49,6 +49,8 @@ import java.io.PipedOutputStream;
 import java.io.PipedInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -81,7 +83,6 @@ public class ListDetailFrag extends Fragment {
     private ImageView additemCommit;
     private ImageView additemButton;
 
-
     // A list of items to display
     private List<Map<String,Object>> subItems;
     private SimpleAdapter items;
@@ -102,6 +103,7 @@ public class ListDetailFrag extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -234,19 +236,6 @@ public class ListDetailFrag extends Fragment {
 
         // back button & save
         backButton.setOnClickListener(v -> {
-            docRef.update("notes", notes.getText().toString().trim())
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void unused) {
-                            Log.d(TAG, "DocumentSnapshot successfully updated!");
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.w(TAG, "Error updating document", e);
-                        }
-                    });
 
             getActivity().getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, parent).commit();
@@ -404,13 +393,14 @@ public class ListDetailFrag extends Fragment {
             newItem.put("isCheck", R.drawable.ic_list_detail_subitem_empty);
             newItem.put("note", note);
             newItem.put("position", subItems.size());
-            subItems.add(newItem);
 
             List<Map<String, Object>> docDetail = (List<Map<String, Object>>) docDetails.get("subitems");
             Map<String, Object> newItemDetail = new HashMap<>();
             newItemDetail.put("isCheck", false);
             newItemDetail.put("note", note);
             newItemDetail.put("position", subItems.size());
+
+            subItems.add(newItem);
             docDetail.add(newItemDetail);
 
             docRef.update("subitems", docDetails.get("subitems"))
@@ -445,7 +435,46 @@ public class ListDetailFrag extends Fragment {
 
         // Inflate the layout for this fragment
         return view;
+    }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        List<Map<String,Object>> updateList = (List<Map<String,Object>>) docDetails.get("subitems");
+        for (int i = 0; i < updateList.size(); i++) {
+            updateList.get(i).put("note", ((Map)items.getItem(i)).get("note"));
+        }
+
+
+        // update note
+        docRef.update("notes", notes.getText().toString().trim())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+//                        Log.d(TAG, "DocumentSnapshot successfully updated!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+//                        Log.w(TAG, "Error updating document", e);
+                    }
+                });
+
+        // Delete from server
+        docRef.update("subitems", docDetails.get("subitems"))
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+//                        Log.d(TAG, "DocumentSnapshot successfully updated!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+//                        Log.w(TAG, "Error updating document", e);
+                    }
+                });
     }
 
     // reference from https://stackoverflow.com/questions/3495890/how-can-i-put-a-listview-into-a-scrollview-without-it-collapsing
@@ -517,6 +546,7 @@ public class ListDetailFrag extends Fragment {
         public View getView(int position, View convertView, ViewGroup parent) {
             View view = super.getView(position, convertView, parent);
             ImageView check = (ImageView) view.findViewById(R.id.list_detail_subitem_check);
+            TextView text = view.findViewById(R.id.list_detail_subitem_note);
             check.setOnClickListener(view1 -> {
                 // locate the current listView item
                 Map<String, Object> curItem = subItems.get(position);
@@ -526,7 +556,7 @@ public class ListDetailFrag extends Fragment {
                 if((int) curItem.get("isCheck") == R.drawable.ic_list_detail_subitem_empty){
                     curItem.put("isCheck", R.drawable.ic_list_detail_subitem_full);
                     curMap.put("isCheck", true);
-                }else{
+                } else {
                     curItem.put("isCheck", R.drawable.ic_list_detail_subitem_empty);
                     curMap.put("isCheck", false);
                 }
@@ -546,6 +576,60 @@ public class ListDetailFrag extends Fragment {
                         });
 
                 notifyDataSetChanged();
+            });
+
+            text.setOnLongClickListener(v -> {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Confirmation");
+                builder.setMessage("Do you want to delete this item?");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                        subItems.remove(position);
+                        ((List<Map<String, Object>>) docDetails.get("subitems")).remove(position);
+
+                        // Delete from server
+                        docRef.update("subitems", docDetails.get("subitems"))
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        Log.d(TAG, "DocumentSnapshot successfully updated!");
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.w(TAG, "Error updating document", e);
+                                    }
+                                });
+                        items.notifyDataSetChanged();
+                    }
+                });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog alert = builder.create();
+                alert.show();
+                return false;
+            });
+
+            text.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    subItems.get(position).put("note", s.toString());
+                }
             });
             return view;
 
@@ -572,7 +656,6 @@ public class ListDetailFrag extends Fragment {
         //Set up touch listener for non-EditText views to hide keyboard and itself
         if (!(view instanceof EditText)) {
             view.setOnTouchListener(new View.OnTouchListener() {
-
                 public boolean onTouch(View v, MotionEvent event) {
                     hideEditText();
                     subitem.requestFocus();
@@ -710,5 +793,4 @@ class PipedDeepCopy {
             return obj;
         }
     }
-
 }
