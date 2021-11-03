@@ -71,7 +71,7 @@
         android:paddingVertical="20dp">
 
         <ImageView
-            android:id="@+id/setting_icon"
+            android:id="@+id/about_icon"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_gravity="center"
