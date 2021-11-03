@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
@@ -21,13 +22,19 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Register extends AppCompatActivity implements View.OnClickListener{
 
     private FirebaseAuth mAuth;
+    private StorageReference storage;
 
     private EditText editTextUsername, editTextEmail, editTextPassword, editTextRepeatedPassword;
     private Button registerBtn;
@@ -43,6 +50,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
+        storage = FirebaseStorage.getInstance().getReference();
 
         editTextUsername = (EditText) findViewById(R.id.username_reg);
         editTextEmail = (EditText) findViewById(R.id.textEmailAddress_reg);
@@ -135,6 +143,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
                             newUser.put("User Name", username);
                             newUser.put("Email", email);
                             newUser.put("User ID", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                            newUser.put("Heart Number", 0);  // used to construct leaderboard
 
                             // add the user into Cloud Firestore
                             mydb.collection("user").document(FirebaseAuth.getInstance().getCurrentUser().getUid())
@@ -157,8 +166,10 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
                                     });
 
 
-
-
+                            // create default avatar for new user and upload the file to storage
+                            Uri file = Uri.parse("android.resource://"+R.class.getPackage().getName()+"/"+R.drawable.defaultavater);
+                            StorageReference avatarfile = storage.child("users/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "/avatar.jpg");
+                            avatarfile.putFile(file);
                         }
 
                         else {
