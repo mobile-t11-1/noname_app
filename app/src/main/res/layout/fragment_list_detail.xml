@@ -101,10 +101,10 @@
                 <EditText
                     android:id="@+id/list_detail_additem_text"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginLeft="20dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="32dp"
                     android:layout_marginTop="25dp"
-                    android:layout_marginRight="20dp"
+                    android:layout_marginRight="60dp"
                     android:layout_marginBottom="25dp"
                     android:background="@drawable/ic_list_detail_note"
                     android:ems="10"

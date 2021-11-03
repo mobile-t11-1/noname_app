@@ -2,8 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/list_sort_byDue"
         android:title="By Due Date"/>
-    <item android:id="@+id/list_sort_byItems"
-        android:title="By Unfinished Items" />
 
 </menu>
 
