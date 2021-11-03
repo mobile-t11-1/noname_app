@@ -63,6 +63,7 @@ public class ProfileFrag extends Fragment {
     private LinearLayout logoutlayout;
     private LinearLayout settinglayout;
     private LinearLayout editlayout;
+    private LinearLayout aboutlayout;
     private ImageView profile_avatar;
 
 
@@ -136,11 +137,11 @@ public class ProfileFrag extends Fragment {
 
 
 
-        settinglayout = getView().findViewById(R.id.setting_layout);
-        settinglayout.setOnClickListener(new View.OnClickListener() {
+        aboutlayout = getView().findViewById(R.id.about_layout);
+        aboutlayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: Direct to the setting page
+                startActivity(new Intent(getActivity(), About.class));
             }
         });
 
