@@ -61,7 +61,7 @@
         android:background="@android:color/darker_gray" />
 
     <LinearLayout
-        android:id="@+id/setting_layout"
+        android:id="@+id/about_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/divider_1"
@@ -71,19 +71,19 @@
         android:paddingVertical="20dp">
 
         <ImageView
-            android:id="@+id/setting_icon"
+            android:id="@+id/about_icon"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_gravity="center"
             android:layout_marginLeft="55dp"
-            android:src="@drawable/ic_setting" />
+            android:src="@drawable/about" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_gravity="center"
-            android:text="Settings"
+            android:text="About Us"
             android:textAllCaps="false"
             android:textSize="18sp"
             android:textColor="@color/black"
@@ -96,7 +96,7 @@
         android:layout_width="350dp"
         android:layout_height="1dp"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/setting_layout"
+        android:layout_below="@+id/about_layout"
         android:background="@android:color/darker_gray" />
 
     <LinearLayout
