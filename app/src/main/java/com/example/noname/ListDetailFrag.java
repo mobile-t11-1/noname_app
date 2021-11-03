@@ -87,8 +87,6 @@ public class ListDetailFrag extends Fragment {
     private List<Map<String,Object>> subItems;
     private SimpleAdapter items;
 
-    private Timer timingTask;
-
     // docID: document ID
     // title: the new note title
     public ListDetailFrag(String docID, ShopLstFrag parent) {
@@ -106,11 +104,11 @@ public class ListDetailFrag extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         docRef = itemsRef.document(docID);
-        timingTask = new Timer();
 
         // get the detail page
         View view = inflater.inflate(R.layout.fragment_list_detail, container, false);
@@ -233,13 +231,11 @@ public class ListDetailFrag extends Fragment {
                 }
             } */
             view.setVisibility(View.VISIBLE);
-            saveNotes();
         });
 
 
         // back button & save
         backButton.setOnClickListener(v -> {
-            timingTask.cancel();
 
             getActivity().getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, parent).commit();
@@ -441,48 +437,44 @@ public class ListDetailFrag extends Fragment {
         return view;
     }
 
-    // save note per 20 seconds
-    private void saveNotes() {
-        timingTask.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                List<Map<String,Object>> updateList = (List<Map<String,Object>>) docDetails.get("subitems");
-                for (int i = 0; i < updateList.size(); i++) {
-                    updateList.get(i).put("note", ((Map)items.getItem(i)).get("note"));
-                }
+    @Override
+    public void onStop() {
+        super.onStop();
+        List<Map<String,Object>> updateList = (List<Map<String,Object>>) docDetails.get("subitems");
+        for (int i = 0; i < updateList.size(); i++) {
+            updateList.get(i).put("note", ((Map)items.getItem(i)).get("note"));
+        }
 
 
-                // update note
-                docRef.update("notes", notes.getText().toString().trim())
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
+        // update note
+        docRef.update("notes", notes.getText().toString().trim())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
 //                        Log.d(TAG, "DocumentSnapshot successfully updated!");
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
 //                        Log.w(TAG, "Error updating document", e);
-                            }
-                        });
+                    }
+                });
 
-                // Delete from server
-                docRef.update("subitems", docDetails.get("subitems"))
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
+        // Delete from server
+        docRef.update("subitems", docDetails.get("subitems"))
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
 //                        Log.d(TAG, "DocumentSnapshot successfully updated!");
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
 //                        Log.w(TAG, "Error updating document", e);
-                            }
-                        });
-            }
-        }, 5000, 5000);
+                    }
+                });
     }
 
     // reference from https://stackoverflow.com/questions/3495890/how-can-i-put-a-listview-into-a-scrollview-without-it-collapsing
