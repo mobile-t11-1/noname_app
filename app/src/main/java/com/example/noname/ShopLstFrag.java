@@ -135,7 +135,7 @@ public class ShopLstFrag extends Fragment {
         Log.v("long clicked",String.valueOf(itemAtPosition.get("position")));
 
         if(item.getItemId() == R.id.delete){
-            Toast.makeText(getActivity().getApplicationContext(), "Delete Clicked", Toast.LENGTH_LONG).show();
+            //Toast.makeText(getActivity().getApplicationContext(), "Delete Clicked", Toast.LENGTH_LONG).show();
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle("Confirmation");
@@ -358,7 +358,7 @@ public class ShopLstFrag extends Fragment {
                 list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
                     public void onItemClick(AdapterView adapterView, View view, int position, long id) {
-                        Toast.makeText(getActivity().getApplicationContext(), ""+position, Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getActivity().getApplicationContext(), ""+position, Toast.LENGTH_SHORT).show();
                         Map<String,Object> detail = listItems.get(position);
                         String docID = (String) detail.get("docID");
 
