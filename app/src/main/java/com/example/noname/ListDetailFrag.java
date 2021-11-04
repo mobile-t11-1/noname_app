@@ -212,6 +212,8 @@ public class ListDetailFrag extends Fragment {
             popup.setOnMenuItemClickListener(item -> {
                 String title = item.getTitle().toString();
                 List<Map<String, Object>> databaseMap = (List<Map<String, Object>>) docDetails.get("subitems");
+                AlertDialog alert;
+                AlertDialog.Builder builder;
 
                 // do operations according to the option
                 switch(title) {
@@ -263,10 +265,60 @@ public class ListDetailFrag extends Fragment {
                                     }
                                 });
                         break;
+                    case "Delete All Checked Item":
+                        // delete list
+                        // popup confirmation window
+                        builder = new AlertDialog.Builder(getActivity());
+                        builder.setTitle("Confirmation");
+                        builder.setMessage("Do you want to delete this sub item?");
+                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+
+                                // update view
+                                for (int i = subItems.size() - 1; i >= 0; i--) {
+                                    Map<String, Object> eachItem = subItems.get(i);
+                                    if((int) eachItem.get("isCheck") == R.drawable.ic_list_detail_subitem_full) {
+                                        subItems.remove(eachItem);
+                                    }
+                                }
+
+                                // update database
+                                for (int i = databaseMap.size() - 1; i >= 0; i--) {
+                                    Map<String, Object> eachItem = databaseMap.get(i);
+                                    if((boolean) eachItem.get("isCheck")) {
+                                        databaseMap.remove(eachItem);
+                                    }
+                                }
+                                docRef.update("subitems", docDetails.get("subitems"))
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void unused) {
+                                                Log.d(TAG, "DocumentSnapshot successfully updated!");
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.w(TAG, "Error updating document", e);
+                                            }
+                                        });
+
+                                items.notifyDataSetChanged(); // update view
+                            }
+                        });
+                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                            }
+                        });
+                        alert = builder.create();
+                        alert.show();
+                        break;
                     default:
                         // delete list
                         // popup confirmation window
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder = new AlertDialog.Builder(getActivity());
                         builder.setTitle("Confirmation");
                         builder.setMessage("Do you want to delete this list?");
                         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -298,7 +350,7 @@ public class ListDetailFrag extends Fragment {
                                 dialog.dismiss();
                             }
                         });
-                        AlertDialog alert = builder.create();
+                        alert = builder.create();
                         alert.show();
                 }
 
@@ -351,8 +403,6 @@ public class ListDetailFrag extends Fragment {
                         }
                     });
 
-            items.notifyDataSetChanged();
-
             // finish input
             additemText.setImeOptions(EditorInfo.IME_ACTION_DONE);  // hide the keyboard
             additemText.getText().clear();  // clean input
@@ -365,6 +415,8 @@ public class ListDetailFrag extends Fragment {
             subitem.setVisibility(View.VISIBLE);
             subitem.setAdapter(items);
             setListViewHeightBasedOnChildren(subitem);
+
+            items.notifyDataSetChanged();
         });
 
         // Inflate the layout for this fragment
