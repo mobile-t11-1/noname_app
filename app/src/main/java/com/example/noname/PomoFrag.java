@@ -92,9 +92,9 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
     private boolean screenOn; //record if we stop the app by locking the screen
     //private variables
     private int sessionID = 1; //record the current session: odd is work, even is rest
-    private int mStartTimeInMillis = 25000; //25*60*1000 25min //set timer
+    private int mStartTimeInMillis = 10000; //25*60*1000 25min //set timer
     private int sBreakTimeInMillis = 5000; //short break time
-    private int lBreakTimeInMillis = 20000; //long break time
+    private int lBreakTimeInMillis = 5000; //long break time
     private long mTimeLeftInMillis; //remaining time
     private long mEndTime; //end time of the timer
     private Vibrator vibrator; // vibrate
@@ -503,9 +503,9 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
         super.onStart();
         sensorManager.registerListener(proximityListener, proximitySensor, SensorManager.SENSOR_DELAY_NORMAL);
         SharedPreferences prefs = getActivity().getSharedPreferences("prefs", MODE_PRIVATE);
-        mStartTimeInMillis = prefs.getInt("focusTime", 10000);
-        sBreakTimeInMillis = prefs.getInt("sBreakTime", 5000);
-        lBreakTimeInMillis = prefs.getInt("lBreakTime", 5000);
+        mStartTimeInMillis = prefs.getInt("focusTime", mStartTimeInMillis);
+        sBreakTimeInMillis = prefs.getInt("sBreakTime", sBreakTimeInMillis);
+        lBreakTimeInMillis = prefs.getInt("lBreakTime", lBreakTimeInMillis);
         sessionID = prefs.getInt("sessionID", 1);
         mTimerRunning = prefs.getBoolean("timerRunning", false);
         //if we are in break session resumes timer running
