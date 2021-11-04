@@ -65,6 +65,7 @@ public class ProfileFrag extends Fragment {
     private LinearLayout logoutlayout;
     private LinearLayout aboutlayout;
     private LinearLayout editlayout;
+    private LinearLayout aboutlayout;
     private ImageView profile_avatar;
 
 
@@ -139,11 +140,9 @@ public class ProfileFrag extends Fragment {
         // about section
         aboutlayout = getView().findViewById(R.id.about_layout);
         aboutlayout.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View view) {
-                // TODO: Direct to the about page
-            }
+                startActivity(new Intent(getActivity(), About.class));
         });
 
         // edit profile section

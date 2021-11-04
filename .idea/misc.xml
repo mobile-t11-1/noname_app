@@ -33,8 +33,13 @@
         <entry key="..\:/Users/87220/AndroidStudioProjects/noname_app/app/src/main/res/layout/fragment_profile.xml" value="0.33" />
         <entry key="..\:/Users/87220/AndroidStudioProjects/noname_app/app/src/main/res/menu/bottom_menu.xml" value="0.2046875" />
         <entry key="..\:/Users/87220/AndroidStudioProjects/noname_app/app/src/main/res/xml/file_paths.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_about.xml" value="0.26766304347826086" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.22327898550724637" />
+        <entry key="app/src/main/res/layout/activity_welcome.xml" value="0.26766304347826086" />
+        <entry key="app/src/main/res/layout/fragment_edit.xml" value="0.26766304347826086" />
+        <entry key="app/src/main/res/layout/fragment_list_detail.xml" value="0.26766304347826086" />
         <entry key="app/src/main/res/layout/fragment_map.xml" value="0.22327898550724637" />
+        <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.26766304347826086" />
         <entry key="app/src/main/res/layout/fragment_shopping_list.xml" value="0.22327898550724637" />
       </map>
     </option>
