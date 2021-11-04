@@ -31,6 +31,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
@@ -61,7 +62,7 @@ public class ProfileFrag extends Fragment {
 
     private String userID;
     private LinearLayout logoutlayout;
-    private LinearLayout settinglayout;
+    private LinearLayout aboutlayout;
     private LinearLayout editlayout;
     private ImageView profile_avatar;
 
@@ -124,7 +125,7 @@ public class ProfileFrag extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
+        //log out section
         logoutlayout = getView().findViewById(R.id.logout_layout);
         logoutlayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,56 +134,37 @@ public class ProfileFrag extends Fragment {
                 startActivity(new Intent(getActivity(), Login.class));
             }
         });
+        
+        // about section
+        aboutlayout = getView().findViewById(R.id.about_layout);
+        aboutlayout.setOnClickListener(new View.OnClickListener() {
 
-
-
-        settinglayout = getView().findViewById(R.id.about_layout);
-        settinglayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: Direct to the setting page
+                // TODO: Direct to the about page
             }
         });
 
-
+        // edit profile section
         editlayout = getView().findViewById(R.id.edit_layout);
         editlayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: Direct to the editting page
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new EditFrag()).commit();
             }
         });
 
 
 
+        // load user information from the database
         user = FirebaseAuth.getInstance().getCurrentUser();
         userID = user.getUid();
         
 
         final TextView usernameTextView = (TextView) getView().findViewById(R.id.username_title);
         final TextView useremailTextview = (TextView) getView().findViewById(R.id.usernameText);
+        final TextView likeNum = (TextView) getView().findViewById(R.id.like_num);
 
-        // get current user's reference
-//        reference.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                User userProfile = snapshot.getValue(User.class);
-//
-//                // check if this user exists
-//                if(userProfile != null){
-//                    String username = userProfile.username;
-//                    String email = userProfile.email;
-//
-//                    usernameTextView.setText(username);
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//                Toast.makeText(getActivity(), "Something Wrong!", Toast.LENGTH_LONG).show();
-//            }
-//        });
 
         // search the user and display the user name on profile page
         mydb.collection("user")
@@ -194,8 +176,33 @@ public class ProfileFrag extends Fragment {
                         if (task.isSuccessful() && !task.getResult().isEmpty()){
                             String username = task.getResult().getDocuments().get(0).get("User Name").toString();
                             String email = task.getResult().getDocuments().get(0).get("Email").toString();
+                            String like = task.getResult().getDocuments().get(0).get("Heart Number").toString();
                             usernameTextView.setText(username);
                             useremailTextview.setText(email);
+                            likeNum.setText("  " + like);
+                            likeNum.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_list_heart_full, 0, 0, 0);
+                        }
+
+                        else{
+                            Toast.makeText(getActivity(), "Something Wrong!", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+
+
+        final TextView focusTime = (TextView) getView().findViewById(R.id.focus_hour);
+
+        mydb.collection("focusTime")
+                .document(userID)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()){
+                            DocumentSnapshot userDoc = task.getResult();
+                            long focusH = (long) userDoc.get("total millis");
+                            String focusParsed = parseMillis(focusH);
+                            focusTime.setText(focusParsed);
                         }
 
                         else{
@@ -206,5 +213,13 @@ public class ProfileFrag extends Fragment {
 
 
 
+    }
+
+    // function to format millis
+    private String parseMillis(long millis){
+        long hour,minute;
+        hour = millis / 3600000L;
+        minute = (millis % 3600000L)/60000L;
+        return String.format("%dh %dm",hour,minute);
     }
 }
