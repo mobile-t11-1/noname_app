@@ -369,16 +369,16 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
     }
 
     private void pauseTimer() {
-        mCountDownTimer.cancel();
-        mTimerRunning = false;
-        updateWatchInterface();
+        if(mTimerRunning) {
+            mCountDownTimer.cancel();
+            mTimerRunning = false;
+            updateWatchInterface();
+        }
     }
 
 
     private void resetTimer() {
-        if(mTimerRunning){
-            pauseTimer();
-        }
+        pauseTimer();
         resetIndicators();
         //reset sessionID
         sessionID = 1;
