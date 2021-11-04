@@ -4,6 +4,8 @@
         android:title="Check All Items" />
     <item android:id="@+id/list_detail_option_uncheckAllItems"
         android:title="Uncheck All Items" />
+    <item android:id="@+id/list_detail_option_deleteAllCheckedItem"
+        android:title="Delete All Checked Item" />
     <item android:id="@+id/list_detail_option_deleteList"
         android:title="Delete List" />
 </menu>

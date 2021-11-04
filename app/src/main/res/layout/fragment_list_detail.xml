@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="56dp">
 
-        <TextView
+        <EditText
             android:id="@+id/list_detail_title"
             android:layout_width="match_parent"
             android:layout_height="56dp"
@@ -19,7 +19,9 @@
             android:gravity="center"
             android:text="New List"
             android:textSize="20dp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:singleLine="true"
+            android:maxLength="30"/>
 
         <ImageView
             android:id="@+id/list_detail_back"

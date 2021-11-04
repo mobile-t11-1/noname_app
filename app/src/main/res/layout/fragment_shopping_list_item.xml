@@ -32,7 +32,8 @@
                     android:layout_height="25dp"
                     android:text="To-do list"
                     android:textSize="18dp"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold"
+                    android:textColor="#f5a824"/>
                 <TextView
                     android:id="@+id/list_item_due"
                     android:layout_width="200dp"
