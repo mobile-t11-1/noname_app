@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ListDetailFrag">
+
+    <RelativeLayout
+        android:id="@+id/list_detail_head_layout"
+        android:layout_width="match_parent"
+        android:layout_height="56dp">
+
+        <EditText
+            android:id="@+id/list_detail_title"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="#FCEDEA"
+            android:gravity="center"
+            android:text="New List"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:singleLine="true"
+            android:maxLength="30"/>
+
+        <ImageView
+            android:id="@+id/list_detail_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:gravity="center"
+            android:src="@drawable/ic_list_detail_back" />
+
+        <ImageView
+            android:id="@+id/list_detail_options"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:gravity="center"
+            android:src="@drawable/ic_list_detail_options" />
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/list_detail_head_layout"
+        android:overScrollMode="never"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_centerHorizontal="true">
+
+            <RelativeLayout
+                android:id="@+id/list_detail_note_layout"
+                android:layout_width="350dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
+
+                <EditText
+                    android:id="@+id/list_detail_notes"
+                    android:layout_width="350dp"
+                    android:layout_height="150dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="30dp"
+                    android:background="@drawable/ic_list_detail_note"
+                    android:ems="10"
+                    android:gravity="start"
+                    android:hint="Please Enter your notes"
+                    android:padding="10dp"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/list_detail_due"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/list_detail_notes"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/ic_list_detail_due"
+                    android:padding="10dp"
+                    android:text="Due: DD/MM/YYYY"
+                    android:textSize="12sp"
+                    android:textStyle="bold"/>
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/list_detail_additem_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/list_detail_note_layout"
+                android:layout_centerHorizontal="true">
+
+                <EditText
+                    android:id="@+id/list_detail_additem_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="32dp"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginRight="60dp"
+                    android:layout_marginBottom="25dp"
+                    android:background="@drawable/ic_list_detail_note"
+                    android:ems="10"
+                    android:gravity="start"
+                    android:hint="Add a new item"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="10dp"
+                    android:textSize="18sp" />
+
+                <ImageView
+                    android:id="@+id/list_detail_additem_commit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="30dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:src="@drawable/ic_list_add_commit" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/list_detail_empty_prompt"
+                android:layout_below="@+id/list_detail_additem_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="40dp"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="Tap the plus button to add a new to-do."
+                android:textSize="18sp" />
+
+<!--            <com.example.noname.DragSortListView-->
+<!--                xmlns:android="http://bauerca.github.com/drag-sort-listview"/>-->
+
+            <ListView
+                android:id="@+id/list_detail_subitem"
+                android:layout_below="@+id/list_detail_empty_prompt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:listitem="@layout/fragment_list_detail_subitem"
+                android:nestedScrollingEnabled="true"/>
+        </LinearLayout>
+    </ScrollView>
+
+    <ImageView
+        android:id="@+id/list_detail_addItem"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_list_detail_button"
+        android:gravity="center"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        />
+
+
+
+
+</RelativeLayout>

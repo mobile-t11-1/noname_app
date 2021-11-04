@@ -10,9 +10,13 @@
 
     <permission
         android:name="com.example.mapdemo.permission.MAPS_RECEIVE"
-        android:protectionLevel="signature" />
-
+        android:protectionLevel="signature" /> <!-- <uses-permission android:name="android.permission.CAMERA"/> -->
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.example.mapdemo.permission.MAPS_RECEIVE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <uses-feature android:name="android.hardware.camera" />
 
     <application
         android:allowBackup="true"
@@ -21,7 +25,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Noname" >
-
+        <activity
+            android:name=".About"
+            android:exported="false" />
         <activity
             android:name=".Login"
             android:exported="true" />
@@ -36,7 +42,8 @@
         <activity android:name=".ResetPassword" />
         <activity
             android:name=".MainActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".Register"
             android:exported="true" />
