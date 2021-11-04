@@ -172,24 +172,6 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
                             avatarfile.putFile(file);
 
 
-                            // initiate focus time into Cloud Firestore
-                            Map<String, Object> newTime = new HashMap<>();
-                            newTime.put("total millis", 0);
-
-                            mydb.collection("focusTime").document(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                    .set(newTime)
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void unused) {
-                                            Toast.makeText(Register.this, "User has been registered successfully!", Toast.LENGTH_LONG).show();
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(Register.this, "Failed to register!", Toast.LENGTH_LONG).show();
-                                }
-                            });
-
 
                         }
 
