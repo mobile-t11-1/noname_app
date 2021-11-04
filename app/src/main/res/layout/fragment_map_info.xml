@@ -6,6 +6,22 @@
     android:layout_height="match_parent"
     tools:context=".MapInfoFr">
 
+    <RelativeLayout
+        android:id="@+id/discover_layout1"
+        android:layout_width="match_parent"
+        android:layout_height="56dp">
+
+        <TextView
+            android:id="@+id/discover_layout1_head"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#FCEDEA"
+            android:gravity="center"
+            android:text="Discover"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
 
     <Button
         android:id="@+id/openMap_btn"
