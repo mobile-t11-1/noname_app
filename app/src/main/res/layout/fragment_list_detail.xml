@@ -135,7 +135,7 @@
                 android:layout_marginTop="40dp"
                 android:gravity="center"
                 android:padding="10dp"
-                android:text="Tap the plus button to add a new to-do."
+                android:text="Tap the plus button to add a new item."
                 android:textSize="18sp" />
 
 <!--            <com.example.noname.DragSortListView-->
