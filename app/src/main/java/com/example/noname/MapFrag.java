@@ -163,16 +163,20 @@ public class MapFrag extends Fragment{
     }
 
     private void findPlace(String placeName){
-        // Init url
-        String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json" +
-                "?location=" + mLastKnownLocation.getLatitude() + "," + mLastKnownLocation.getLongitude() +
-                "&radius=" + radius + // nearby radius
-                "&type=" + placeName +
-                "&sensor=true" + //Sensor
-                "&key=" + getResources().getString(R.string.google_map_key);
-        // Execute Place task
-        System.out.println(url);
-        new PlaceTask().execute(url);
+        if (mLastKnownLocation == null){
+            openDialog();
+        }else {
+            // Init url
+            String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json" +
+                    "?location=" + mLastKnownLocation.getLatitude() + "," + mLastKnownLocation.getLongitude() +
+                    "&radius=" + radius + // nearby radius
+                    "&type=" + placeName +
+                    "&sensor=true" + //Sensor
+                    "&key=" + getResources().getString(R.string.google_map_key);
+            // Execute Place task
+            System.out.println(url);
+            new PlaceTask().execute(url);
+        }
     }
 
 
@@ -212,6 +216,11 @@ public class MapFrag extends Fragment{
                         }
                     }
                 });
+    }
+
+    private void openDialog(){
+        MaplocateDialog maplocateDialog = new MaplocateDialog();
+        maplocateDialog.show(getFragmentManager(),"Maplocate");
     }
 
     private class PlaceTask extends AsyncTask<String,Integer,String> {
@@ -285,25 +294,47 @@ public class MapFrag extends Fragment{
         protected void onPostExecute(List<HashMap<String, String>> hashMaps) {
             //Clear map
             mMap.clear();
-
-            for(int i=0; i<5; i++){
-                //Initialize hash map
-                HashMap<String,String> hashMapList = hashMaps.get(i);
-                //Get latitude
-                double lat = Double.parseDouble(hashMapList.get("lat"));
-                //Get longitude
-                double lng = Double.parseDouble(hashMapList.get("lng"));
-                //Get name
-                String name = hashMapList.get("name");
-                // Concat lat and lng
-                LatLng latLng = new LatLng(lat, lng);
-                //Init marker options
-                MarkerOptions options = new MarkerOptions();
-                //Set position
-                options.position(latLng);
-                options.title(name);
-                mMap.addMarker(options);
+            if(hashMaps.size() >= 5){
+                for(int i=0; i<5; i++){
+                    //Initialize hash map
+                    HashMap<String,String> hashMapList = hashMaps.get(i);
+                    //Get latitude
+                    double lat = Double.parseDouble(hashMapList.get("lat"));
+                    //Get longitude
+                    double lng = Double.parseDouble(hashMapList.get("lng"));
+                    //Get name
+                    String name = hashMapList.get("name");
+                    // Concat lat and lng
+                    LatLng latLng = new LatLng(lat, lng);
+                    //Init marker options
+                    MarkerOptions options = new MarkerOptions();
+                    //Set position
+                    options.position(latLng);
+                    options.title(name);
+                    mMap.addMarker(options);
+                }
+            }else {
+                for(int i=0; i<hashMaps.size(); i++){
+                    //Initialize hash map
+                    HashMap<String,String> hashMapList = hashMaps.get(i);
+                    //Get latitude
+                    double lat = Double.parseDouble(hashMapList.get("lat"));
+                    //Get longitude
+                    double lng = Double.parseDouble(hashMapList.get("lng"));
+                    //Get name
+                    String name = hashMapList.get("name");
+                    // Concat lat and lng
+                    LatLng latLng = new LatLng(lat, lng);
+                    //Init marker options
+                    MarkerOptions options = new MarkerOptions();
+                    //Set position
+                    options.position(latLng);
+                    options.title(name);
+                    mMap.addMarker(options);
+                }
             }
         }
     }
+
+
 }
