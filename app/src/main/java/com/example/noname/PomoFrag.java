@@ -337,7 +337,7 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
 
                 if(sessionID % 2 == 0){ //enters break session
                     //add focus time to db
-                    //addTimeToDatabase(mStartTimeInMillis);
+                    addTimeToDatabase(mStartTimeInMillis);
                     mTimeLeftInMillis = sBreakTimeInMillis; //5 min rest 5*60*1000
                     if(sessionID == 8){
                         mTimeLeftInMillis = lBreakTimeInMillis; // 20 min last rest

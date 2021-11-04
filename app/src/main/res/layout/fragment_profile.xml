@@ -32,7 +32,8 @@
         android:gravity="center"
         android:textColor="@color/black"
         android:textSize="20dp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:text="0h 0m"/>
 
     <TextView
         android:layout_width="wrap_content"

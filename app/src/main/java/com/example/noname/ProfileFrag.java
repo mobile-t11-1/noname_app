@@ -199,9 +199,12 @@ public class ProfileFrag extends Fragment {
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        long focusH = (long) documentSnapshot.get("total millis");
-                        String focusParsed = parseMillis(focusH);
-                        focusTime.setText(focusParsed);
+                        Object obj = documentSnapshot.get("total millis");
+                        if(obj != null){
+                            long focusH = (long) obj;
+                            String focusParsed = parseMillis(focusH);
+                            focusTime.setText(focusParsed);
+                        }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
