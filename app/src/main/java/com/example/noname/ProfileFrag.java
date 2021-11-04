@@ -135,7 +135,7 @@ public class ProfileFrag extends Fragment {
                 startActivity(new Intent(getActivity(), Login.class));
             }
         });
-        
+
         // about section
         aboutlayout = getView().findViewById(R.id.about_layout);
         aboutlayout.setOnClickListener(new View.OnClickListener() {
@@ -160,7 +160,7 @@ public class ProfileFrag extends Fragment {
         // load user information from the database
         user = FirebaseAuth.getInstance().getCurrentUser();
         userID = user.getUid();
-        
+
 
         final TextView usernameTextView = (TextView) getView().findViewById(R.id.username_title);
         final TextView useremailTextview = (TextView) getView().findViewById(R.id.usernameText);

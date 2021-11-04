@@ -51,7 +51,6 @@ import static androidx.constraintlayout.motion.utils.Oscillator.TAG;
  * Use the {@link PomoFrag#newInstance} factory method to
  * create an instance of this fragment.
  */
-// TODO: Zichen: double check if pass in empty string, clock progress needs fixing， facedown text fix
 public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
 
     // TODO: Rename parameter arguments, choose names that match
@@ -85,7 +84,6 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
     private ProgressBar clockProgress;
     private TextView t1,t2,t3,t4;
     private TextView mTextViewInstruction, mTextViewEnd, mTextViewEnd2;
-
     private CountDownTimer mCountDownTimer;
 
 
@@ -94,11 +92,11 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
     private boolean screenOn; //record if we stop the app by locking the screen
     //private variables
     private int sessionID = 1; //record the current session: odd is work, even is rest
-    private int mStartTimeInMillis = 10000; //25*60*1000 25min //set timer
+    private int mStartTimeInMillis = 25000; //25*60*1000 25min //set timer
     private int sBreakTimeInMillis = 5000; //short break time
-    private int lBreakTimeInMillis = 5000; //long break time 
+    private int lBreakTimeInMillis = 20000; //long break time
     private long mTimeLeftInMillis; //remaining time
-    private long mEndTime;
+    private long mEndTime; //end time of the timer
     private Vibrator vibrator; // vibrate
     // proximity sensor
     private SensorManager sensorManager;
@@ -164,10 +162,11 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
         mTextViewInstruction = view.findViewById(R.id.pomo_instruction);
         mTextViewEnd = view.findViewById(R.id.text_finished);
         mTextViewEnd2 = view.findViewById(R.id.text_restart);
-
+        //if we are in focus session and oncreateview is called we clear the clock progress
         if(sessionID % 2 != 0){
             clockProgress.setProgress(0);
         }
+
         //define vibrator
         vibrator = (Vibrator) getActivity().getSystemService(VIBRATOR_SERVICE);
 
@@ -176,6 +175,7 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
         if(sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY) != null){
             proximitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
         }
+
         //flip screen actions
         proximityListener = new SensorEventListener() {
             @Override
@@ -237,7 +237,7 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
 
     }
 
-
+    //the initial view of the pomodoro interface
     private void startView(){
         settingBtn.setVisibility(View.VISIBLE);
         mButtonReset.setVisibility(View.INVISIBLE);
@@ -248,6 +248,7 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
         mTextViewEnd2.setVisibility(View.INVISIBLE);
     }
 
+    //the end view of the pomodoro interface
     private void endView(){
         //congrats message
         mButtonReset.setVisibility(View.INVISIBLE);
@@ -258,7 +259,7 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
         mTextViewEnd2.setVisibility(View.VISIBLE);
     }
 
-
+    //set all indicators to grey
     private void resetIndicators(){
         t1.setBackground(getResources().getDrawable(R.drawable.pomo_no_section));
         t2.setBackground(getResources().getDrawable(R.drawable.pomo_no_section));
@@ -266,6 +267,7 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
         t4.setBackground(getResources().getDrawable(R.drawable.pomo_no_section));
     }
 
+    //set indicators based on session
     private void checkSection(int sessionID){
         if(sessionID == 1 || sessionID == 2){
             t1.setBackground(getResources().getDrawable(R.drawable.pomo_indicator_style));
@@ -290,7 +292,7 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
         }
     }
 
-
+    //opens the set time pop up window
     private void openSettingDialog() {
         ClockDialog clockDialog = new ClockDialog();
         clockDialog.setTargetFragment(PomoFrag.this,1);
@@ -304,7 +306,7 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
         sensorManager.unregisterListener(proximityListener);
     }
 
-
+    //start timer
     private void startTimer() {
         mEndTime = System.currentTimeMillis() + mTimeLeftInMillis;
         checkSection(sessionID);
@@ -319,8 +321,7 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
                 updateCountDownText();
                 updateClockProgress();
             }
-
-
+            
             @Override
             public void onFinish() {
                 mTimerRunning = false;
@@ -368,6 +369,7 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
         updateWatchInterface();
     }
 
+    //pause the timer
     private void pauseTimer() {
         if(mTimerRunning) {
             mCountDownTimer.cancel();
@@ -376,7 +378,7 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
         }
     }
 
-
+    //reset the timer
     private void resetTimer() {
         pauseTimer();
         resetIndicators();
@@ -392,6 +394,7 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
         sensorManager.registerListener(proximityListener, proximitySensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
+    //update count down text each second
     private void updateCountDownText() {
         int hours = (int) (mTimeLeftInMillis / 1000) / 3600;
         int minutes = (int) ((mTimeLeftInMillis / 1000) % 3600) / 60;
@@ -409,8 +412,7 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
         mTextViewCountDown.setText(timeLeftFormatted);
     }
 
-
-
+    //update the watch interface accordingly
     private void updateWatchInterface() {
 
         if (mTimerRunning) {
@@ -432,6 +434,7 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
         }
     }
 
+    //update the clock progress bar every second
     private void updateClockProgress() {
         int percentage = 0;
         float f = (mTimeLeftInMillis * 1.0f);
@@ -455,12 +458,11 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
         clockProgress.setProgress(percentage);
     }
 
-
-
     //To save the timer if the app closes
     @Override
     public void onStop() {
         super.onStop();
+        //to check if the app is stopped by locking the screen
         PowerManager pm = (PowerManager) getActivity().getSystemService(Context.POWER_SERVICE);
         if (pm.isScreenOn()) {
             screenOn = true;
@@ -468,6 +470,7 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
             screenOn = false;
         }
 
+        //prevent bug that when facing down and performing actions on the screen
         if(sessionID % 2 != 0 && screenOn && !mTimerRunning){
             pauseTimer();
             clockProgress.setProgress(0);
@@ -505,6 +508,7 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
         lBreakTimeInMillis = prefs.getInt("lBreakTime", 5000);
         sessionID = prefs.getInt("sessionID", 1);
         mTimerRunning = prefs.getBoolean("timerRunning", false);
+        //if we are in break session resumes timer running
         if(sessionID % 2 == 0) {
 
             //possible bug
@@ -531,6 +535,7 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
             }
             return;
         }
+        //if we are in focus session and lock the screen then resume timer running
         if((!screenOn)&& mTimerRunning){
             mEndTime = prefs.getLong("endTime", 0);
             mTimeLeftInMillis = mEndTime - System.currentTimeMillis();
@@ -544,7 +549,7 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
             } else {
                 startTimer();
             }
-        }else {
+        }else { //if we in focus session and we used the phone then reset timer
             mTimeLeftInMillis = prefs.getInt("focusTime", mStartTimeInMillis);
             checkSection(sessionID);
             updateCountDownText();
