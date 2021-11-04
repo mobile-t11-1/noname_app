@@ -160,7 +160,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
                                     }).addOnFailureListener(new OnFailureListener() {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
-                                            Toast.makeText(Register.this, "Failed to register!1", Toast.LENGTH_LONG).show();
+                                            Toast.makeText(Register.this, "Failed to register!", Toast.LENGTH_LONG).show();
                                             progressBar.setVisibility(View.GONE);
                                         }
                                     });
@@ -170,6 +170,27 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
                             Uri file = Uri.parse("android.resource://"+R.class.getPackage().getName()+"/"+R.drawable.defaultavater);
                             StorageReference avatarfile = storage.child("users/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "/avatar.jpg");
                             avatarfile.putFile(file);
+
+
+                            // initiate focus time into Cloud Firestore
+                            Map<String, Object> newTime = new HashMap<>();
+                            newTime.put("total millis", 0);
+
+                            mydb.collection("focusTime").document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                    .set(newTime)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void unused) {
+                                            Toast.makeText(Register.this, "User has been registered successfully!", Toast.LENGTH_LONG).show();
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(Register.this, "Failed to register!", Toast.LENGTH_LONG).show();
+                                }
+                            });
+
+
                         }
 
                         else {

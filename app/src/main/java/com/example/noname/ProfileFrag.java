@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -195,21 +196,20 @@ public class ProfileFrag extends Fragment {
         mydb.collection("focusTime")
                 .document(userID)
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()){
-                            DocumentSnapshot userDoc = task.getResult();
-                            long focusH = (long) userDoc.get("total millis");
-                            String focusParsed = parseMillis(focusH);
-                            focusTime.setText(focusParsed);
-                        }
-
-                        else{
-                            Toast.makeText(getActivity(), "Something Wrong!", Toast.LENGTH_LONG).show();
-                        }
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        long focusH = (long) documentSnapshot.get("total millis");
+                        String focusParsed = parseMillis(focusH);
+                        focusTime.setText(focusParsed);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
                     }
                 });
+
 
 
 
