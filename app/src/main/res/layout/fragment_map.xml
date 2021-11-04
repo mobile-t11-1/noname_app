@@ -76,7 +76,7 @@
         android:layout_marginBottom="90dp"
         android:clickable="true"
         android:src="@drawable/ic_locate"
-        app:backgroundTint="@color/white"
+        app:backgroundTint="@color/primary_5"
         app:fabSize="mini" />
 
 </RelativeLayout>
