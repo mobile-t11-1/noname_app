@@ -5,7 +5,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".PomoFrag">
+    <RelativeLayout
+        android:id="@+id/list_detail_head_layout"
+        android:layout_width="match_parent"
+        android:layout_height="56dp">
 
+        <EditText
+            android:id="@+id/list_detail_title"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="#FCEDEA"
+            android:gravity="center"
+            android:text="Pomodoro"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:singleLine="true"
+            android:maxLength="30"/>
+
+    </RelativeLayout>
     <TextView
         android:id="@+id/pomo_instruction"
         android:layout_width="wrap_content"
