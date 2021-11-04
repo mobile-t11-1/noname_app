@@ -10,6 +10,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".EditFrag">
 
+    <RelativeLayout
+        android:id="@+id/leaderB_layout"
+        android:layout_width="match_parent"
+        android:layout_height="56dp">
+
+        <TextView
+            android:id="@+id/leaderB_head"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#FCEDEA"
+            android:gravity="center"
+            android:text="Edit Page"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
 
 
     <LinearLayout
@@ -19,7 +35,7 @@
         android:layout_centerHorizontal="true"
         android:orientation="vertical"
         android:paddingHorizontal="60dp"
-        android:paddingTop="30dp">
+        android:layout_marginTop="80dp">
 
         <androidx.cardview.widget.CardView
             android:layout_width="180dp"
