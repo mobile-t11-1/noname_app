@@ -69,9 +69,20 @@
             android:src="@drawable/ic_list_add_commit" />
     </RelativeLayout>
 
+    <TextView
+        android:id="@+id/list_empty_prompt"
+        android:layout_below="@+id/list_add_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="Tap the plus button to add a new to-do."
+        android:textSize="18sp" />
+
     <RelativeLayout
         android:id="@+id/list_items_layout"
-        android:layout_below="@+id/list_add_layout"
+        android:layout_below="@+id/list_empty_prompt"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         >

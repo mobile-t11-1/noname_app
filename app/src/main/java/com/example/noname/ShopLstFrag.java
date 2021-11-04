@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
@@ -80,6 +81,7 @@ public class ShopLstFrag extends Fragment {
 
     private View view;
     private ListView list;
+    private TextView emptyPrompt;
     private ImageView addItem;
     private String userID;
 
@@ -157,6 +159,14 @@ public class ShopLstFrag extends Fragment {
                     listItems.remove(pos);
                     items.notifyDataSetChanged();
 
+                    if (listItems.size() == 0) {
+                        list.setVisibility(View.GONE);
+                        emptyPrompt.setVisibility(View.VISIBLE);
+                    } else {
+                        list.setVisibility(View.VISIBLE);
+                        emptyPrompt.setVisibility(View.GONE);
+                    }
+
 
                     // Delete from server
                     itemsRef.document((String) itemAtPosition.get("docID"))
@@ -203,9 +213,9 @@ public class ShopLstFrag extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_shopping_list, container, false);
         list = view.findViewById(R.id.list_main);
+        emptyPrompt = view.findViewById(R.id.list_empty_prompt);
         registerForContextMenu(list); // register listView for context menu
 
-        // set add item page jump
         ImageView addButton = view.findViewById(R.id.list_main_addItem);
         addButton.setOnClickListener(v -> {
             if(addList.getVisibility() == View.VISIBLE && addListCommit.getVisibility() == View.VISIBLE){
@@ -215,16 +225,17 @@ public class ShopLstFrag extends Fragment {
                 addList.setVisibility(View.VISIBLE);
                 addListCommit.setVisibility(View.VISIBLE);
             }
-//            getActivity().getSupportFragmentManager().beginTransaction()
-//                    .replace(R.id.fragment_container, new ListDetailFrag(true, "")).commit();
         });
 
         addItem = addButton;
+
+        view.setVisibility(View.GONE);
 
         // set view of adding list
         addList = view.findViewById(R.id.list_add_text);
         addListCommit = view.findViewById(R.id.list_add_commit);
 
+        // set add item page jump
         addListCommit.setOnClickListener( v -> {
             // randomly generate document ID for this new ListItem
             DocumentReference newListItem = itemsRef.document();
@@ -291,6 +302,10 @@ public class ShopLstFrag extends Fragment {
             addList.setVisibility(View.GONE);
             addListCommit.setVisibility(View.GONE);
 
+            list.setVisibility(View.VISIBLE);
+            emptyPrompt.setVisibility(View.GONE);
+
+
             getActivity().getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, new ListDetailFrag(newDocID, ShopLstFrag.this)).commit();
         });
@@ -298,7 +313,6 @@ public class ShopLstFrag extends Fragment {
         // make them gone until user click add button
         addList.setVisibility(View.GONE);
         addListCommit.setVisibility(View.GONE);
-
 
         // set sort button
         ImageView sortButton = view.findViewById(R.id.list_sort);
@@ -331,6 +345,7 @@ public class ShopLstFrag extends Fragment {
             popup.show(); //showing popup menu
         });
 
+
         // get documents from fire store
         itemsRef = db.collection("list");
         // read data into listView
@@ -352,6 +367,15 @@ public class ShopLstFrag extends Fragment {
                                 .replace(R.id.fragment_container, new ListDetailFrag(docID, ShopLstFrag.this)).commit();
                     }
                 });
+                if (listItems.size() == 0) {
+                    list.setVisibility(View.GONE);
+                    emptyPrompt.setVisibility(View.VISIBLE);
+                } else {
+                    list.setVisibility(View.VISIBLE);
+                    emptyPrompt.setVisibility(View.GONE);
+                }
+
+                view.setVisibility(View.VISIBLE);
             }
         });
         return view;
@@ -380,7 +404,6 @@ public class ShopLstFrag extends Fragment {
                             Map<String,Object> map = new HashMap<>();
                             Map<String, Object> data = document.getData();
                             SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy");
-
 
                             map.put("title", data.get("title").toString());
                             map.put("due", sdf.format(((Timestamp) data.get("dueDate")).toDate()));
@@ -422,14 +445,13 @@ public class ShopLstFrag extends Fragment {
     public class ListAdapter extends SimpleAdapter {
         public ListAdapter(Context context, List<? extends Map<String, ?>> data, int resource, String[] from, int[] to) {
             super(context, data, resource, from, to);
-
         }
 
         //This function is automatically called when the list item view is ready to be display or about to be display.
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             View view = super.getView(position, convertView, parent);
-            ImageView imageView=(ImageView) view.findViewById(R.id.list_item_favorite);
+            ImageView imageView = view.findViewById(R.id.list_item_favorite);
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -496,6 +518,29 @@ public class ShopLstFrag extends Fragment {
                     notifyDataSetChanged();
                 }
             });
+
+            TextView title = view.findViewById(R.id.list_item_title);
+            String dueTimeString = (String) (listItems.get(position)).get("due");
+            try {
+                Date dueDate = new SimpleDateFormat("MMM dd, yyyy").parse(dueTimeString);
+                Date today = new Date();
+                today.setHours(0);
+                today.setMinutes(0);
+                today.setSeconds(0);
+                long different = dueDate.getTime() - today.getTime();
+                long daysInMilli = 1000 * 60 * 60 * 24 - 1000;
+                long differentDay = different / daysInMilli;
+                if (differentDay < 0) {
+                    title.setTextColor(Color.parseColor("#7E8398")); // gray
+                } else if (differentDay == 0) {
+                    title.setTextColor(Color.parseColor("#DA7E70")); // red
+                } else {
+                    title.setTextColor(Color.parseColor("#f5a824")); // orange
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
             return view;
 
         }

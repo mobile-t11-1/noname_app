@@ -136,7 +136,7 @@ public class ProfileFrag extends Fragment {
 
 
 
-        settinglayout = getView().findViewById(R.id.setting_layout);
+        settinglayout = getView().findViewById(R.id.about_layout);
         settinglayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

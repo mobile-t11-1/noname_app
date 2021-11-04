@@ -72,7 +72,7 @@ public class ListDetailFrag extends Fragment {
     private DocumentReference docRef;
 
     // views of this object
-    private TextView title;
+    private EditText title;
     private ImageView backButton;
     private ImageView optionButton;
     private EditText notes;
@@ -113,6 +113,7 @@ public class ListDetailFrag extends Fragment {
         // get the detail page
         View view = inflater.inflate(R.layout.fragment_list_detail, container, false);
 
+        // get all views
         title = view.findViewById(R.id.list_detail_title);
         backButton = view.findViewById(R.id.list_detail_back);
         optionButton = view.findViewById(R.id.list_detail_options);
@@ -138,7 +139,7 @@ public class ListDetailFrag extends Fragment {
         // read data and initialize page for different flag:
         // add new item or display the item details
         readData(items -> {
-            // asynchronous problem
+            // initialize new page for adding, or load data for displaying
             title.setText((String) docDetails.get("title"));
             notes.setText((String) docDetails.get("notes"));
             myCalendar.setTime(((Timestamp) docDetails.get("dueDate")).toDate());
@@ -147,96 +148,23 @@ public class ListDetailFrag extends Fragment {
                     (myCalendar.get(Calendar.MONTH) + 1) + "/" + myCalendar.get(Calendar.YEAR));
 
             if (subItems.size() == 0) {
+                // no item, display empty prompt
                 emptyPrompt.setVisibility(View.VISIBLE);
                 subitem.setVisibility(View.GONE);
             } else {
+                // display all subitems
                 emptyPrompt.setVisibility(View.GONE);
                 subitem.setVisibility(View.VISIBLE);
                 subitem.setAdapter(items);
-                setListViewHeightBasedOnChildren(subitem);
+                setListViewHeightBasedOnChildren(subitem); // set the height of the list
             }
 
-            /* item list with section
-
-            // details
-            // key: subitem
-            // value: all item detail map
-
-            // subitemMap
-            // key: the index of each group
-            // value: the map of title and all items
-            subitemMap = (Map<String, Object>) details.get("subitem");
-            boolean first = true; // default group
-
-            // get each subitem group and construct view
-            for (int i = 0; i < subitemMap.size(); i++) {
-                // sectionDetails
-                // key1: sectionName
-                // value1: the section name
-                // key2: item
-                // value2: list of item detail map
-                Map<String, Object> sectionDetails = (Map<String, Object>) subitemMap.get(String.valueOf(i));
-
-                if (first) {
-                    first = false; // the default group don't have section title
-                } else {
-                    // initialize title of subitem and set option button onclicklistener
-                    View view = inflater.inflate(R.layout.fragment_list_detail_subtitle, container, false);
-                    EditText note = view.findViewById(R.id.list_detail_subitem_subtitle);
-                    note.setText((String) sectionDetails.get("sectionName"));
-
-                    ImageView optionButton = view.findViewById(R.id.list_detail_subitem_options);
-                    optionButton.setOnClickListener(v -> {
-                        //Creating the instance of PopupMenu
-                        PopupMenu popup = new PopupMenu(getActivity(), optionButton);
-                        //Inflating the Popup using xml file
-                        popup.getMenuInflater()
-                                .inflate(R.menu.list_detail_subitem_option_menu, popup.getMenu());
-
-                        //registering popup with OnMenuItemClickListener
-                        popup.setOnMenuItemClickListener(item -> {
-                            Toast.makeText(
-                                    getActivity(),
-                                    "You Clicked : " + item.getTitle(),
-                                    Toast.LENGTH_SHORT
-                            ).show();
-                            return true;
-                        });
-
-                        popup.show(); //showing popup menu
-                    });
-                    itemLayout.addView(view); // add to layout
-                }
-
-                // get list of item detail map
-                List<Map<String, Object>> allItemDetails = (List<Map<String, Object>>) sectionDetails.get("item");
-
-                // for each item, set there check image and note
-                for (Map<String, Object> item: allItemDetails) {
-                    View view = inflater.inflate(R.layout.fragment_list_detail_subitem, container, false);
-                    ImageView check = view.findViewById(R.id.list_detail_subitem_check);
-                    EditText itemNotes = view.findViewById(R.id.list_detail_subitem_note);
-
-                    boolean isCheck = (boolean) item.get("isCheck");
-                    if(isCheck) {
-                        check.setImageResource(R.drawable.ic_list_detail_subitem_full);
-                    } else {
-                        check.setImageResource(R.drawable.ic_list_detail_subitem_empty);
-                    }
-
-                    String note = (String) item.get("note");
-                    itemNotes.setText(note);
-
-                    itemLayout.addView(view); // add to layout
-                }
-            } */
-            view.setVisibility(View.VISIBLE);
+            view.setVisibility(View.VISIBLE); // all data is loaded, make view visible
         });
 
-
-        // back button & save
+        // back button
         backButton.setOnClickListener(v -> {
-
+            // return to list main page
             getActivity().getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, parent).commit();
         });
@@ -249,6 +177,7 @@ public class ListDetailFrag extends Fragment {
             dueButton.setText("Due: " + myCalendar.get(Calendar.DAY_OF_MONTH) + "/" +
                     (myCalendar.get(Calendar.MONTH) + 1) + "/" + myCalendar.get(Calendar.YEAR));
 
+            // update database
             docRef.update("dueDate", new com.google.firebase.Timestamp(myCalendar.getTime()))
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
@@ -264,7 +193,6 @@ public class ListDetailFrag extends Fragment {
                     });
 
         };
-
         dueButton.setOnClickListener(v -> {
             new DatePickerDialog(getActivity(), date, myCalendar
                     .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
@@ -272,28 +200,31 @@ public class ListDetailFrag extends Fragment {
         });
 
 
+        // option menu
         optionButton.setOnClickListener(v -> {
-            //Creating the instance of PopupMenu
+            // Creating the instance of PopupMenu
             PopupMenu popup = new PopupMenu(getActivity(), optionButton);
-            //Inflating the Popup using xml file
+            // Inflating the Popup using xml file
             popup.getMenuInflater()
                     .inflate(R.menu.list_detail_option_menu, popup.getMenu());
 
-            //registering popup with OnMenuItemClickListener
+            // registering popup with OnMenuItemClickListener
             popup.setOnMenuItemClickListener(item -> {
                 String title = item.getTitle().toString();
                 List<Map<String, Object>> databaseMap = (List<Map<String, Object>>) docDetails.get("subitems");
 
+                // do operations according to the option
                 switch(title) {
                     case "Check All Items":
+                        // update view
                         for (Map<String, Object> eachItem:subItems) {
                             eachItem.put("isCheck", R.drawable.ic_list_detail_subitem_full);
                         }
 
+                        // update database
                         for (Map<String, Object> eachItem:databaseMap) {
                             eachItem.put("isCheck", true);
                         }
-
                         docRef.update("subitems", docDetails.get("subitems"))
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
@@ -309,14 +240,15 @@ public class ListDetailFrag extends Fragment {
                                 });
                         break;
                     case "Uncheck All Items":
+                        // update view
                         for (Map<String, Object> eachItem:subItems) {
                             eachItem.put("isCheck", R.drawable.ic_list_detail_subitem_empty);
                         }
 
+                        // update database
                         for (Map<String, Object> eachItem:databaseMap) {
                             eachItem.put("isCheck", false);
                         }
-
                         docRef.update("subitems", docDetails.get("subitems"))
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
@@ -332,6 +264,8 @@ public class ListDetailFrag extends Fragment {
                                 });
                         break;
                     default:
+                        // delete list
+                        // popup confirmation window
                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                         builder.setTitle("Confirmation");
                         builder.setMessage("Do you want to delete this list?");
@@ -368,14 +302,14 @@ public class ListDetailFrag extends Fragment {
                         alert.show();
                 }
 
-                items.notifyDataSetChanged();
-
+                items.notifyDataSetChanged(); // update view
                 return true;
             });
 
             popup.show(); //showing popup menu
         });
 
+        // show or hide the add bar after clicking add item button
         additemButton.setOnClickListener(v -> {
             if(additemText.getVisibility() == View.VISIBLE && additemCommit.getVisibility() == View.VISIBLE){
                 additemText.setVisibility(View.GONE);
@@ -386,7 +320,7 @@ public class ListDetailFrag extends Fragment {
             }
         });
 
-
+        // update view and database
         additemCommit.setOnClickListener(v -> {
             Map<String, Object> newItem = new HashMap<>();
             String note = additemText.getText().toString().trim();
@@ -475,6 +409,21 @@ public class ListDetailFrag extends Fragment {
 //                        Log.w(TAG, "Error updating document", e);
                     }
                 });
+
+        docRef.update("title", title.getText().toString().trim())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+        //                        Log.d(TAG, "DocumentSnapshot successfully updated!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+//                        Log.w(TAG, "Error updating document", e);
+                    }
+                });
+
     }
 
     // reference from https://stackoverflow.com/questions/3495890/how-can-i-put-a-listview-into-a-scrollview-without-it-collapsing
@@ -506,6 +455,7 @@ public class ListDetailFrag extends Fragment {
         docRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 docDetails = task.getResult().getData();
+                // deep copy to create new list, store the source url of check image
                 subItems = (List<Map<String, Object>>) PipedDeepCopy.copy(docDetails.get("subitems"));
                 for (Map<String, Object> eachitem: subItems) {
                     if((boolean) eachitem.get("isCheck")) {
@@ -579,6 +529,7 @@ public class ListDetailFrag extends Fragment {
             });
 
             text.setOnLongClickListener(v -> {
+                // long click delete item
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle("Confirmation");
                 builder.setMessage("Do you want to delete this item?");
@@ -628,6 +579,7 @@ public class ListDetailFrag extends Fragment {
 
                 @Override
                 public void afterTextChanged(Editable s) {
+                    // update note in local variable
                     subItems.get(position).put("note", s.toString());
                 }
             });
@@ -652,6 +604,8 @@ public class ListDetailFrag extends Fragment {
         });
     }
 
+    // listen all views except of EditText
+    // support cancel editing when user click other area
     public void listenAnyWhere(View view) {
         //Set up touch listener for non-EditText views to hide keyboard and itself
         if (!(view instanceof EditText)) {
