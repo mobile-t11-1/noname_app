@@ -65,7 +65,6 @@ public class ProfileFrag extends Fragment {
     private LinearLayout logoutlayout;
     private LinearLayout aboutlayout;
     private LinearLayout editlayout;
-    private LinearLayout aboutlayout;
     private ImageView profile_avatar;
 
 
@@ -143,7 +142,9 @@ public class ProfileFrag extends Fragment {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(getActivity(), About.class));
+            }
         });
+
 
         // edit profile section
         editlayout = getView().findViewById(R.id.edit_layout);
