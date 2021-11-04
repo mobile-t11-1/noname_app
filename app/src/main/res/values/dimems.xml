@@ -2,4 +2,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <dimen name="design_bottom_navigation_text_size" tools:override="true">12sp</dimen>
     <dimen name="design_bottom_navigation_active_text_size" tools:override="true">12sp</dimen>
+    <dimen name="indicator_w">12dp</dimen>
+    <dimen name="indicator_h">24dp</dimen>
+    <dimen name="my6pt_w">6pt</dimen>
+    <dimen name="my6pt_h">6pt</dimen>
 </resources>
