@@ -665,11 +665,11 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
         // if within a week, we only update focus time and thisDate
         if(checkDuration(startDate,currentDate)){
             update.put("last date", date);
-            update.put("total minutes", totalTime + duration);
+            update.put("total millis", totalTime + duration);
         }else {
             update.put("start date", date);
             update.put("last date", date);
-            update.put("total minutes", duration);
+            update.put("total millis", duration);
         }
 
         return update;

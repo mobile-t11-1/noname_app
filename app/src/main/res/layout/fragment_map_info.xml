@@ -1,13 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MapInfoFr">
 
+    <RelativeLayout
+        android:id="@+id/discover_layout1"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/discover_layout1_head"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#FCEDEA"
+            android:gravity="center"
+            android:text="Discover"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/map_info_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="50dp"
+        android:src="@drawable/ic_map_info"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/discover_layout1"/>
+
+    <TextView
+        android:id="@+id/discover_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="30dp"
+        android:paddingLeft="10dp"
+        android:text="Discover"
+        android:textColor="@color/black"
+        android:textSize="36dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/map_info_view"  />
+
+
+    <TextView
+        android:id="@+id/discover_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="30dp"
+        android:inputType="textMultiLine"
+        android:lineSpacingExtra="10dp"
+        android:paddingLeft="10dp"
+        android:text="Discover is a good place for you to \nfind cafés, libraries, and parks \nnearby that are perfect for self-\nstudying."
+        android:textSize="22dp"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/discover_title" />
+
+    <TextView
+        android:id="@+id/permission_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="30dp"
+        android:inputType="textMultiLine"
+        android:lineSpacingExtra="10dp"
+        android:paddingLeft="10dp"
+        android:text="Efficiency+ would need your \nlocation data to continue."
+        android:textSize="22dp"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/discover_text" />
+
+
+
 
     <Button
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         android:id="@+id/openMap_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,7 +96,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginHorizontal="60dp"
         android:background="@drawable/login_btn_style"
-        android:text="Open the map!"
+        android:text="Open the map"
         android:textSize="16sp" />
 
-</RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
