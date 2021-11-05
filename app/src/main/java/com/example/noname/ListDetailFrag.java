@@ -423,6 +423,7 @@ public class ListDetailFrag extends Fragment {
         return view;
     }
 
+    // reference from https://stackoverflow.com/questions/4165414/how-to-hide-soft-keyboard-on-android-after-clicking-outside-edittext
     public static void hideSoftKeyboard(Activity activity) {
         InputMethodManager inputMethodManager =
                 (InputMethodManager) activity.getSystemService(
@@ -683,7 +684,6 @@ public class ListDetailFrag extends Fragment {
             view.setOnTouchListener(new View.OnTouchListener() {
                 public boolean onTouch(View v, MotionEvent event) {
                     hideEditText();
-                    subitem.requestFocus();
                     return false;
                 }
 
