@@ -25,6 +25,9 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
+/**
+ * The information page of discover
+ */
 public class MapInfoFr extends Fragment {
 
     private Button openMapBtn;

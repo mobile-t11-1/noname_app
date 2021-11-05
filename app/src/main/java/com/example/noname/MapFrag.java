@@ -45,7 +45,9 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 
-
+/**
+ * Map fragment view for discover function
+ */
 public class MapFrag extends Fragment{
 
     private GoogleMap mMap;
@@ -162,6 +164,10 @@ public class MapFrag extends Fragment{
         return view;
     }
 
+    /**
+     * The function finds the nearby places around the current user's location
+     * @param placeName the kind of place want to find
+     */
     private void findPlace(String placeName){
         if (mLastKnownLocation == null){
             openDialog();
