@@ -4,25 +4,16 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Color;
-import android.nfc.Tag;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.AbsoluteSizeSpan;
-import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -39,19 +30,14 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -63,18 +49,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link ShopLstFrag#newInstance} factory method to
- * create an instance of this fragment.
+ * The To-do List fragment
  */
-public class ShopLstFrag extends Fragment {
+public class TodoLstFrag extends Fragment {
 
     // TAG for locate log.d
     private static final String TAG = "List";
 
+    // Used to connect Firestore
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private CollectionReference itemsRef;
@@ -92,28 +76,13 @@ public class ShopLstFrag extends Fragment {
     // A list of items to display
     private List<Map<String,Object>> listItems;
 
-
-    // Heart
+    // The adapter of the listView
     private SimpleAdapter items;
-    private ImageView heart;
 
-    public ShopLstFrag() {
+    public TodoLstFrag() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment ShoppingList.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ShopLstFrag newInstance() {
-        ShopLstFrag fragment = new ShopLstFrag();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -211,13 +180,15 @@ public class ShopLstFrag extends Fragment {
         userID = mAuth.getCurrentUser().getUid();
 
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_shopping_list, container, false);
+        view = inflater.inflate(R.layout.fragment_todo_list, container, false);
         list = view.findViewById(R.id.list_main);
         emptyPrompt = view.findViewById(R.id.list_empty_prompt);
         registerForContextMenu(list); // register listView for context menu
 
+        // Set the add button
         ImageView addButton = view.findViewById(R.id.list_main_addItem);
         addButton.setOnClickListener(v -> {
+            // Show or hide the input box
             if(addList.getVisibility() == View.VISIBLE && addListCommit.getVisibility() == View.VISIBLE){
                 addList.setVisibility(View.GONE);
                 addListCommit.setVisibility(View.GONE);
@@ -306,8 +277,9 @@ public class ShopLstFrag extends Fragment {
             emptyPrompt.setVisibility(View.GONE);
 
 
+            // jump to list detail fragment
             getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new ListDetailFrag(newDocID, ShopLstFrag.this)).commit();
+                    .replace(R.id.fragment_container, new ListDetailFrag(newDocID, TodoLstFrag.this)).commit();
         });
 
         // make them gone until user click add button
@@ -364,9 +336,10 @@ public class ShopLstFrag extends Fragment {
 
 
                         getActivity().getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_container, new ListDetailFrag(docID, ShopLstFrag.this)).commit();
+                                .replace(R.id.fragment_container, new ListDetailFrag(docID, TodoLstFrag.this)).commit();
                     }
                 });
+                // show or hide the empty listView prompt
                 if (listItems.size() == 0) {
                     list.setVisibility(View.GONE);
                     emptyPrompt.setVisibility(View.VISIBLE);
@@ -415,6 +388,7 @@ public class ShopLstFrag extends Fragment {
                             // record the docID
                             map.put("docID", docID);
 
+                            // check if this list needs to be topped
                             if((boolean) data.get("favorite")) {
                                 map.put("favorite", R.drawable.ic_list_heart_full);
                                 favoriteItems.add(map);
@@ -423,17 +397,19 @@ public class ShopLstFrag extends Fragment {
                                 normalItems.add(map);
                             }
 
+                            // data used to put in the adapter
                             listItems.add(map);
                         }
 
+                        // create the adapter for listView
                         if (getActivity() != null && isAdded()) {
-                            items = new ListAdapter(getActivity().getApplicationContext(), listItems, R.layout.fragment_shopping_list_item,
+                            items = new ListAdapter(getActivity().getApplicationContext(), listItems, R.layout.fragment_todo_list_item,
                                     new String[]{"favorite", "title", "due"},
                                     new int[]{R.id.list_item_favorite, R.id.list_item_title, R.id.list_item_due});
                             firestoreCallback.onCallback(items);
                         }
                     } else {
-
+                        Log.d(TAG, "Failed to read database");
                     }
                 });
     }
@@ -550,6 +526,7 @@ public class ShopLstFrag extends Fragment {
             return listItems.size();
         }
     }
+
     // abstract the logic of sorting by favorite
     private void heartSort(){
         // sort the listItems by favorite
@@ -636,7 +613,7 @@ public class ShopLstFrag extends Fragment {
         }
     }
 
-    //
+    // This method is used to allow any click to collapse the input box
     public void listenAnyWhere(View view) {
         //Set up touch listener for non-EditText views to hide keyboard and itself
         if (!(view instanceof EditText)) {
@@ -652,6 +629,7 @@ public class ShopLstFrag extends Fragment {
         }
     }
 
+    // This method is used to hide the input bos
     public void hideEditText() {
         // hide the keyboard
         InputMethodManager inputMethodManager = (InputMethodManager)  getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);

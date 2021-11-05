@@ -6,10 +6,10 @@
     app:startDestination="@id/profileFrag">
 
     <fragment
-        android:id="@+id/shopLstFrag"
-        android:name="com.example.noname.ShopLstFrag"
-        android:label="fragment_shopping_list"
-        tools:layout="@layout/fragment_shopping_list" />
+        android:id="@+id/todoLstFrag"
+        android:name="com.example.noname.TodoLstFrag"
+        android:label="fragment_todo_list"
+        tools:layout="@layout/fragment_todo_list" />
     <fragment
         android:id="@+id/mapInfoFrag"
         android:name="com.example.noname.MapInfoFr"

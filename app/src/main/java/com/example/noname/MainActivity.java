@@ -11,7 +11,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ShopLstFrag listFrag;
+    private TodoLstFrag listFrag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,9 +39,9 @@ public class MainActivity extends AppCompatActivity {
                         case R.id.profileFrag:
                             selectedFragment = new ProfileFrag();
                             break;
-                        case R.id.shopLstFrag:
+                        case R.id.todoLstFrag:
                             if(listFrag == null){
-                                listFrag = new ShopLstFrag();
+                                listFrag = new TodoLstFrag();
                             }
                             selectedFragment = listFrag;
                             break;

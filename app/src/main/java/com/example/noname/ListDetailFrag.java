@@ -25,23 +25,19 @@ import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.io.IOException;
@@ -49,15 +45,13 @@ import java.io.PipedOutputStream;
 import java.io.PipedInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
- * A simple {@link Fragment} subclass.
+ * The list detail fragment - detail page of the To-do List
  */
 public class ListDetailFrag extends Fragment {
     private static final String TAG = "ListDetailFrag";
-    private ShopLstFrag parent; // hold parent reference after constructing this object
+    private TodoLstFrag parent; // hold parent reference after constructing this object
 
     // database
     private FirebaseAuth mAuth;
@@ -89,7 +83,7 @@ public class ListDetailFrag extends Fragment {
 
     // docID: document ID
     // title: the new note title
-    public ListDetailFrag(String docID, ShopLstFrag parent) {
+    public ListDetailFrag(String docID, TodoLstFrag parent) {
         this.docID = docID;
         this.parent = parent;
 
@@ -606,6 +600,9 @@ public class ListDetailFrag extends Fragment {
                                     }
                                 });
                         items.notifyDataSetChanged();
+                        if(subItems.size() == 0){
+                            emptyPrompt.setVisibility(View.VISIBLE);
+                        }
                     }
                 });
                 builder.setNegativeButton("No", new DialogInterface.OnClickListener() {

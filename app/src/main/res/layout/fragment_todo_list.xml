@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ShopLstFrag">
+    tools:context=".TodoLstFrag">
 
 
     <RelativeLayout
@@ -90,7 +90,7 @@
         android:id="@+id/list_main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:listitem="@layout/fragment_shopping_list_item"
+        tools:listitem="@layout/fragment_todo_list_item"
         />
 
 

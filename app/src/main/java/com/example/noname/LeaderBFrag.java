@@ -48,6 +48,7 @@ public class LeaderBFrag extends Fragment {
 
     private static final String TAG  = "Leaderboard";
 
+    // Used to connect FireStore and FireStorage
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private StorageReference storage;
@@ -195,6 +196,7 @@ public class LeaderBFrag extends Fragment {
             });
 
 
+            // click heart to encourage other user
             ImageView imageView=(ImageView) view.findViewById(R.id.leaderB_favorite);
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
