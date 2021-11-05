@@ -34,6 +34,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.lang.reflect.Executable;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -299,6 +300,10 @@ public class ListDetailFrag extends Fragment {
                                         });
 
                                 items.notifyDataSetChanged(); // update view
+
+                                if (subItems.size() == 0) {
+                                    emptyPrompt.setVisibility(View.VISIBLE);
+                                }
                             }
                         });
                         builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -398,7 +403,8 @@ public class ListDetailFrag extends Fragment {
                     });
 
             // finish input
-            additemText.setImeOptions(EditorInfo.IME_ACTION_DONE);  // hide the keyboard
+            hideSoftKeyboard(getActivity());
+//            additemText.setImeOptions(EditorInfo.IME_ACTION_DONE);  // hide the keyboard
             additemText.getText().clear();  // clean input
 
             // hide the EditText
@@ -415,6 +421,18 @@ public class ListDetailFrag extends Fragment {
 
         // Inflate the layout for this fragment
         return view;
+    }
+
+    public static void hideSoftKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager =
+                (InputMethodManager) activity.getSystemService(
+                        Activity.INPUT_METHOD_SERVICE);
+        if(inputMethodManager.isAcceptingText()){
+            inputMethodManager.hideSoftInputFromWindow(
+                    activity.getCurrentFocus().getWindowToken(),
+                    0
+            );
+        }
     }
 
     @Override
@@ -628,8 +646,12 @@ public class ListDetailFrag extends Fragment {
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    // update note in local variable
-                    subItems.get(position).put("note", s.toString());
+                    try {
+                        // update note in local variable
+                        subItems.get(position).put("note", s.toString());
+                    } catch (Exception e) {
+                        // index out of bound, due to delete operation
+                    }
                 }
             });
             return view;

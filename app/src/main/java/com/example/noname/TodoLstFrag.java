@@ -297,13 +297,6 @@ public class TodoLstFrag extends Fragment {
 
             //registering popup with OnMenuItemClickListener
             popup.setOnMenuItemClickListener(item -> {
-                // item logic
-                Toast.makeText(
-                        getActivity(),
-                        "You Clicked : " + item.getTitle(),
-                        Toast.LENGTH_SHORT
-                ).show();
-
                 // sorting by due date
                 if(item.getItemId() == R.id.list_sort_byDue){
                     dueSort();
@@ -431,7 +424,7 @@ public class TodoLstFrag extends Fragment {
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(getActivity().getApplicationContext(), "Successfully topped", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getActivity().getApplicationContext(), "Successfully topped", Toast.LENGTH_SHORT).show();
                     // locate the current listView item
                     Map<String, Object> curItem = listItems.get(position);
                     // locate the corresponding document id of this current item
