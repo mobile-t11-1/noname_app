@@ -92,9 +92,9 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
     private boolean screenOn; //record if we stop the app by locking the screen
     //private variables
     private int sessionID = 1; //record the current session: odd is work, even is rest
-    private int mStartTimeInMillis = 10000; //25*60*1000 25min //set timer
-    private int sBreakTimeInMillis = 5000; //short break time
-    private int lBreakTimeInMillis = 5000; //long break time
+    private int mStartTimeInMillis = 25*60*1000; //25*60*1000 25min //set timer
+    private int sBreakTimeInMillis = 5*60*1000; //short break time
+    private int lBreakTimeInMillis = 10*60*1000; //long break time
     private long mTimeLeftInMillis; //remaining time
     private long mEndTime; //end time of the timer
     private Vibrator vibrator; // vibrate
@@ -192,7 +192,6 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
                     }
                     mFaceUp = true;
                 }
-                //System.out.println("faceup: " + mFaceUp);
             }
 
             @Override
@@ -326,7 +325,6 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
             public void onFinish() {
                 mTimerRunning = false;
                 sessionID += 1;
-                System.out.println(sessionID);
                 //let the phone vibrates
                 if(Build.VERSION.SDK_INT >= 26) {
                     vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE));
@@ -453,7 +451,6 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
         }else if(mTimeLeftInMillis == mStartTimeInMillis){
             percentage = 0;
         }
-        //System.out.println(percentage);
 
         clockProgress.setProgress(percentage);
     }
@@ -575,14 +572,14 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
 
         if(focusTime != "0") {
             try {
-                mStartTimeInMillis = Integer.parseInt(focusTime) * 1000;
+                mStartTimeInMillis = Integer.parseInt(focusTime) * 60*1000;
             } catch (NumberFormatException nfe) {
                 System.out.println("Could not parse focus time " + nfe);
             }
         }
         if(shortBreak != "0") {
             try {
-                sBreakTimeInMillis = Integer.parseInt(shortBreak) * 1000;
+                sBreakTimeInMillis = Integer.parseInt(shortBreak) * 60*1000;
             } catch (NumberFormatException nfe) {
                 System.out.println("Could not parse short break " + nfe);
             }
@@ -590,7 +587,7 @@ public class  PomoFrag extends Fragment implements ClockDialog.DialogListener{
 
         if(longBreak != "0"){
             try {
-                lBreakTimeInMillis = Integer.parseInt(longBreak) *1000;
+                lBreakTimeInMillis = Integer.parseInt(longBreak) * 60*1000;
             } catch(NumberFormatException nfe) {
                 System.out.println("Could not parse long break " + nfe);
             }
